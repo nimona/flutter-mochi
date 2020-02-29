@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutterapp/viewmodel/conversationitem.dart';
+import 'package:flutterapp/model/conversationitem.dart';
 
 class MessagesContainer extends StatelessWidget {
   MessagesContainer({
@@ -18,24 +20,24 @@ class MessagesContainer extends StatelessWidget {
       children: [
         Text(
           item?.title ?? 'No item selected!',
-          style: textTheme.headline,
+          style: textTheme.headline5,
         ),
         Text(
           item?.subtitle ?? 'Please select one on the left.',
-          style: textTheme.subhead,
+          style: textTheme.subtitle1,
         ),
       ],
     );
 
     if (isInTabletLayout) {
       return Center(child: content);
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(item.title),
+        ),
+        body: Center(child: content),
+      );
     }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(item.title),
-      ),
-      body: Center(child: content),
-    );
   }
 }

@@ -1,7 +1,7 @@
-import 'package:flutterapp/viewmodel/conversationitem.dart';
+import 'package:flutterapp/model/conversationitem.dart';
 
 abstract class DataStore {
-  Stream<int> getMessagesForConversation(int conversationId);
+  Stream<int> getMessagesForConversation(String conversationId);
 
   Stream<ConversationItem> getConversations();
 }

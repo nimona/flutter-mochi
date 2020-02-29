@@ -2,11 +2,20 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutterapp/data/datastore.dart';
-import 'package:flutterapp/viewmodel/conversationitem.dart';
+import 'package:flutterapp/model/conversationitem.dart';
 
 class MockDataStore implements DataStore {
+  List<String> titles = [
+    "Where did you grow up?",
+    "Do you know what your your name means?",
+    "What type of phone do you have?",
+    "What is the first thing you do when you wake up?",
+    "What was the last thing you purchased?",
+    "What is your favorite meal of the day?"
+  ];
+
   @override
-  Stream<int> getMessagesForConversation(int conversationId) async* {
+  Stream<int> getMessagesForConversation(String conversationId) async* {
     var random = Random();
     while (true) {
       await Future.delayed(Duration(seconds: 1));
@@ -16,13 +25,15 @@ class MockDataStore implements DataStore {
 
   @override
   Stream<ConversationItem> getConversations() async* {
-    var random = Random();
+    titles.shuffle();
 
-    // emit upto 3 conversation items after a random delay
-    for (var i = 0; i < 3; i++) {
-      Future.delayed(Duration(milliseconds: random.nextInt(3000)));
+    for (var i = 0; i < 6; i++) {
+      // Wait a random amount of time (up to 500ms)
+      await Future.delayed(Duration(milliseconds: Random().nextInt(500)));
+
+      var randomConversation = titles[i % titles.length];
       yield ConversationItem(
-          id: "some-id-$i", title: "name $i", subtitle: "subtitle $i");
+          id: "some-id-$i", title: randomConversation, subtitle: "subtitle $i");
     }
   }
 }

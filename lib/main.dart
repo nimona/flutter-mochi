@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'master_detail_layout.dart';
-import 'myhomepage.dart';
 
 void main() {
   // See https://github.com/flutter/flutter/wiki/Desktop-shells#target-platform-override
@@ -24,7 +23,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-//      home: MyHomePage(title: 'Flutter Demo Home Page'),
       home: MasterDetailLayout(),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/viewmodel/conversationitem.dart';
+import 'package:flutterapp/model/conversationitem.dart';
 
 import 'conversation_list_container.dart';
 import 'messages_container.dart';
