@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'data/repository.dart';
@@ -50,20 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-//    Repository.get().getRandomValues().listen((event) {
-//      setState(() {
-//        _counter = event.round();
-//      });
-//    });
-
-//    Repository.get().streamController.stream.listen((event) {
-//      setState(() {
-//        _counter = event.round();
-//      });
-//    });
-//
-//    Repository.get().getMessagesForConversation();
-
     getMessagesForConversation();
     super.initState();
   }
@@ -79,7 +65,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-//    Repository.get().streamController.close();
     _messageStream.close();
     super.dispose();
   }
