@@ -48,12 +48,19 @@ class _ConversationListContainer extends State<ConversationListContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return ListView(
       children: _conversationItems.map((item) {
         return ListTile(
-          title: Text(item.title),
+          title: Text(item.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+          subtitle: Text(item.subtitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
           onTap: () => itemSelectedCallback(item),
-          selected: selectedItem == item,
+          selected: widget.selectedItem == item,
+          dense: true,
         );
       }).toList(),
     );
