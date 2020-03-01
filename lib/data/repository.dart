@@ -19,8 +19,8 @@ class Repository {
     // init
   }
 
-  StreamController<MessageItem> getMessagesForConversation(String conversationId) {
-    StreamController<MessageItem> sc = new StreamController();
+  StreamController<List<MessageItem>> getMessagesForConversation(String conversationId) {
+    StreamController<List<MessageItem>> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;
   }

@@ -20,35 +20,34 @@ class MessagesContainer extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     var stream;
     if (item == null) {
-      stream = Stream<MessageItem>.empty();
+      stream = Stream<List<MessageItem>>.empty();
     } else {
       stream = Repository.get().getMessagesForConversation(item.id).stream;
     }
 
-    final Widget content = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        StreamBuilder(
-            builder:
-                (BuildContext context, AsyncSnapshot<MessageItem> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return Text(
-                  'Select conversation',
-                  style: textTheme.headline6,
+    final Widget content = StreamBuilder(
+        builder:
+            (BuildContext context, AsyncSnapshot<List<MessageItem>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Text(
+              'Select conversation',
+              style: textTheme.headline6,
+            );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+
+          return ListView(
+              reverse: true,
+              children: snapshot.data.reversed.map((item) {
+                return ListTile(
+                  title: Text(item.user + " (" + item.id + ")",
+                      maxLines: 1, style: textTheme.caption),
+                  subtitle: Text(item.content, style: textTheme.bodyText2),
                 );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              return Column(
-                  children: [
-                    Text('${snapshot.data.conversationId}'),
-                    Text('${snapshot.data.user}'),
-                    Text('${snapshot.data.content}'),
-                  ]);
-            },
-            stream: stream)
-      ],
-    );
+              }).toList());
+        },
+        stream: stream);
 
     if (isInTabletLayout) {
       return Center(child: content);

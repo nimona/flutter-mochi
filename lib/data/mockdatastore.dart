@@ -15,15 +15,41 @@ class MockDataStore implements DataStore {
     "What is your favorite meal of the day?"
   ];
 
+  List<String> messages = [
+    "Lorem ipsum dolor sit amet consectetur adipiscing elit nascetur dapibus",
+    "morbi mattis tempus felis velit congue vivamus pulvinar tristique senectus",
+    "scelerisque primis sem euismod lacinia viverra purus odio",
+    "Tempus turpis taciti luctus nunc penatibus porttitor dapibus velit",
+    "ornare urna a iaculis tellus venenatis porta sodales",
+    "potenti imperdiet augue elementum quam pellentesque enim",
+    "Faucibus est egestas suspendisse hendrerit nam mattis pellentesque mauris",
+    "elit adipiscing pulvinar lacus erat lectus.",
+    "Eu aliquet magna condimentum semper sagittis risus, primis odio quisque ridiculus rhoncus netus",
+    "amet accumsan per tempor blandit. Cum porta accumsan congue ad sed",
+    "nascetur ac pulvinar adipiscing nam pharetra, magnis inceptos eu quisque.",
+    "Orci lacus urna volutpat commodo ac facilisi feugiat augue, nostra pulvinar himenaeos dolor neque hac dictumst",
+    "massa magnis malesuada etiam pellentesque ante molestie. Aliquet netus quisque orci tortor justo diam porta posuere, quam vel torquent luctus adipiscing risus metus auctor",
+    "etiam nullam sapien arcu morbi sodales habitasse. In rhoncus donec sem molestie senectus nascetur sagittis quis, ipsum aliquet accumsan fusce elementum taciti primis",
+    "adipiscing platea proin aenean nostra ornare dolor. Ipsum nibh aptent risus laoreet fames dictum varius eget nec feugiat ornare",
+    "eu suspendisse dui lorem id leo turpis et rhoncus cras magnis",
+  ];
+
   @override
-  Stream<MessageItem> getMessagesForConversation(String conversationId) async* {
+  Stream<List<MessageItem>> getMessagesForConversation(
+      String conversationId) async* {
+    List<MessageItem> list = [];
+
+    var i = 0;
+
     while (true) {
       await Future.delayed(Duration(seconds: 1));
-      yield MessageItem(
-          id: Random().nextInt(1000).toString(),
+      i++;
+      list.add(MessageItem(
+          id: i.toString(),
           conversationId: conversationId,
           user: "User${Random().nextInt(1000).toString()}",
-          content: "Message ${Random().nextInt(1000).toString()}");
+          content: messages[Random().nextInt(messages.length)]));
+      yield list;
     }
   }
 
