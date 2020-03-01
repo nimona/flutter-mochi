@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/model/conversationitem.dart';
+
+import 'model/messageitem.dart';
 
 class MessagesContainer extends StatelessWidget {
   MessagesContainer({
@@ -15,17 +18,35 @@ class MessagesContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    var stream;
+    if (item == null) {
+      stream = Stream<MessageItem>.empty();
+    } else {
+      stream = Repository.get().getMessagesForConversation(item.id).stream;
+    }
+
     final Widget content = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          item?.title ?? 'No item selected!',
-          style: textTheme.headline5,
-        ),
-        Text(
-          item?.subtitle ?? 'Please select one on the left.',
-          style: textTheme.subtitle1,
-        ),
+        StreamBuilder(
+            builder:
+                (BuildContext context, AsyncSnapshot<MessageItem> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Text(
+                  'Select conversation',
+                  style: textTheme.headline6,
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              return Column(
+                  children: [
+                    Text('${snapshot.data.conversationId}'),
+                    Text('${snapshot.data.user}'),
+                    Text('${snapshot.data.content}'),
+                  ]);
+            },
+            stream: stream)
       ],
     );
 

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutterapp/data/datastore.dart';
 import 'package:flutterapp/data/mockdatastore.dart';
 import 'package:flutterapp/model/conversationitem.dart';
+import 'package:flutterapp/model/messageitem.dart';
 
 class Repository {
   static final Repository _repo = new Repository._internal();
@@ -18,8 +19,8 @@ class Repository {
     // init
   }
 
-  StreamController<int> getMessagesForConversation(String conversationId) {
-    StreamController<int> sc = new StreamController();
+  StreamController<MessageItem> getMessagesForConversation(String conversationId) {
+    StreamController<MessageItem> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;
   }

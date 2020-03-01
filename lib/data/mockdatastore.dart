@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutterapp/data/datastore.dart';
 import 'package:flutterapp/model/conversationitem.dart';
+import 'package:flutterapp/model/messageitem.dart';
 
 class MockDataStore implements DataStore {
   List<String> titles = [
@@ -15,11 +16,14 @@ class MockDataStore implements DataStore {
   ];
 
   @override
-  Stream<int> getMessagesForConversation(String conversationId) async* {
-    var random = Random();
+  Stream<MessageItem> getMessagesForConversation(String conversationId) async* {
     while (true) {
       await Future.delayed(Duration(seconds: 1));
-      yield random.nextInt(2000);
+      yield MessageItem(
+          id: Random().nextInt(1000).toString(),
+          conversationId: conversationId,
+          user: "User${Random().nextInt(1000).toString()}",
+          content: "Message ${Random().nextInt(1000).toString()}");
     }
   }
 
