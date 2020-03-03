@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutterapp/data/datastore.dart';
 import 'package:flutterapp/data/mockdatastore.dart';
-import 'package:flutterapp/model/conversationitem.dart';
-import 'package:flutterapp/model/messageitem.dart';
+import 'package:flutterapp/model/conversation.dart';
+import 'package:flutterapp/model/message.dart';
 
 class Repository {
   static final Repository _repo = new Repository._internal();
@@ -19,14 +18,14 @@ class Repository {
     // init
   }
 
-  StreamController<List<MessageItem>> getMessagesForConversation(String conversationId) {
-    StreamController<List<MessageItem>> sc = new StreamController();
+  StreamController<List<Message>> getMessagesForConversation(String conversationId) {
+    StreamController<List<Message>> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;
   }
 
-  StreamController<ConversationItem> getConversations() {
-    StreamController<ConversationItem> sc = new StreamController();
+  StreamController<Conversation> getConversations() {
+    StreamController<Conversation> sc = new StreamController();
     sc.addStream(_dataStore.getConversations());
     return sc;
   }

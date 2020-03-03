@@ -1,21 +1,27 @@
 import 'dart:convert';
 
-import 'package:flutterapp/data/models.dart';
 import 'package:faker/faker.dart';
 import 'package:crypto/crypto.dart';
 import "package:base58check/base58.dart";
+import 'package:flutterapp/model/contact.dart';
+import 'package:flutterapp/model/conversation.dart';
+import 'package:flutterapp/model/local_peer.dart';
+import 'package:flutterapp/model/message.dart';
+import 'package:flutterapp/model/participant.dart';
 import 'dart:math';
+
+import 'package:flutterapp/model/profile.dart';
 
 const String _bitcoinAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-class Faker {
-  static final Faker _faker = new Faker._internal();
+class Fake {
+  static final Fake _faker = new Fake._internal();
 
-  static Faker get() {
+  static Fake get() {
     return _faker;
   }
 
-  Faker._internal() {
+  Fake._internal() {
     // init
   }
 
@@ -95,7 +101,7 @@ class Faker {
     }
     return Conversation(
       hash: hashString(faker.guid.guid()),
-      name: faker.lorem.words(rng.nextInt(4)).toString(),
+      name: faker.lorem.sentence(),
       lastMessage: DateTime.now().subtract(Duration(seconds: rng.nextInt(1000))),
       topic: faker.lorem.sentence(),
       unreadMessagesLatest: messages,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/model/conversationitem.dart';
+import 'package:flutterapp/model/conversation.dart';
 
 import 'conversation_list_container.dart';
 import 'messages_container.dart';
@@ -11,7 +11,7 @@ class MasterDetailLayout extends StatefulWidget {
 
 class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   static const int kTabletBreakpoint = 600;
-  ConversationItem _selectedItem;
+  Conversation _selectedItem;
 
   @override
   Widget build(BuildContext context) {
