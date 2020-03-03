@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/model/conversationitem.dart';
+import 'package:flutterapp/model/conversation.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
@@ -10,8 +10,8 @@ class ConversationListContainer extends StatefulWidget {
     this.selectedItem,
   });
 
-  ValueChanged<ConversationItem> itemSelectedCallback;
-  ConversationItem selectedItem;
+  ValueChanged<Conversation> itemSelectedCallback;
+  Conversation selectedItem;
 
   @override
   _ConversationListContainer createState() =>
@@ -21,10 +21,10 @@ class ConversationListContainer extends StatefulWidget {
 class _ConversationListContainer extends State<ConversationListContainer> {
   _ConversationListContainer(this.itemSelectedCallback, this.selectedItem);
 
-  ValueChanged<ConversationItem> itemSelectedCallback;
-  ConversationItem selectedItem;
+  ValueChanged<Conversation> itemSelectedCallback;
+  Conversation selectedItem;
 
-  List<ConversationItem> _conversationItems = <ConversationItem>[];
+  List<Conversation> _conversationItems = <Conversation>[];
   StreamSubscription _streamSubscription;
 
   @override
@@ -52,10 +52,10 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     return ListView(
       children: _conversationItems.map((item) {
         return ListTile(
-          title: Text(item.title,
+          title: Text(item.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
-          subtitle: Text(item.subtitle,
+          subtitle: Text(item.topic,
               maxLines: 1,
               overflow: TextOverflow.ellipsis),
           onTap: () => itemSelectedCallback(item),

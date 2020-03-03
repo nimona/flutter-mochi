@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/model/conversationitem.dart';
-
-import 'model/messageitem.dart';
+import 'package:flutterapp/model/conversation.dart';
+import 'package:flutterapp/model/message.dart';
 
 class MessagesContainer extends StatelessWidget {
   MessagesContainer({
@@ -13,21 +12,20 @@ class MessagesContainer extends StatelessWidget {
   });
 
   final bool isInTabletLayout;
-  final ConversationItem item;
+  final Conversation item;
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     var stream;
     if (item == null) {
-      stream = Stream<List<MessageItem>>.empty();
+      stream = Stream<List<Message>>.empty();
     } else {
-      stream = Repository.get().getMessagesForConversation(item.id).stream;
+      stream = Repository.get().getMessagesForConversation(item.hash).stream;
     }
 
     final Widget content = StreamBuilder(
-        builder:
-            (BuildContext context, AsyncSnapshot<List<MessageItem>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Text(
               'Select conversation',
@@ -41,9 +39,15 @@ class MessagesContainer extends StatelessWidget {
               reverse: true,
               children: snapshot.data.reversed.map((item) {
                 return ListTile(
-                  title: Text(item.user + " (" + item.id + ")",
-                      maxLines: 1, style: textTheme.caption),
-                  subtitle: Text(item.content, style: textTheme.bodyText2),
+                  title: Text(
+                    item.sender.nameFirst + " (" + item.hash + ")",
+                    maxLines: 1,
+                    style: textTheme.caption,
+                  ),
+                  subtitle: Text(
+                    item.body,
+                    style: textTheme.bodyText2,
+                  ),
                 );
               }).toList());
         },
@@ -54,7 +58,7 @@ class MessagesContainer extends StatelessWidget {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text(item.title),
+          title: Text(item.name),
         ),
         body: Center(child: content),
       );
