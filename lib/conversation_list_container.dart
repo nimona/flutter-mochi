@@ -24,7 +24,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   ValueChanged<Conversation> itemSelectedCallback;
   Conversation selectedItem;
 
-  List<Conversation> _conversationItems = <Conversation>[];
+  Map<String, Conversation> _conversationItems = {};
   StreamSubscription _streamSubscription;
 
   @override
@@ -34,7 +34,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     _streamSubscription = conversationsStream.listen((conversation) {
       if (mounted) {
         setState(() {
-          _conversationItems.add(conversation);
+          _conversationItems[conversation.hash] = conversation;
         });
       }
     });
@@ -58,14 +58,24 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         backgroundColor: Colors.blue,
       ),
       body: ListView(
-        children: _conversationItems.map((item) {
+        children: _conversationItems.keys.map((i) {
+          var conversation = _conversationItems[i];
           return ListTile(
-            title:
-                Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-            subtitle:
-                Text(item.topic, maxLines: 1, overflow: TextOverflow.ellipsis),
-            onTap: () => itemSelectedCallback(item),
-            selected: widget.selectedItem == item,
+            title: Text(
+              conversation.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            leading: Text(
+              conversation.unreadMessagesCount.toString(),
+            ),
+            subtitle: Text(
+              conversation.topic,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () => itemSelectedCallback(conversation),
+            selected: widget.selectedItem == conversation,
             dense: true,
           );
         }).toList(),
