@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapp/model/profile.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'participant.g.dart';
 
 enum ParticipantType {
   OWNER,
@@ -8,6 +11,7 @@ enum ParticipantType {
   USER,
 }
 
+@JsonSerializable()
 class Participant {
   final String key;
   final Profile profile;
@@ -18,4 +22,12 @@ class Participant {
     @required this.profile,
     this.type = ParticipantType.USER,
   });
+
+  factory Participant.fromJson(Map<String, dynamic> json) {
+    return _$ParticipantFromJson(json);
+  }
+  
+  Map<String, dynamic> toJson() {
+    return _$ParticipantToJson(this);
+  }
 }
