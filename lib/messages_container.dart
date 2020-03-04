@@ -54,9 +54,27 @@ class MessagesContainer extends StatelessWidget {
         stream: stream);
 
     if (isInTabletLayout) {
-      return Center(child: content);
+      return Scaffold(
+        // TODO remove FAB, it's just for testing
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Repository.get().createMessage(item.hash, "");
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Colors.blue,
+        ),
+        body: Center(child: content),
+      );
     } else {
       return Scaffold(
+        // TODO remove FAB, it's just for testing
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Repository.get().createMessage(item.hash, "");
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Colors.blue,
+        ),
         appBar: AppBar(
           title: Text(item.name),
         ),

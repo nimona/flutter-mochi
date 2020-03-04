@@ -1,0 +1,40 @@
+package api
+
+import nimona.io/crypto crypto
+import nimona.io/stream stream
+
+signed object nimona.io/identity.Contact {
+    alias string
+    publicKey nimona.io/crypto.PublicKey
+    createDatetime string
+}
+
+signed object nimona.io/identity.Profile {
+    displayPicture data
+    nameFirst string
+    nameLast string
+    version int
+}
+
+stream mochi.io/conversation {
+    signed root object Created {
+        datetime string
+        name string
+        topic string
+        nonce string
+    }
+    signed object MessageAdded {
+        datetime string
+        body string
+    }
+}
+
+stream nimona.io/stream {
+    signed object PolicyAdded {
+        datetime string
+    }
+    signed object TopicUpdated {
+        datetime string
+        topic string
+    }
+}

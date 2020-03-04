@@ -49,20 +49,27 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return ListView(
-      children: _conversationItems.map((item) {
-        return ListTile(
-          title: Text(item.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
-          subtitle: Text(item.topic,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis),
-          onTap: () => itemSelectedCallback(item),
-          selected: widget.selectedItem == item,
-          dense: true,
-        );
-      }).toList(),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Repository.get().startConversation("", "");
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
+      body: ListView(
+        children: _conversationItems.map((item) {
+          return ListTile(
+            title:
+                Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle:
+                Text(item.topic, maxLines: 1, overflow: TextOverflow.ellipsis),
+            onTap: () => itemSelectedCallback(item),
+            selected: widget.selectedItem == item,
+            dense: true,
+          );
+        }).toList(),
+      ),
     );
   }
 }

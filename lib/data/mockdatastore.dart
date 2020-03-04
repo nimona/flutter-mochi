@@ -8,6 +8,11 @@ import 'package:flutterapp/model/message.dart';
 
 class MockDataStore implements DataStore {
   @override
+  void createMessage(String conversationHash, String body) {
+    return;
+  }
+
+  @override
   Stream<List<Message>> getMessagesForConversation(
       String conversationId) async* {
     List<Message> list = [];
@@ -22,6 +27,11 @@ class MockDataStore implements DataStore {
       list.add(Fake.get().getMessage());
       yield list;
     }
+  }
+
+  @override
+  void startConversation(String name, String topic) {
+    return;
   }
 
   @override
