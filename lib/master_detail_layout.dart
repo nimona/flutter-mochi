@@ -54,7 +54,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
     return Row(
       children: <Widget>[
         Flexible(
-          flex: 1,
+          flex: 3,
           child: Material(
             elevation: 4.0,
             child: ConversationListContainer(
@@ -68,7 +68,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           ),
         ),
         Flexible(
-          flex: 3,
+          flex: 7,
           child: MessagesContainer(
             isInTabletLayout: true,
             item: _selectedItem,

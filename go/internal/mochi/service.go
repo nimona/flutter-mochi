@@ -47,3 +47,19 @@ func (m *Mochi) CreateConversation(name, topic string) error {
 	}
 	return m.store.AddConversation(c)
 }
+
+// AddContact and store it given a key and an alias, or error
+func (m *Mochi) AddContact(identityKey, alias string) error {
+	if identityKey == "" {
+		identityKey = rand.String(6)
+	}
+	if alias == "" {
+		alias = rand.String(6)
+	}
+	// TODO find and retrieve profile from network
+	c := store.Profile{
+		Key:        identityKey,
+		LocalAlias: alias,
+	}
+	return m.store.AddProfile(c)
+}

@@ -24,8 +24,10 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.blue,
       ),
-      darkTheme:
-          ThemeData(brightness: Brightness.dark, primarySwatch: Colors.blue),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
       home: MasterDetailLayout(),
     );
   }

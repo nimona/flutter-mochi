@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutterapp/data/datastore.dart';
 import 'package:flutterapp/data/wsdatastore.dart';
+import 'package:flutterapp/model/contact.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/message.dart';
 
@@ -16,6 +17,16 @@ class Repository {
 
   Repository._internal() {
     // init
+  }
+
+  void createContact(String identityKey, String alias) {
+    _dataStore.createContact(identityKey, alias);
+  }
+
+  StreamController<Contact> getContacts() {
+    StreamController<Contact> sc = new StreamController();
+    sc.addStream(_dataStore.getContacts());
+    return sc;
   }
 
   void createMessage(String conversationHash, String body) {
