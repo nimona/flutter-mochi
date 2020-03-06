@@ -2,11 +2,22 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutterapp/data/datastore.dart';
+import 'package:flutterapp/model/contact.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/fake.dart';
 import 'package:flutterapp/model/message.dart';
 
 class MockDataStore implements DataStore {
+  @override
+  void createContact(String identityKey, String alias) {
+    return;
+  }
+
+  @override
+  Stream<Contact> getContacts() async* {
+    return;
+  }
+
   @override
   void createMessage(String conversationHash, String body) {
     return;

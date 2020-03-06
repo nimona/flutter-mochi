@@ -64,6 +64,32 @@ func (s *Store) HandleProfiles(h ProfileHandler) {
 	s.lock.Unlock()
 }
 
+// AddProfile to the store and publish it
+func (s *Store) AddProfile(p Profile) error {
+	err := s.db.FirstOrCreate(&p).Error
+	if err != nil {
+		return err
+	}
+
+	s.lock.RLock()
+	for _, h := range s.profileHandlers {
+		h(p)
+	}
+	s.lock.RUnlock()
+
+	return nil
+}
+
+// GetProfiles returns all conversations
+func (s *Store) GetProfiles() ([]Profile, error) {
+	ps := []Profile{}
+	if err := s.db.Find(&ps).Error; err != nil {
+		return nil, err
+	}
+
+	return ps, nil
+}
+
 // AddConversation to the store and publish it
 func (s *Store) AddConversation(c Conversation) error {
 	err := s.db.FirstOrCreate(&c).Error

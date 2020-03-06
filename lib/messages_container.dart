@@ -35,7 +35,8 @@ class MessagesContainer extends StatelessWidget {
             return CircularProgressIndicator();
           }
 
-          return ListView(
+          return Scrollbar(
+            child: ListView(
               reverse: true,
               children: snapshot.data.reversed.map((item) {
                 return ListTile(
@@ -49,7 +50,9 @@ class MessagesContainer extends StatelessWidget {
                     style: textTheme.bodyText2,
                   ),
                 );
-              }).toList());
+              }).toList(),
+            ),
+          );
         },
         stream: stream);
 

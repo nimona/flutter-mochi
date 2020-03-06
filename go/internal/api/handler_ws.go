@@ -22,12 +22,14 @@ import (
 )
 
 type (
-	// // CreateProfileRequest -
-	// CreateProfileRequest struct {
-	// 	NameFirst      string `json:"nameFirst"`
-	// 	NameLast       string `json:"nameLast"`
-	// 	DisplayPicture []byte `json:"displayPicture"`
-	// }
+	// ContactAddRequest -
+	ContactAddRequest struct {
+		Alias       string `json:"alias"`
+		IdentityKey string `json:"identityKey"`
+	}
+	// ContactsGetRequest -
+	ContactsGetRequest struct {
+	}
 	// // ConversationInviteIdentityRequest -
 	// ConversationInviteIdentityRequest struct {
 	// 	Conversation string
@@ -142,6 +144,28 @@ func (api *API) HandleWS(c *router.Context) {
 		fmt.Println("Got", string(msg))
 
 		switch m["_action"] {
+		case "contactsGet":
+			api.store.HandleProfiles(func(p store.Profile) {
+				fmt.Println("Handling profile", p)
+				if p.LocalAlias != "" {
+					write(conn, p)
+				}
+			})
+			ps, _ := api.store.GetProfiles()
+			for _, p := range ps {
+				fmt.Println("Handling old profile", p)
+				if p.LocalAlias != "" {
+					if err := write(conn, p); err != nil {
+						panic(err)
+					}
+				}
+			}
+
+		case "contactAdd":
+			r := ContactAddRequest{}
+			json.Unmarshal(msg, &r)
+			api.mochi.AddContact(r.IdentityKey, r.Alias)
+
 		case "conversationsGet":
 			api.store.HandleConversations(func(c store.Conversation) {
 				fmt.Println("Handling conv", c)
