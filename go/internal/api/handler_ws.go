@@ -37,8 +37,8 @@ type (
 	// }
 	// ConversationStartRequest -
 	ConversationStartRequest struct {
-		Name  string `json:"conversationName"`
-		Topic string `json:"conversationTopic"`
+		Name  string `json:"name"`
+		Topic string `json:"topic"`
 	}
 	// // ConversationJoinRequest -
 	// ConversationJoinRequest struct {
