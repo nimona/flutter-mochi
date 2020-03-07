@@ -1,4 +1,4 @@
-package api
+package mochi
 
 import nimona.io/crypto crypto
 import nimona.io/stream stream

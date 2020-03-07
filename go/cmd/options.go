@@ -8,5 +8,6 @@ import (
 
 var options = []flutter.Option{
 	flutter.WindowInitialDimensions(800, 1280),
+	flutter.AddPlugin(&plugin.SettingsPlugin{}),
 	flutter.AddPlugin(&plugin.NimonaDaemon{}),
 }
