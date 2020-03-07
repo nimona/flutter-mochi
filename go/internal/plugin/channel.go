@@ -161,7 +161,7 @@ func startDaemon(arguments interface{}) (interface{}, error) {
 	nlogger.Info("starting HTTP API")
 
 	store, _ := store.New("local.db")
-	mochi, _ := mochi.New(store)
+	mochi, _ := mochi.New(store, d)
 
 	// mochi.CreateConversation("foo", "bar")
 

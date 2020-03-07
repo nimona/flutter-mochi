@@ -3,6 +3,8 @@ package rand
 import (
 	"math/rand"
 	"time"
+
+	"github.com/tjarratt/babble"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -30,4 +32,12 @@ func String(n int) string {
 	}
 
 	return string(b)
+}
+
+// Words returns a sentence of n words
+func Words(n int) string {
+	b := babble.NewBabbler()
+	b.Count = n
+	b.Separator = " "
+	return b.Babble()
 }
