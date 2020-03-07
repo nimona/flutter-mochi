@@ -62,92 +62,117 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return DefaultTabController(
-      length: 2,
-      child: new Scaffold(
-        appBar: new PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: new Container(
-            height: 35.0,
-            child: new TabBar(
-              labelColor: Colors.blue,
-              tabs: [
-                Text("contacts"),
-                Text("conversations"),
-              ],
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          ListTile(
+            leading: FlutterLogo(size: 56.0),
+            title: Text('Two-line ListTile'),
+            subtitle: Text('Here is a second line'),
+            trailing: Icon(Icons.settings),
+          ),
+          Expanded(
+            child: DefaultTabController(
+              initialIndex: 1,
+              length: 2,
+              child: new Scaffold(
+                appBar: new PreferredSize(
+                  preferredSize: Size.fromHeight(kToolbarHeight),
+                  child: new Container(
+                    height: 56,
+                    child: new TabBar(
+                      labelColor: Colors.blue,
+                      tabs: [
+                        Container(
+                          height: 56,
+                          child: Center(
+                            child: Text("contacts"),
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          child: Center(
+                            child: Text("conversations"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                body: TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    Scaffold(
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          _showCreateContactDialog();
+                        },
+                        child: Icon(Icons.add),
+                        backgroundColor: Colors.blue,
+                      ),
+                      body: Scrollbar(
+                        child: ListView(
+                          children: _contacts.keys.map((i) {
+                            var contact = _contacts[i];
+                            return ListTile(
+                              title: Text(
+                                contact.localAlias,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                contact.key,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              // onTap: () => itemSelectedCallback(contact),
+                              // selected: widget.selectedItem == contact,
+                              dense: true,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    Scaffold(
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          _showCreateConversationDialog();
+                        },
+                        child: Icon(Icons.add),
+                        backgroundColor: Colors.blue,
+                      ),
+                      body: Scrollbar(
+                        child: ListView(
+                          children: _conversationItems.keys.map((i) {
+                            var conversation = _conversationItems[i];
+                            return ListTile(
+                              title: Text(
+                                conversation.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              leading: Text(
+                                conversation.unreadMessagesCount.toString(),
+                              ),
+                              subtitle: Text(
+                                conversation.topic,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              onTap: () => itemSelectedCallback(conversation),
+                              selected: widget.selectedItem == conversation,
+                              dense: true,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  _showCreateContactDialog();
-                },
-                child: Icon(Icons.add),
-                backgroundColor: Colors.blue,
-              ),
-              body: Scrollbar(
-                child: ListView(
-                  children: _contacts.keys.map((i) {
-                    var contact = _contacts[i];
-                    return ListTile(
-                      title: Text(
-                        contact.localAlias,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        contact.key,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      // onTap: () => itemSelectedCallback(contact),
-                      // selected: widget.selectedItem == contact,
-                      dense: true,
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-            Scaffold(
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  _showCreateConversationDialog();
-                },
-                child: Icon(Icons.add),
-                backgroundColor: Colors.blue,
-              ),
-              body: Scrollbar(
-                child: ListView(
-                  children: _conversationItems.keys.map((i) {
-                    var conversation = _conversationItems[i];
-                    return ListTile(
-                      title: Text(
-                        conversation.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      leading: Text(
-                        conversation.unreadMessagesCount.toString(),
-                      ),
-                      subtitle: Text(
-                        conversation.topic,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onTap: () => itemSelectedCallback(conversation),
-                      selected: widget.selectedItem == conversation,
-                      dense: true,
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

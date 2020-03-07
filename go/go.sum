@@ -58,6 +58,8 @@ github.com/stretchr/objx v0.2.0/go.mod h1:qt09Ya8vawLte6SNmTgCsAVtYtaKzEcn8ATUoH
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.5.1 h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H4=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
+github.com/tjarratt/babble v0.0.0-20191209142150-eecdf8c2339d h1:b7oHBI6TgTdCDuqTijsVldzlh+6cfQpdYLz1EKtCAoY=
+github.com/tjarratt/babble v0.0.0-20191209142150-eecdf8c2339d/go.mod h1:O5hBrCGqzfb+8WyY8ico2AyQau7XQwAfEQeEQ5/5V9E=
 github.com/tsdtsdtsd/identicon v0.3.2 h1:ABkl45kE2SWHfWZaGvcWG47+LBJ143NFxl6MdlmfjhY=
 github.com/tsdtsdtsd/identicon v0.3.2/go.mod h1:rxaWtLmj/xwICNxQJD9c0xVkiBgNfZJKv9vNE+FhqG0=
 github.com/tyler-smith/go-bip39 v1.0.2 h1:+t3w+KwLXO6154GNJY+qUtIxLTmFjfUmpguQT1OlOT8=
