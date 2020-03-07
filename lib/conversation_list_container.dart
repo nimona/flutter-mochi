@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'data/repository.dart';
-import 'model/contact.dart';
-import 'model/conversation.dart';
-import 'view/dialog_create_conversation.dart';
+import 'package:flutterapp/view/dialog_create_contact.dart';
+import 'package:flutterapp/data/repository.dart';
+import 'package:flutterapp/model/contact.dart';
+import 'package:flutterapp/model/conversation.dart';
+import 'package:flutterapp/view/dialog_create_conversation.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
@@ -84,7 +84,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
             Scaffold(
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Repository.get().createContact("", "");
+                  _showCreateContactDialog();
                 },
                 child: Icon(Icons.add),
                 backgroundColor: Colors.blue,
@@ -160,13 +160,36 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         context: context,
         builder: (BuildContext context) {
           return CreateConversationDialog(
-              nameController: nameController, topicController: topicController);
+            nameController: nameController,
+            topicController: topicController,
+          );
         }).then<void>((bool userClickedCreate) {
-      if (userClickedCreate == true &&
-          nameController.text.isNotEmpty &&
-          topicController.text.isNotEmpty) {
-        Repository.get()
-            .createConversation(nameController.text, topicController.text);
+      if (userClickedCreate == true && nameController.text.isNotEmpty) {
+        Repository.get().createConversation(
+          nameController.text,
+          topicController.text,
+        );
+      }
+    });
+  }
+
+  void _showCreateContactDialog() {
+    final aliasController = TextEditingController();
+    final publicKeyController = TextEditingController();
+
+    showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return CreateContactDialog(
+            aliasController: aliasController,
+            publicKeyController: publicKeyController,
+          );
+        }).then<void>((bool userClickedCreate) {
+      if (userClickedCreate == true && aliasController.text.isNotEmpty) {
+        Repository.get().createContact(
+          publicKeyController.text,
+          aliasController.text,
+        );
       }
     });
   }
