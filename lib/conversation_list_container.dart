@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/model/contact.dart';
-import 'package:flutterapp/model/conversation.dart';
+
+import 'data/repository.dart';
+import 'model/contact.dart';
+import 'model/conversation.dart';
+import 'view/dialog_create_conversation.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
@@ -154,50 +156,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     final nameController = TextEditingController();
     final topicController = TextEditingController();
 
-    var width = MediaQuery.of(context).size.width;
-    var dialogContentWidth = width * 0.8;
-
     showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
-          return new AlertDialog(
-            title: Text('Create a new conversation'),
-            contentPadding: const EdgeInsets.all(24.0),
-            content: new Container(
-                width: dialogContentWidth,
-                child: new Expanded(
-                  child: new Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      new TextField(
-                        controller: nameController,
-                        autofocus: true,
-                        decoration: new InputDecoration(
-                            labelText: 'Conversation name',
-                            hintText: 'eg. Worse than random'),
-                      ),
-                      new TextField(
-                        controller: topicController,
-                        autofocus: true,
-                        decoration: new InputDecoration(
-                            labelText: 'Topic', hintText: 'eg. typewriters'),
-                      )
-                    ],
-                  ),
-                )),
-            actions: <Widget>[
-              new FlatButton(
-                  child: const Text('CANCEL'),
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  }),
-              new FlatButton(
-                  child: const Text('CREATE'),
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  })
-            ],
-          );
+          return CreateConversationDialog(
+              nameController: nameController, topicController: topicController);
         }).then<void>((bool userClickedCreate) {
       if (userClickedCreate == true &&
           nameController.text.isNotEmpty &&
