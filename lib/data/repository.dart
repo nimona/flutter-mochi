@@ -40,7 +40,7 @@ class Repository {
     return sc;
   }
 
-  void startConversation(String name, String topic) {
+  void createConversation(String name, String topic) {
     _dataStore.startConversation(name, topic);
   }
 
