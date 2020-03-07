@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/model/conversation.dart';
@@ -34,7 +32,7 @@ class _MessagesContainer extends State<MessagesContainer> {
   void initState() {
     super.initState();
     setState(() {
-//       For the mobile-case where screen is initialised by the constructor
+      // For the mobile-case where screen is initialised by the constructor
       currentConversation = widget.item;
     });
   }
@@ -117,12 +115,14 @@ class _MessagesContainer extends State<MessagesContainer> {
     return new Container(
       color: Theme.of(context).cardColor,
       child: ListTile(
+        leading: FlutterLogo(size: 56.0),
         contentPadding: EdgeInsets.all(16.0),
         title: Text(
           currentConversation?.name,
           style: Theme.of(context).textTheme.headline6,
         ),
         subtitle: Text(currentConversation?.topic),
+        trailing: Icon(Icons.settings),
       ),
     );
   }

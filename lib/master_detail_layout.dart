@@ -25,9 +25,6 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Master-detail flow sample'),
-      ),
       body: content,
     );
   }
@@ -74,7 +71,10 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
         ),
         Flexible(
           flex: 7,
-          child: messagesContainer,
+          child: Material(
+            elevation: 1.0,
+            child: messagesContainer,
+          ),
         ),
       ],
     );

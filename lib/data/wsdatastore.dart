@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutterapp/data/datastore.dart';
 import 'package:flutterapp/data/ws_model/contact_add_request.dart';
 import 'package:flutterapp/data/ws_model/contacts_get_request.dart';
-import 'package:flutterapp/data/ws_model/conversation_get_request.dart';
 import 'package:flutterapp/data/ws_model/conversation_start_request.dart';
 import 'package:flutterapp/data/ws_model/conversations_get_request.dart';
 import 'package:flutterapp/data/ws_model/message_create_request.dart';
