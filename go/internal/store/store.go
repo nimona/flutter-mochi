@@ -18,6 +18,9 @@ type MessageHandler func(Message)
 // ProfileHandler for registering for Profiles
 type ProfileHandler func(Profile)
 
+// OwnProfileHandler for registering for OwnProfile
+type OwnProfileHandler func(OwnProfile)
+
 // Store deals with storing and retrieving all mochi related objects
 type Store struct {
 	db *gorm.DB
@@ -27,6 +30,7 @@ type Store struct {
 	conversationHandlers []ConversationHandler
 	messageHandlers      []MessageHandler
 	profileHandlers      []ProfileHandler
+	ownProfileHandlers   []OwnProfileHandler
 }
 
 // New returns a new store or errors
@@ -39,6 +43,7 @@ func New(dbPath string) (*Store, error) {
 	db.AutoMigrate(&Conversation{})
 	db.AutoMigrate(&Message{})
 	db.AutoMigrate(&Profile{})
+	db.AutoMigrate(&OwnProfile{})
 
 	return &Store{db: db}, nil
 }
@@ -61,6 +66,13 @@ func (s *Store) HandleConversations(h ConversationHandler) {
 func (s *Store) HandleProfiles(h ProfileHandler) {
 	s.lock.Lock()
 	s.profileHandlers = append(s.profileHandlers, h)
+	s.lock.Unlock()
+}
+
+// HandleOwnProfile adds a own profile handler
+func (s *Store) HandleOwnProfile(h OwnProfileHandler) {
+	s.lock.Lock()
+	s.ownProfileHandlers = append(s.ownProfileHandlers, h)
 	s.lock.Unlock()
 }
 
@@ -88,6 +100,39 @@ func (s *Store) GetProfiles() ([]Profile, error) {
 	}
 
 	return ps, nil
+}
+
+// UpdateOwnProfile to the store and publish it
+func (s *Store) UpdateOwnProfile(p OwnProfile) error {
+	p.ID = 1
+	err := s.db.
+		Where(OwnProfile{ID: 1}).
+		Assign(p).
+		FirstOrCreate(&p).
+		Error
+	if err != nil {
+		return err
+	}
+
+	s.lock.RLock()
+	for _, h := range s.ownProfileHandlers {
+		h(p)
+	}
+	s.lock.RUnlock()
+
+	return nil
+}
+
+// GetOwnProfile returns own profile
+func (s *Store) GetOwnProfile() (OwnProfile, error) {
+	p := OwnProfile{
+		ID: 1,
+	}
+	if err := s.db.Find(&p).Error; err != nil {
+		return p, err
+	}
+
+	return p, nil
 }
 
 // AddConversation to the store and publish it

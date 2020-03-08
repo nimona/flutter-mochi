@@ -31,3 +31,13 @@ type Profile struct {
 	LocalAlias     string `json:"localAlias"`
 	DisplayPicture string `json:"displayPicture"`
 }
+
+// OwnProfile -
+type OwnProfile struct {
+	ID             int    `json:"id" gorm:"primary_key"`
+	Key            string `json:"key"`
+	NameFirst      string `json:"nameFirst"`
+	NameLast       string `json:"nameLast"`
+	LocalAlias     string `json:"localAlias"`
+	DisplayPicture string `json:"displayPicture"`
+}

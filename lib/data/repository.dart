@@ -5,6 +5,7 @@ import 'package:flutterapp/data/wsdatastore.dart';
 import 'package:flutterapp/model/contact.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/message.dart';
+import 'package:flutterapp/model/own_profile.dart';
 
 class Repository {
   static final Repository _repo = new Repository._internal();
@@ -42,6 +43,16 @@ class Repository {
 
   void createConversation(String name, String topic) {
     _dataStore.startConversation(name, topic);
+  }
+
+  void updateOwnProfile(String nameFirst, nameLast) {
+    _dataStore.updateOwnProfile(nameFirst, nameLast);
+  }
+
+  StreamController<OwnProfile> getOwnProfile() {
+    StreamController<OwnProfile> sc = new StreamController();
+    sc.addStream(_dataStore.getOwnProfile());
+    return sc;
   }
 
   StreamController<Conversation> getConversations() {

@@ -9,9 +9,12 @@ import 'package:flutterapp/data/ws_model/conversation_start_request.dart';
 import 'package:flutterapp/data/ws_model/conversations_get_request.dart';
 import 'package:flutterapp/data/ws_model/message_create_request.dart';
 import 'package:flutterapp/data/ws_model/messages_get_request.dart';
+import 'package:flutterapp/data/ws_model/own_profile_get_request.dart';
+import 'package:flutterapp/data/ws_model/own_profile_update_request.dart';
 import 'package:flutterapp/model/contact.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/message.dart';
+import 'package:flutterapp/model/own_profile.dart';
 import 'package:web_socket_channel/io.dart';
 
 const daemonChannel = const MethodChannel('mochi.io/daemon');
@@ -116,6 +119,33 @@ class WsDataStore implements DataStore {
     );
     await for (final dynamic message in ws.stream) {
       yield Conversation.fromJson(json.decode(message));
+    }
+  }
+
+  @override
+  void updateOwnProfile(String nameFirst, nameLast) {
+    final ws = IOWebSocketChannel.connect(
+      daemonApiUrl + daemonApiPort.toString(),
+    );
+    ws.sink.add(
+      json.encode(OwnProfileUpdateRequest(
+        nameFirst: nameFirst,
+        nameLast: nameLast,
+      )),
+    );
+    ws.sink.close();
+  }
+
+  @override
+  Stream<OwnProfile> getOwnProfile() async* {
+    final ws = IOWebSocketChannel.connect(
+      daemonApiUrl + daemonApiPort.toString(),
+    );
+    ws.sink.add(
+      json.encode(OwnProfileGetRequest()),
+    );
+    await for (final dynamic message in ws.stream) {
+      yield OwnProfile.fromJson(json.decode(message));
     }
   }
 }
