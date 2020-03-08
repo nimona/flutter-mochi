@@ -84,6 +84,7 @@ class _MessagesContainer extends State<MessagesContainer> {
             return new Container(
               child: new Column(children: <Widget>[
                 _buildConversationHeader(),
+                new Divider(height: 1.0),
                 new Flexible(
                   child: new Center(
                       child: Text(
@@ -91,6 +92,8 @@ class _MessagesContainer extends State<MessagesContainer> {
                     style: textTheme.headline6,
                   )),
                 ),
+                new Divider(height: 1.0),
+                _buildTextComposer(),
               ]),
             );
           }
