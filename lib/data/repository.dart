@@ -29,4 +29,8 @@ class Repository {
     sc.addStream(_dataStore.getConversations());
     return sc;
   }
+
+  void createMessage(String conversationHash, String body) {
+    _dataStore.createMessage(conversationHash, body);
+  }
 }

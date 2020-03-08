@@ -51,6 +51,10 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   }
 
   Widget _buildTabletLayout() {
+    var messagesContainer = MessagesContainer(
+      isInTabletLayout: true,
+      item: _selectedItem,
+    );
     return Row(
       children: <Widget>[
         Flexible(
@@ -61,6 +65,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
               itemSelectedCallback: (item) {
                 setState(() {
                   _selectedItem = item;
+                  messagesContainer.updateConversation(item);
                 });
               },
               selectedItem: _selectedItem,
@@ -68,11 +73,8 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           ),
         ),
         Flexible(
-          flex: 3,
-          child: MessagesContainer(
-            isInTabletLayout: true,
-            item: _selectedItem,
-          ),
+          flex: 7,
+          child: messagesContainer,
         ),
       ],
     );
