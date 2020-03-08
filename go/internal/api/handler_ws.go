@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"sync"
-	"time"
 
 	"mochi.io/internal/store"
 
@@ -216,15 +215,6 @@ func (api *API) HandleWS(c *router.Context) {
 				write(conn, m)
 			})
 			ms, _ := api.store.GetMessages(r.Conversation)
-			if len(ms) == 0 {
-				ms = []store.Message{
-					store.Message{
-						ConversationHash: r.Conversation,
-						Body:             "no messages",
-						Sent:             time.Now().UTC(),
-					},
-				}
-			}
 			for _, m := range ms {
 				fmt.Println("Handling old msg", m)
 				if err := write(conn, m); err != nil {
