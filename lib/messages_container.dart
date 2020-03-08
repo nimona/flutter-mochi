@@ -47,22 +47,34 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    if (widget.isInTabletLayout) {
+      return Scaffold(
+        body: Center(child: _buildMessagesListContainer()),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(currentConversation?.name),
+        ),
+        body: Center(child: _buildMessagesListContainer()),
+      );
+    }
+  }
 
-    final Widget content = StreamBuilder(
+  Widget _buildMessagesListContainer() {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return StreamBuilder(
         stream: Repository.get()
             .getMessagesForConversation(currentConversation?.hash)
             .stream,
         initialData: List<Message>(),
         builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
-          print(
-              "${currentConversation?.name} : ${snapshot.hasData.toString()} | ${snapshot.connectionState}");
-
           if (currentConversation == null) {
-            return Text(
+            return Center(
+                child: Text(
               'Select conversation',
               style: textTheme.headline6,
-            );
+            ));
           }
 
           if (snapshot.hasError) {
@@ -71,64 +83,108 @@ class _MessagesContainer extends State<MessagesContainer> {
 
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.waiting) {
-            return Text(
-              "No messages yet",
-              style: textTheme.headline6,
+            return new Container(
+              child: new Column(children: <Widget>[
+                _buildConversationHeader(),
+                new Flexible(
+                  child: new Center(
+                      child: Text(
+                    "No messages yet",
+                    style: textTheme.headline6,
+                  )),
+                ),
+              ]),
             );
           }
 
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.active) {
-            return Scrollbar(
-              child: ListView(
-                reverse: true,
-                children: snapshot.data.reversed.map((item) {
-                  return ListTile(
-                    title: Text(
-                      item.sender.nameFirst + " (" + item.hash + ")",
-                      maxLines: 1,
-                      style: textTheme.caption,
-                    ),
-                    subtitle: Text(
-                      item.body,
-                      style: textTheme.bodyText2,
-                    ),
-                  );
-                }).toList(),
-              ),
+            return new Container(
+              child: new Column(children: <Widget>[
+                _buildConversationHeader(),
+                new Flexible(child: _buildMessagesList(snapshot)),
+                new Divider(height: 1.0),
+                _buildTextComposer(),
+              ]),
             );
           }
 
           return Container();
         });
+  }
 
-    if (widget.isInTabletLayout) {
-      return Scaffold(
-        // TODO remove FAB, it's just for testing
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Repository.get().createMessage(currentConversation?.hash, "");
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.blue,
+  Container _buildConversationHeader() {
+    return new Container(
+      color: Theme.of(context).cardColor,
+      child: ListTile(
+        contentPadding: EdgeInsets.all(16.0),
+        title: Text(
+          currentConversation?.name,
+          style: Theme.of(context).textTheme.headline6,
         ),
-        body: Center(child: content),
-      );
-    } else {
-      return Scaffold(
-        // TODO remove FAB, it's just for testing
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Repository.get().createMessage(currentConversation?.hash, "");
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.blue,
-        ),
-        appBar: AppBar(
-          title: Text(widget.item?.name),
-        ),
-        body: Center(child: content),
-      );
+        subtitle: Text(currentConversation?.topic),
+      ),
+    );
+  }
+
+  Widget _buildMessagesList(AsyncSnapshot<List<Message>> snapshot) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return Scrollbar(
+      child: ListView(
+        reverse: true,
+        children: snapshot.data.reversed.map((item) {
+          return ListTile(
+            title: Text(
+              item.sender.nameFirst + " (" + item.hash + ")",
+              maxLines: 1,
+              style: textTheme.caption,
+            ),
+            subtitle: Text(
+              item.body,
+              style: textTheme.bodyText2,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildTextComposer() {
+    final TextEditingController _textController = new TextEditingController();
+
+    void _handleSubmitted(String text) {
+      _textController.clear();
+      if (text.isNotEmpty) {
+        Repository.get().createMessage(currentConversation.hash, text);
+      }
     }
+
+    return new Container(
+      margin: EdgeInsets.only(left: 8.0),
+      color: Theme.of(context).cardColor,
+      child: new Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        child: new Row(
+          children: <Widget>[
+            new Flexible(
+              child: new TextField(
+                controller: _textController,
+                onSubmitted: _handleSubmitted,
+                decoration: new InputDecoration.collapsed(
+                    hintText: "Send a message..."),
+              ),
+            ),
+            new Container(
+              margin: new EdgeInsets.symmetric(horizontal: 4.0),
+              child: new IconButton(
+                  icon: new Icon(Icons.send),
+                  color: Theme.of(context).accentColor,
+                  onPressed: () => _handleSubmitted(_textController.text)),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
