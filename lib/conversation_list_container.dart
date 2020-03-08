@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterapp/model/own_profile.dart';
-import 'package:flutterapp/view/dialog_create_contact.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/model/contact.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/view/dialog_create_conversation.dart';
-import 'package:flutterapp/view/dialog_modify_profile.dart';
+import 'package:mochi/model/own_profile.dart';
+import 'package:mochi/view/dialog_create_contact.dart';
+import 'package:mochi/data/repository.dart';
+import 'package:mochi/model/contact.dart';
+import 'package:mochi/model/conversation.dart';
+import 'package:mochi/view/dialog_create_conversation.dart';
+import 'package:mochi/view/dialog_modify_profile.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({

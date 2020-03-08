@@ -1,4 +1,4 @@
-import 'package:flutterapp/data/ws_model/base_request.dart';
+import 'package:mochi/data/ws_model/base_request.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'messages_get_request.g.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/model/profile.dart';
+import 'package:mochi/model/profile.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'contact.g.dart';

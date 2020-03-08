@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/message.dart';
+import 'package:mochi/data/repository.dart';
+import 'package:mochi/model/conversation.dart';
+import 'package:mochi/model/message.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
