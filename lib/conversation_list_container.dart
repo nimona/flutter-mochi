@@ -79,7 +79,17 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         children: <Widget>[
           ListTile(
             leading: FlutterLogo(size: 56.0),
-            title: Text(_ownProfile.nameFirst + " " + _ownProfile.nameLast),
+            title: (){
+              if (_ownProfile.nameLast!="" || _ownProfile.nameLast!="") {
+             return Text(_ownProfile.nameFirst + " " + _ownProfile.nameLast);
+              }
+              return Text(
+                "Anonymous",
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              );
+            }(),
             subtitle: Text(
               _ownProfile.key,
               style: TextStyle(
