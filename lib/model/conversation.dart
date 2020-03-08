@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/model/message.dart';
+import 'package:mochi/model/message.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'conversation.g.dart';

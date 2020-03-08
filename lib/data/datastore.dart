@@ -1,7 +1,7 @@
-import 'package:flutterapp/model/contact.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/message.dart';
-import 'package:flutterapp/model/own_profile.dart';
+import 'package:mochi/model/contact.dart';
+import 'package:mochi/model/conversation.dart';
+import 'package:mochi/model/message.dart';
+import 'package:mochi/model/own_profile.dart';
 
 abstract class DataStore {
   void createContact(String identityKey, String alias);

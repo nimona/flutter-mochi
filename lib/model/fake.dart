@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:faker/faker.dart';
 import 'package:crypto/crypto.dart';
 import "package:base58check/base58.dart";
-import 'package:flutterapp/model/contact.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/local_peer.dart';
-import 'package:flutterapp/model/message.dart';
-import 'package:flutterapp/model/participant.dart';
+import 'package:mochi/model/contact.dart';
+import 'package:mochi/model/conversation.dart';
+import 'package:mochi/model/local_peer.dart';
+import 'package:mochi/model/message.dart';
+import 'package:mochi/model/participant.dart';
 import 'dart:math';
 
-import 'package:flutterapp/model/profile.dart';
+import 'package:mochi/model/profile.dart';
 
 const String _bitcoinAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
