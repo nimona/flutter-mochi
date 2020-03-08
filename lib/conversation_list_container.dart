@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutterapp/model/own_profile.dart';
 import 'package:flutterapp/view/dialog_create_contact.dart';
 import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/model/contact.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/view/dialog_create_conversation.dart';
+import 'package:flutterapp/view/dialog_modify_profile.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
@@ -32,6 +34,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
 
   Map<String, Contact> _contacts = {};
 
+  OwnProfile _ownProfile = OwnProfile(key: "0xF00");
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +55,14 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         });
       }
     });
+    var ownProfileStream = Repository.get().getOwnProfile().stream;
+    _streamSubscription = ownProfileStream.listen((ownProfile) {
+      if (mounted) {
+        setState(() {
+          _ownProfile = ownProfile;
+        });
+      }
+    });
   }
 
   @override
@@ -67,9 +79,17 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         children: <Widget>[
           ListTile(
             leading: FlutterLogo(size: 56.0),
-            title: Text('Two-line ListTile'),
-            subtitle: Text('Here is a second line'),
-            trailing: Icon(Icons.settings),
+            title: Text(_ownProfile.nameFirst + " " + _ownProfile.nameLast),
+            subtitle: Text(
+              _ownProfile.key,
+              style: TextStyle(
+                fontSize: 11,
+              ),
+            ),
+            // trailing: Icon(Icons.account_circle),
+            onTap: () {
+              _showUpdateOwnProfileDialog();
+            },
           ),
           Expanded(
             child: DefaultTabController(
@@ -175,6 +195,27 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         ],
       ),
     );
+  }
+
+  void _showUpdateOwnProfileDialog() {
+    final nameFirstController = TextEditingController();
+    final nameLastController = TextEditingController();
+
+    showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return UpdateOwnProfileDialog(
+            nameFirstController: nameFirstController,
+            nameLastController: nameLastController,
+          );
+        }).then<void>((bool userClickedCreate) {
+      if (userClickedCreate == true) {
+        Repository.get().updateOwnProfile(
+          nameFirstController.text,
+          nameLastController.text,
+        );
+      }
+    });
   }
 
   void _showCreateConversationDialog() {

@@ -42,3 +42,32 @@ func TestStore_GetConversations(t *testing.T) {
 	require.Len(t, cs[0].UnreadMessagesLatest, 1)
 	require.Equal(t, m, cs[0].UnreadMessagesLatest[0])
 }
+
+func TestStore_OwnProfile(t *testing.T) {
+	dbPath := "test-sqlite-profiles-" + time.Now().Format("2006-01-02-15-04-05") + ".db"
+	s, err := New(dbPath)
+	require.NoError(t, err)
+	require.NotNil(t, s)
+
+	c := OwnProfile{
+		ID:        1,
+		NameFirst: "John",
+		NameLast:  "Doe",
+	}
+	err = s.UpdateOwnProfile(c)
+	require.NoError(t, err)
+
+	r, err := s.GetOwnProfile()
+	require.NoError(t, err)
+	require.Equal(t, c, r)
+
+	c.DisplayPicture = "foo"
+
+	err = s.UpdateOwnProfile(c)
+	require.NoError(t, err)
+
+	r, err = s.GetOwnProfile()
+	require.NoError(t, err)
+	require.Equal(t, c, r)
+
+}

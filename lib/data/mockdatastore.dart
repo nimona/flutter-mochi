@@ -6,6 +6,7 @@ import 'package:flutterapp/model/contact.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/fake.dart';
 import 'package:flutterapp/model/message.dart';
+import 'package:flutterapp/model/own_profile.dart';
 
 class MockDataStore implements DataStore {
   @override
@@ -51,5 +52,20 @@ class MockDataStore implements DataStore {
       await Future.delayed(Duration(milliseconds: Random().nextInt(2500)));
       yield Fake.get().getConversation();
     }
+  }
+
+  @override
+  void updateOwnProfile(String nameFirst, nameLast) {
+    return;
+  }
+
+  @override
+  Stream<OwnProfile> getOwnProfile() async* {
+    yield OwnProfile(
+      key: "0xf00",
+      localAlias: "me",
+      nameFirst: "John",
+      nameLast: "Doe",
+    );
   }
 }

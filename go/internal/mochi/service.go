@@ -25,6 +25,12 @@ func New(store *store.Store, daemon *daemon.Daemon) (*Mochi, error) {
 		daemon: daemon,
 	}
 
+	p, _ := m.store.GetOwnProfile()
+	if p.Key == "" {
+		p.Key = m.daemon.LocalPeer.GetIdentityPublicKey().String()
+		m.store.UpdateOwnProfile(p)
+	}
+
 	go m.handleStreams()
 
 	return m, nil
@@ -117,4 +123,12 @@ func (m *Mochi) AddContact(identityKey, alias string) error {
 		LocalAlias: alias,
 	}
 	return m.store.AddProfile(c)
+}
+
+// UpdateOwnProfile and store it given a first and last name, or error
+func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast string, displayPicture []byte) error {
+	p, _ := m.store.GetOwnProfile()
+	p.NameFirst = nameFirst
+	p.NameLast = nameLast
+	return m.store.UpdateOwnProfile(p)
 }

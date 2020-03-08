@@ -30,6 +30,14 @@ type (
 	// ContactsGetRequest -
 	ContactsGetRequest struct {
 	}
+	// OwnProfileUpdateRequest -
+	OwnProfileUpdateRequest struct {
+		NameFirst string `json:"nameFirst"`
+		NameLast  string `json:"nameLast"`
+	}
+	// OwnProfileGetRequest -
+	OwnProfileGetRequest struct {
+	}
 	// // ConversationInviteIdentityRequest -
 	// ConversationInviteIdentityRequest struct {
 	// 	Conversation string
@@ -159,6 +167,22 @@ func (api *API) HandleWS(c *router.Context) {
 						panic(err)
 					}
 				}
+			}
+
+		case "ownProfileUpdate":
+			r := OwnProfileUpdateRequest{}
+			json.Unmarshal(msg, &r)
+			api.mochi.UpdateOwnProfile(r.NameFirst, r.NameLast, nil)
+
+		case "ownProfileGet":
+			api.store.HandleOwnProfile(func(p store.OwnProfile) {
+				fmt.Println("Handling own profile", p)
+				write(conn, p)
+			})
+			p, _ := api.store.GetOwnProfile()
+			fmt.Println("Handling old own profile", p)
+			if err := write(conn, p); err != nil {
+				panic(err)
 			}
 
 		case "contactAdd":
