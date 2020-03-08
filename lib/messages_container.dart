@@ -164,6 +164,8 @@ class _MessagesContainer extends State<MessagesContainer> {
       }
     }
 
+    var focusNode = new FocusNode();
+
     return new Container(
       color: Theme.of(context).cardColor,
       child: new Container(
@@ -172,18 +174,24 @@ class _MessagesContainer extends State<MessagesContainer> {
           children: <Widget>[
             new Flexible(
               child: new TextField(
+                focusNode: focusNode,
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
                 decoration: new InputDecoration.collapsed(
-                    hintText: "Send a message..."),
+                  hintText: "Send a message...",
+                ),
               ),
             ),
             new Container(
               margin: new EdgeInsets.symmetric(horizontal: 4.0),
               child: new IconButton(
-                  icon: new Icon(Icons.send),
-                  color: Theme.of(context).accentColor,
-                  onPressed: () => _handleSubmitted(_textController.text)),
+                icon: new Icon(Icons.send),
+                color: Theme.of(context).accentColor,
+                onPressed: () {
+                  _handleSubmitted(_textController.text);
+                  FocusScope.of(context).requestFocus(focusNode);
+                },
+              ),
             ),
           ],
         ),
