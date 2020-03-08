@@ -165,7 +165,6 @@ class _MessagesContainer extends State<MessagesContainer> {
     }
 
     return new Container(
-      margin: EdgeInsets.only(left: 8.0),
       color: Theme.of(context).cardColor,
       child: new Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
