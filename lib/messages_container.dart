@@ -100,6 +100,7 @@ class _MessagesContainer extends State<MessagesContainer> {
             return new Container(
               child: new Column(children: <Widget>[
                 _buildConversationHeader(),
+                new Divider(height: 1.0),
                 new Flexible(child: _buildMessagesList(snapshot)),
                 new Divider(height: 1.0),
                 _buildTextComposer(),
