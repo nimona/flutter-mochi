@@ -78,7 +78,13 @@ class _ConversationListContainer extends State<ConversationListContainer> {
       body: Column(
         children: <Widget>[
           ListTile(
-            leading: FlutterLogo(size: 56.0),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: Image.network(
+                "http://localhost:10100/displayPictures/" + _ownProfile.key,
+                height: 56,
+              ),
+            ),
             contentPadding: EdgeInsets.all(16.0),
             title: () {
               if (_ownProfile.nameLast != "" || _ownProfile.nameLast != "") {
@@ -93,6 +99,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
             }(),
             subtitle: Text(
               _ownProfile.key,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 11,
               ),
@@ -146,8 +154,16 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           children: _contacts.keys.map((i) {
                             var contact = _contacts[i];
                             return ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(2),
+                                child: Image.network(
+                                  "http://localhost:10100/displayPictures/" +
+                                      contact.key,
+                                  height: 40,
+                                ),
+                              ),
                               title: Text(
-                                contact.alias,
+                                "@" + contact.alias,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -182,7 +198,15 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              leading: Text(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(2),
+                                child: Image.network(
+                                  "http://localhost:10100/displayPictures/" +
+                                      conversation.hash,
+                                  height: 40,
+                                ),
+                              ),
+                              trailing: Text(
                                 conversation.unreadMessagesLatest.length
                                     .toString(),
                               ),

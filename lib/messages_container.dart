@@ -119,7 +119,14 @@ class _MessagesContainer extends State<MessagesContainer> {
     return new Container(
       color: Theme.of(context).cardColor,
       child: ListTile(
-        leading: FlutterLogo(size: 56.0),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: Image.network(
+            "http://localhost:10100/displayPictures/" +
+                currentConversation.hash,
+            height: 56,
+          ),
+        ),
         contentPadding: EdgeInsets.all(16.0),
         title: Text(
           currentConversation?.name,
@@ -137,16 +144,42 @@ class _MessagesContainer extends State<MessagesContainer> {
     return Scrollbar(
       child: ListView(
         reverse: true,
-        children: snapshot.data.reversed.map((item) {
-          return ListTile(
-            title: Text(
-              item.participant?.profile?.nameFirst,
-              maxLines: 1,
-              style: textTheme.caption,
-            ),
-            subtitle: Text(
-              item.body,
-              style: textTheme.bodyText2,
+        children: snapshot.data.reversed.map((message) {
+          return Container(
+            margin: EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(right: 16.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: Image.network(
+                      "http://localhost:10100/displayPictures/" +
+                          message.participant?.key,
+                      height: 40,
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      message.participant?.profile?.nameFirst.toString() +
+                          " " +
+                          message.participant?.profile?.nameLast.toString(),
+                      style: textTheme.caption,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 5.0),
+                      child: Text(
+                        message.body,
+                        style: textTheme.bodyText2,
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
           );
         }).toList(),
