@@ -53,6 +53,7 @@ func New(
 
 	r.Use(api.Cors())
 
+	r.Handle("GET", "/displayPictures/(?P<publicKey>.+)$", api.HandleDisplayPictures)
 	r.Handle("GET", "/", api.HandleWS)
 
 	return api
