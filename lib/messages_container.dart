@@ -140,7 +140,7 @@ class _MessagesContainer extends State<MessagesContainer> {
         children: snapshot.data.reversed.map((item) {
           return ListTile(
             title: Text(
-              item.sender.nameFirst + " (" + item.hash + ")",
+              item.participant?.profile?.nameFirst,
               maxLines: 1,
               style: textTheme.caption,
             ),

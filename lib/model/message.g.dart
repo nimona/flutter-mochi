@@ -9,9 +9,9 @@ part of 'message.dart';
 Message _$MessageFromJson(Map<String, dynamic> json) {
   return Message(
     hash: json['hash'] as String,
-    sender: json['sender'] == null
+    participant: json['participant'] == null
         ? null
-        : Profile.fromJson(json['sender'] as Map<String, dynamic>),
+        : Participant.fromJson(json['participant'] as Map<String, dynamic>),
     body: json['body'] as String,
     sent: json['sent'] == null ? null : DateTime.parse(json['sent'] as String),
     isEdited: json['isEdited'] as bool,
@@ -22,6 +22,6 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'hash': instance.hash,
       'body': instance.body,
       'sent': instance.sent?.toIso8601String(),
-      'sender': instance.sender,
+      'participant': instance.participant,
       'isEdited': instance.isEdited,
     };

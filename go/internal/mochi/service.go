@@ -59,6 +59,75 @@ func (m *Mochi) handleStreams() {
 				Topic: v.Topic,
 			}
 			m.store.AddConversation(c)
+			for _, owner := range v.Owners {
+				m.store.AddParticipant(store.Participant{
+					ProfileKey:       owner.String(),
+					ConversationHash: c.Hash,
+					HasAccepted:      true,
+				})
+			}
+
+		case "mochi.io/conversation.ParticipantInvited":
+			v := ConversationParticipantInvited{}
+			if err := v.FromObject(o); err != nil {
+				continue
+			}
+
+			// create participant and store
+			p := store.Participant{
+				ConversationHash: o.GetStream().String(),
+				ProfileKey:       v.PublicKey.String(),
+			}
+			m.store.AddParticipant(p)
+
+		case "mochi.io/conversation.ParticipantJoined":
+			v := ConversationParticipantJoined{}
+			if err := v.FromObject(o); err != nil {
+				continue
+			}
+
+			// create participant and store
+			p := store.Participant{
+				ConversationHash: o.GetStream().String(),
+				ProfileKey:       v.Owners[0].String(),
+				HasAccepted:      true,
+			}
+			m.store.AddParticipant(p)
+
+		case "mochi.io/conversation.ParticipantProfileUpdated":
+			v := ConversationParticipantProfileUpdated{}
+			if err := v.FromObject(o); err != nil {
+				continue
+			}
+
+			if v.Profile == nil {
+				continue
+			}
+
+			// create profile and store
+			p := store.Profile{
+				Key:       v.Owners[0].String(),
+				NameFirst: v.Profile.NameFirst,
+				NameLast:  v.Profile.NameLast,
+			}
+			m.store.AddProfile(p)
+
+		case "mochi.io/conversation.MessageAdded":
+			v := ConversationMessageAdded{}
+			if err := v.FromObject(o); err != nil {
+				continue
+			}
+
+			// create message and store
+			t, _ := time.Parse(time.RFC3339, v.Datetime)
+			p := store.Message{
+				ConversationHash: o.GetStream().String(),
+				ProfileKey:       v.Signatures[0].Signer.String(),
+				Body:             v.Body,
+				Hash:             object.NewHash(o).String(),
+				Sent:             t,
+			}
+			m.store.AddMessage(p)
 		}
 	}
 }
@@ -73,6 +142,7 @@ func (m *Mochi) CreateMessage(conversationHash, body string) error {
 	c := store.Message{
 		Hash:             hash,
 		ConversationHash: conversationHash,
+		ProfileKey:       m.daemon.LocalPeer.GetIdentityPublicKey().String(),
 		Body:             body,
 		Sent:             time.Now().UTC(),
 	}
@@ -118,17 +188,31 @@ func (m *Mochi) AddContact(identityKey, alias string) error {
 		alias = rand.Words(3)
 	}
 	// TODO find and retrieve profile from network
-	c := store.Profile{
-		Key:        identityKey,
-		LocalAlias: alias,
+	c := store.Contact{
+		Key:   identityKey,
+		Alias: alias,
 	}
-	return m.store.AddProfile(c)
+	return m.store.AddContact(c)
 }
 
 // UpdateOwnProfile and store it given a first and last name, or error
+// TODO(geoah) add display picture support
 func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast string, displayPicture []byte) error {
-	p, _ := m.store.GetOwnProfile()
-	p.NameFirst = nameFirst
-	p.NameLast = nameLast
-	return m.store.UpdateOwnProfile(p)
+	op, _ := m.store.GetOwnProfile()
+	op.NameFirst = nameFirst
+	op.NameLast = nameLast
+	if err := m.store.UpdateOwnProfile(op); err != nil {
+		return err
+	}
+
+	p := store.Profile{
+		Key:       m.daemon.LocalPeer.GetIdentityPublicKey().String(),
+		NameFirst: nameFirst,
+		NameLast:  nameLast,
+	}
+	if err := m.store.AddProfile(p); err != nil {
+		return err
+	}
+
+	return nil
 }

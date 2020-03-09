@@ -11,7 +11,7 @@ OwnProfile _$OwnProfileFromJson(Map<String, dynamic> json) {
     key: json['key'] as String,
     nameFirst: json['nameFirst'] as String,
     nameLast: json['nameLast'] as String,
-    localAlias: json['localAlias'] as String,
+    alias: json['alias'] as String,
     displayPicture: json['displayPicture'] as String,
   );
 }
@@ -21,6 +21,6 @@ Map<String, dynamic> _$OwnProfileToJson(OwnProfile instance) =>
       'key': instance.key,
       'nameFirst': instance.nameFirst,
       'nameLast': instance.nameLast,
-      'localAlias': instance.localAlias,
+      'alias': instance.alias,
       'displayPicture': instance.displayPicture,
     };

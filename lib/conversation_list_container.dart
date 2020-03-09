@@ -147,7 +147,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             var contact = _contacts[i];
                             return ListTile(
                               title: Text(
-                                contact.localAlias,
+                                contact.alias,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -183,7 +183,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               leading: Text(
-                                conversation.unreadMessagesCount.toString(),
+                                conversation.unreadMessagesLatest.length
+                                    .toString(),
                               ),
                               subtitle: Text(
                                 conversation.topic,

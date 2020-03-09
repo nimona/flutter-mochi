@@ -8,14 +8,14 @@ class OwnProfile {
   final String key;
   final String nameFirst;
   final String nameLast;
-  final String localAlias;
+  final String alias;
   final String displayPicture;
 
   OwnProfile({
     @required this.key,
     this.nameFirst = "",
     this.nameLast = "",
-    this.localAlias = "",
+    this.alias = "",
     this.displayPicture,
   });
 

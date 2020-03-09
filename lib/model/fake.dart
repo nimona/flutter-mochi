@@ -38,7 +38,6 @@ class Fake {
     return Profile(
       key: hashString(faker.guid.guid()),
       displayPicture: "https://picsum.photos/250",
-      localAlias: faker.internet.userName(),
       nameFirst: faker.person.firstName(),
       nameLast: faker.person.lastName(),
     );
@@ -49,7 +48,6 @@ class Fake {
       key: hashString("2c3a8580-845c-4b92-9690-6fed980679fb"),
       profile: Profile(
         key: hashString("b179a62b-af67-493f-985d-b8590b087055"),
-        localAlias: "me",
         nameFirst: "John",
         nameLast: "Doe",
         displayPicture: "https://picsum.photos/250",
@@ -61,7 +59,7 @@ class Fake {
     var profile = getProfile();
     return Contact(
       key: profile.key,
-      localAlias: profile.localAlias,
+      alias: faker.internet.userName(),
       profile: profile,
     );
   }
