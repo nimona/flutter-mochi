@@ -8,12 +8,12 @@ part 'contact.g.dart';
 class Contact {
   final String key;
   final Profile profile;
-  final String localAlias;
+  final String alias;
 
   Contact({
     @required this.key,
-    @required this.profile,
-    @required this.localAlias,
+    this.profile,
+    this.alias,
   });
 
   factory Contact.fromJson(Map<String, dynamic> json) {

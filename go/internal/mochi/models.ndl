@@ -3,17 +3,20 @@ package mochi
 import nimona.io/crypto crypto
 import nimona.io/stream stream
 
-signed object nimona.io/identity.Contact {
-    alias string
-    publicKey nimona.io/crypto.PublicKey
-    createDatetime string
-}
 
-signed object nimona.io/identity.Profile {
-    displayPicture data
-    nameFirst string
-    nameLast string
-    version int
+stream nimona.io/identity {
+    signed object Contact {
+        alias string
+        publicKey nimona.io/crypto.PublicKey
+        profile nimona.io/identity.Profile
+        createDatetime string
+    }
+    signed object Profile {
+        displayPicture data
+        nameFirst string
+        nameLast string
+        version int
+    }
 }
 
 stream mochi.io/conversation {
@@ -27,13 +30,27 @@ stream mochi.io/conversation {
         datetime string
         body string
     }
+    signed object ParticipantInvited {
+        datetime string
+        publicKey nimona.io/crypto.PublicKey
+    }
+    signed object ParticipantJoined {
+        datetime string
+    }
+    signed object ParticipantProfileUpdated {
+        datetime string
+        profile nimona.io/identity.Profile
+    }
 }
 
 stream nimona.io/stream {
+    signed object Policy {
+        datetime string
+    }
     signed object PolicyAdded {
         datetime string
     }
-    signed object TopicUpdated {
+    signed object SubscriptionAdded {
         datetime string
         topic string
     }

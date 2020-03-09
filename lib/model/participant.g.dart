@@ -13,6 +13,9 @@ Participant _$ParticipantFromJson(Map<String, dynamic> json) {
         ? null
         : Profile.fromJson(json['profile'] as Map<String, dynamic>),
     type: _$enumDecodeNullable(_$ParticipantTypeEnumMap, json['type']),
+    contact: json['contact'] == null
+        ? null
+        : Contact.fromJson(json['contact'] as Map<String, dynamic>),
   );
 }
 
@@ -20,6 +23,7 @@ Map<String, dynamic> _$ParticipantToJson(Participant instance) =>
     <String, dynamic>{
       'key': instance.key,
       'profile': instance.profile,
+      'contact': instance.contact,
       'type': _$ParticipantTypeEnumMap[instance.type],
     };
 

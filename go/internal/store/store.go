@@ -15,8 +15,8 @@ type ConversationHandler func(Conversation)
 // MessageHandler for registering for Messages
 type MessageHandler func(Message)
 
-// ProfileHandler for registering for Profiles
-type ProfileHandler func(Profile)
+// ContactHandler for registering for Contacts
+type ContactHandler func(Contact)
 
 // OwnProfileHandler for registering for OwnProfile
 type OwnProfileHandler func(OwnProfile)
@@ -29,7 +29,7 @@ type Store struct {
 
 	conversationHandlers []ConversationHandler
 	messageHandlers      []MessageHandler
-	profileHandlers      []ProfileHandler
+	contactHandlers      []ContactHandler
 	ownProfileHandlers   []OwnProfileHandler
 }
 
@@ -40,10 +40,14 @@ func New(dbPath string) (*Store, error) {
 		return nil, err
 	}
 
+	db = db.Debug()
+
+	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&Conversation{})
 	db.AutoMigrate(&Message{})
-	db.AutoMigrate(&Profile{})
 	db.AutoMigrate(&OwnProfile{})
+	db.AutoMigrate(&Participant{})
+	db.AutoMigrate(&Profile{})
 
 	return &Store{db: db}, nil
 }
@@ -63,9 +67,9 @@ func (s *Store) HandleConversations(h ConversationHandler) {
 }
 
 // HandleProfiles adds a profile handler
-func (s *Store) HandleProfiles(h ProfileHandler) {
+func (s *Store) HandleProfiles(h ContactHandler) {
 	s.lock.Lock()
-	s.profileHandlers = append(s.profileHandlers, h)
+	s.contactHandlers = append(s.contactHandlers, h)
 	s.lock.Unlock()
 }
 
@@ -76,15 +80,21 @@ func (s *Store) HandleOwnProfile(h OwnProfileHandler) {
 	s.lock.Unlock()
 }
 
-// AddProfile to the store and publish it
-func (s *Store) AddProfile(p Profile) error {
-	err := s.db.FirstOrCreate(&p).Error
+// AddContact to the store and publish it
+func (s *Store) AddContact(p Contact) error {
+	err := s.db.
+		Where(Contact{
+			Key: p.Key,
+		}).
+		Assign(p).
+		FirstOrCreate(&p).
+		Error
 	if err != nil {
 		return err
 	}
 
 	s.lock.RLock()
-	for _, h := range s.profileHandlers {
+	for _, h := range s.contactHandlers {
 		h(p)
 	}
 	s.lock.RUnlock()
@@ -92,10 +102,45 @@ func (s *Store) AddProfile(p Profile) error {
 	return nil
 }
 
-// GetProfiles returns all conversations
+// GetContacts returns all contacts
+func (s *Store) GetContacts() ([]Contact, error) {
+	ps := []Contact{}
+	if err := s.db.
+		Set("gorm:auto_preload", true).
+		Preload("Profile").
+		Find(&ps).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return ps, nil
+}
+
+// AddProfile to the store
+// TODO(geoah) this should publish various updates for messages,
+// contacts, participants, etc
+func (s *Store) AddProfile(p Profile) error {
+	err := s.db.
+		Where(Profile{
+			Key: p.Key,
+		}).
+		Assign(p).
+		FirstOrCreate(&p).
+		Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetProfiles returns all profiles
 func (s *Store) GetProfiles() ([]Profile, error) {
 	ps := []Profile{}
-	if err := s.db.Find(&ps).Error; err != nil {
+	if err := s.db.
+		Set("gorm:auto_preload", true).
+		Find(&ps).
+		Error; err != nil {
 		return nil, err
 	}
 
@@ -135,9 +180,33 @@ func (s *Store) GetOwnProfile() (OwnProfile, error) {
 	return p, nil
 }
 
+// AddParticipant to the store
+func (s *Store) AddParticipant(p Participant) error {
+	p.ID = p.GetID()
+	err := s.db.
+		Where(Participant{
+			ProfileKey:       p.ProfileKey,
+			ConversationHash: p.ConversationHash,
+		}).
+		Assign(p).
+		FirstOrCreate(&p).
+		FirstOrCreate(&p).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // AddConversation to the store and publish it
 func (s *Store) AddConversation(c Conversation) error {
-	err := s.db.FirstOrCreate(&c).Error
+	err := s.db.
+		Where(Conversation{
+			Hash: c.Hash,
+		}).
+		Assign(c).
+		FirstOrCreate(&c).
+		Error
 	if err != nil {
 		return err
 	}
@@ -154,18 +223,14 @@ func (s *Store) AddConversation(c Conversation) error {
 // GetConversations returns all conversations
 func (s *Store) GetConversations() ([]Conversation, error) {
 	cs := []Conversation{}
-	if err := s.db.Find(&cs).Error; err != nil {
+	if err := s.db.
+		Set("gorm:auto_preload", true).
+		Preload("Participants.Profile.Contact").
+		Preload("Messages.Participant.Profile.Contact").
+		Preload("UnreadMessagesLatest", "is_read = false").
+		Find(&cs).
+		Error; err != nil {
 		return nil, err
-	}
-
-	for i, c := range cs {
-		total, ms, err := s.getMessagesForConversation(c)
-		if err != nil {
-			return nil, err
-		}
-
-		cs[i].UnreadMessagesCount = total
-		cs[i].UnreadMessagesLatest = ms
 	}
 
 	return cs, nil
@@ -174,7 +239,7 @@ func (s *Store) GetConversations() ([]Conversation, error) {
 // GetMessages returns messages for conversation
 func (s *Store) GetMessages(conversationHash string) ([]Message, error) {
 	ms := []Message{}
-	if err := s.db.Where(
+	if err := s.db.Set("gorm:auto_preload", true).Where(
 		"conversation_hash = ?",
 		conversationHash,
 	).Find(&ms).Error; err != nil {
@@ -184,29 +249,40 @@ func (s *Store) GetMessages(conversationHash string) ([]Message, error) {
 	return ms, nil
 }
 
-func (s *Store) getMessagesForConversation(c Conversation) (int, []Message, error) {
-	// TODO(geoah) order messages
-	ms := []Message{}
-	if err := s.db.Where(
-		"conversation_hash = ? AND sent > ?",
-		c.Hash,
-		c.LastMessageRead,
-	).Find(&ms).Error; err != nil {
-		return 0, nil, err
+// GetMessage returns message by its hash
+func (s *Store) GetMessage(hash string) (Message, error) {
+	m := Message{}
+	if err := s.db.Set("gorm:auto_preload", true).Where(
+		"hash = ?",
+		hash,
+	).First(&m).Error; err != nil {
+		return m, err
 	}
 
-	total := len(ms)
-
-	if len(ms) > 3 {
-		ms = ms[:3]
-	}
-
-	return total, ms, nil
+	return m, nil
 }
 
 // AddMessage to the store and publish it
 func (s *Store) AddMessage(m Message) error {
-	err := s.db.FirstOrCreate(&m).Error
+	// set participant id
+	m.ParticipantID = Participant{
+		ProfileKey:       m.ProfileKey,
+		ConversationHash: m.ConversationHash,
+	}.GetID()
+
+	err := s.db.
+		Where(Message{
+			Hash: m.Hash,
+		}).
+		Assign(m).
+		FirstOrCreate(&m).
+		Error
+	if err != nil {
+		return err
+	}
+
+	// we need to fetch the message again to load its relationships
+	m, err = s.GetMessage(m.Hash)
 	if err != nil {
 		return err
 	}
@@ -218,24 +294,22 @@ func (s *Store) AddMessage(m Message) error {
 	s.lock.RUnlock()
 
 	c := Conversation{}
-	if err := s.db.Where(
-		"hash = ?",
-		m.ConversationHash,
-	).First(&c).Error; err != nil {
+	if err := s.db.
+		Set("gorm:auto_preload", true).
+		Preload("Participants.Profile.Contact").
+		Preload("Messages.Participant.Profile.Contact").
+		Preload("UnreadMessagesLatest", "is_read = false").
+		Where(
+			"hash = ?",
+			m.ConversationHash,
+		).First(&c).
+		Error; err != nil {
 		return err
 	}
 
 	if m.Sent.Before(c.LastMessageRead) {
 		return nil
 	}
-
-	total, ms, err := s.getMessagesForConversation(c)
-	if err != nil {
-		return err
-	}
-
-	c.UnreadMessagesCount = total
-	c.UnreadMessagesLatest = ms
 
 	s.lock.RLock()
 	for _, h := range s.conversationHandlers {

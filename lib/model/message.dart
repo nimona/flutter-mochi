@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mochi/model/profile.dart';
+import 'package:mochi/model/participant.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'message.g.dart';
@@ -9,12 +9,12 @@ class Message {
   final String hash;
   final String body;
   final DateTime sent;
-  final Profile sender;
+  final Participant participant;
   final bool isEdited;
 
   Message({
     @required this.hash,
-    @required this.sender,
+    this.participant,
     @required this.body,
     @required this.sent,
     this.isEdited,

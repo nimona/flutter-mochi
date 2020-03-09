@@ -63,7 +63,7 @@ class MockDataStore implements DataStore {
   Stream<OwnProfile> getOwnProfile() async* {
     yield OwnProfile(
       key: "0xf00",
-      localAlias: "me",
+      alias: "me",
       nameFirst: "John",
       nameLast: "Doe",
     );

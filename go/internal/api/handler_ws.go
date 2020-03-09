@@ -152,19 +152,15 @@ func (api *API) HandleWS(c *router.Context) {
 
 		switch m["_action"] {
 		case "contactsGet":
-			api.store.HandleProfiles(func(p store.Profile) {
-				fmt.Println("Handling profile", p)
-				if p.LocalAlias != "" {
-					write(conn, p)
-				}
+			api.store.HandleProfiles(func(p store.Contact) {
+				fmt.Println("Handling contact", p)
+				write(conn, p)
 			})
-			ps, _ := api.store.GetProfiles()
+			ps, _ := api.store.GetContacts()
 			for _, p := range ps {
-				fmt.Println("Handling old profile", p)
-				if p.LocalAlias != "" {
-					if err := write(conn, p); err != nil {
-						panic(err)
-					}
+				fmt.Println("Handling old contact", p)
+				if err := write(conn, p); err != nil {
+					panic(err)
 				}
 			}
 
