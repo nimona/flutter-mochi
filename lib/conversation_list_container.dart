@@ -207,7 +207,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                 ),
                               ),
                               trailing: Text(
-                                conversation.unreadMessagesLatest.length
+                                (conversation.unreadMessagesLatest?.length??0)
                                     .toString(),
                               ),
                               subtitle: Text(
