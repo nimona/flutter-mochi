@@ -3,13 +3,13 @@ package plugin
 import (
 	"fmt"
 	"os"
+	"path"
 	"strconv"
 	"time"
 
+	"mochi.io/internal/api"
 	"mochi.io/internal/mochi"
 	"mochi.io/internal/store"
-
-	"mochi.io/internal/api"
 
 	"github.com/go-flutter-desktop/go-flutter"
 	"github.com/go-flutter-desktop/go-flutter/plugin"
@@ -97,7 +97,7 @@ func startDaemon(arguments interface{}) (interface{}, error) {
 	// load config
 	logger.Info("loading config file")
 	config := config.New()
-	config.Path = "${HOME}/.io.nimona.mochi-" + strconv.Itoa(apiPort)
+	config.Path = "${HOME}/.mochi-" + strconv.Itoa(apiPort)
 	if err := config.Load(); err != nil {
 		logger.Fatal("could not load config file", log.Error(err))
 	}
@@ -160,7 +160,7 @@ func startDaemon(arguments interface{}) (interface{}, error) {
 
 	nlogger.Info("starting HTTP API")
 
-	store, _ := store.New("local.db")
+	store, _ := store.New(path.Join(config.Path, "mochi.db"))
 	mochi, _ := mochi.New(store, d)
 
 	// mochi.CreateConversation("foo", "bar")
