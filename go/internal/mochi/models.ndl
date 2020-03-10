@@ -43,15 +43,6 @@ stream mochi.io/conversation {
     }
 }
 
-stream nimona.io/stream {
-    signed object Policy {
-        datetime string
-    }
-    signed object PolicyAdded {
-        datetime string
-    }
-    signed object SubscriptionAdded {
-        datetime string
-        topic string
-    }
+signed object nimona.io/stream.Subcribe {
+    nonce string
 }

@@ -37,23 +37,19 @@ type (
 	// OwnProfileGetRequest -
 	OwnProfileGetRequest struct {
 	}
-	// // ConversationInviteIdentityRequest -
-	// ConversationInviteIdentityRequest struct {
-	// 	Conversation string
-	// 	Identity     crypto.PublicKey
-	// }
+	// ConversationInviteIdentityRequest -
+	ConversationInviteIdentityRequest struct {
+		Conversation      string `json:"hash"`
+		IdentityPublicKey string `json:"key"`
+	}
 	// ConversationStartRequest -
 	ConversationStartRequest struct {
 		Name  string `json:"name"`
 		Topic string `json:"topic"`
 	}
-	// // ConversationJoinRequest -
-	// ConversationJoinRequest struct {
-	// 	Conversation string `json:"conversationHash"`
-	// }
-	// ConversationGetRequest -
-	ConversationGetRequest struct {
-		Conversation string `json:"conversationHash"`
+	// ConversationJoinRequest -
+	ConversationJoinRequest struct {
+		ConversationHash string `json:"hash"`
 	}
 	// ConversationsGetRequest -
 	ConversationsGetRequest struct {
@@ -202,6 +198,11 @@ func (api *API) HandleWS(c *router.Context) {
 			r := ConversationStartRequest{}
 			json.Unmarshal(msg, &r)
 			api.mochi.CreateConversation(r.Name, r.Topic)
+
+		case "conversationJoin":
+			r := ConversationJoinRequest{}
+			json.Unmarshal(msg, &r)
+			api.mochi.JoinConversation(r.ConversationHash)
 
 		case "messagesGet":
 			r := MessagesGetRequest{}

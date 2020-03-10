@@ -10,7 +10,7 @@ ConversationJoinRequest _$ConversationJoinRequestFromJson(
     Map<String, dynamic> json) {
   return ConversationJoinRequest(
     action: json['_action'] as String,
-    conversationHash: json['conversationHash'] as String,
+    hash: json['hash'] as String,
   );
 }
 
@@ -18,5 +18,5 @@ Map<String, dynamic> _$ConversationJoinRequestToJson(
         ConversationJoinRequest instance) =>
     <String, dynamic>{
       '_action': instance.action,
-      'conversationHash': instance.conversationHash,
+      'hash': instance.hash,
     };

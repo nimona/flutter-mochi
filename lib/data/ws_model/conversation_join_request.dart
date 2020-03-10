@@ -8,12 +8,12 @@ class ConversationJoinRequest extends BaseRequest {
   @JsonKey(name: '_action')
   String action;
 
-  @JsonKey(name: 'conversationHash')
-  String conversationHash;
+  @JsonKey(name: 'hash')
+  String hash;
 
   ConversationJoinRequest({
     this.action = "conversationJoin",
-    this.conversationHash,
+    this.hash,
   });
 
   factory ConversationJoinRequest.fromJson(Map<String, dynamic> json) =>
