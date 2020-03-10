@@ -65,9 +65,13 @@ class Fake {
   }
 
   Message getMessage() {
+    var profile = getProfile();
     return Message(
       body: faker.lorem.sentence(),
-      sender: getProfile(),
+      participant: Participant(
+        key: profile.key,
+        profile: profile,
+      ),
       hash: hashString(faker.lorem.sentence()),
       sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))),
       isEdited: rng.nextBool(),
