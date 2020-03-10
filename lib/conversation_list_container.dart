@@ -142,53 +142,57 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 body: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    Scaffold(
-                      floatingActionButton: FloatingActionButton(
-                        onPressed: () {
-                          _showCreateContactDialog();
-                        },
-                        child: Icon(Icons.add),
-                        backgroundColor: Colors.blue,
-                      ),
-                      body: Scrollbar(
-                        child: ListView(
-                          children: _contacts.keys.map((i) {
-                            var contact = _contacts[i];
-                            return ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(2),
-                                child: Image.network(
-                                  "http://localhost:10100/displayPictures/" +
+                    Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: Scaffold(
+                            body: Scrollbar(
+                              child: ListView(
+                                children: _contacts.keys.map((i) {
+                                  var contact = _contacts[i];
+                                  return ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(2),
+                                      child: Image.network(
+                                        "http://localhost:10100/displayPictures/" +
+                                            contact.key,
+                                        height: 40,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      "@" + contact.alias,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    subtitle: Text(
                                       contact.key,
-                                  height: 40,
-                                ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    // onTap: () => itemSelectedCallback(contact),
+                                    // selected: widget.selectedItem == contact,
+                                    dense: true,
+                                  );
+                                }).toList(),
                               ),
-                              title: Text(
-                                "@" + contact.alias,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                contact.key,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              // onTap: () => itemSelectedCallback(contact),
-                              // selected: widget.selectedItem == contact,
-                              dense: true,
-                            );
-                          }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: RaisedButton(
+                              child: Text("Add contact"),
+                              onPressed: () {
+                                _showCreateContactDialog();
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Column(
-                      // floatingActionButton: FloatingActionButton(
-                      //   onPressed: () {
-                      //     _showCreateConversationDialog();
-                      //   },
-                      //   child: Icon(Icons.add),
-                      //   backgroundColor: Colors.blue,
-                      // ),
                       children: <Widget>[
                         Expanded(
                           child: Scrollbar(
