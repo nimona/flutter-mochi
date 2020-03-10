@@ -14,6 +14,8 @@ abstract class DataStore {
 
   void startConversation(String name, String topic);
 
+  void joinConversation(String hash);
+
   Stream<Conversation> getConversations();
 
   Stream<OwnProfile> getOwnProfile();

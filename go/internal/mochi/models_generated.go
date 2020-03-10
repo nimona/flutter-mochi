@@ -11,6 +11,15 @@ import (
 )
 
 type (
+	StreamSubcribe struct {
+		raw        object.Object
+		Stream     object.Hash
+		Parents    []object.Hash
+		Owners     []crypto.PublicKey
+		Policy     object.Policy
+		Signatures []object.Signature
+		Nonce      string
+	}
 	IdentityContact struct {
 		raw            object.Object
 		Stream         object.Hash
@@ -86,35 +95,66 @@ type (
 		Datetime   string
 		Profile    *IdentityProfile
 	}
-	StreamPolicy struct {
-		raw        object.Object
-		Stream     object.Hash
-		Parents    []object.Hash
-		Owners     []crypto.PublicKey
-		Policy     object.Policy
-		Signatures []object.Signature
-		Datetime   string
-	}
-	StreamPolicyAdded struct {
-		raw        object.Object
-		Stream     object.Hash
-		Parents    []object.Hash
-		Owners     []crypto.PublicKey
-		Policy     object.Policy
-		Signatures []object.Signature
-		Datetime   string
-	}
-	StreamSubscriptionAdded struct {
-		raw        object.Object
-		Stream     object.Hash
-		Parents    []object.Hash
-		Owners     []crypto.PublicKey
-		Policy     object.Policy
-		Signatures []object.Signature
-		Datetime   string
-		Topic      string
-	}
 )
+
+func (e StreamSubcribe) GetType() string {
+	return "nimona.io/stream.Subcribe"
+}
+
+func (e StreamSubcribe) GetSchema() *object.SchemaObject {
+	return &object.SchemaObject{
+		Properties: []*object.SchemaProperty{
+			&object.SchemaProperty{
+				Name:       "nonce",
+				Type:       "string",
+				Hint:       "s",
+				IsRepeated: false,
+				IsOptional: false,
+			},
+		},
+	}
+}
+
+func (e StreamSubcribe) ToObject() object.Object {
+	o := object.Object{}
+	o = o.SetType("nimona.io/stream.Subcribe")
+	if len(e.Stream) > 0 {
+		o = o.SetStream(e.Stream)
+	}
+	if len(e.Parents) > 0 {
+		o = o.SetParents(e.Parents)
+	}
+	if len(e.Owners) > 0 {
+		o = o.SetOwners(e.Owners)
+	}
+	o = o.AddSignature(e.Signatures...)
+	o = o.SetPolicy(e.Policy)
+	if e.Nonce != "" {
+		o = o.Set("nonce:s", e.Nonce)
+	}
+	// if schema := e.GetSchema(); schema != nil {
+	// 	m["_schema:o"] = schema.ToObject().ToMap()
+	// }
+	return o
+}
+
+func (e *StreamSubcribe) FromObject(o object.Object) error {
+	data, ok := o.Raw().Value("data:o").(immutable.Map)
+	if !ok {
+		return errors.New("missing data")
+	}
+	e.raw = object.Object{}
+	e.raw = e.raw.SetType(o.GetType())
+	e.Stream = o.GetStream()
+	e.Parents = o.GetParents()
+	e.Owners = o.GetOwners()
+	e.Signatures = o.GetSignatures()
+	e.Policy = o.GetPolicy()
+	if v := data.Value("nonce:s"); v != nil {
+		e.Nonce = string(v.PrimitiveHinted().(string))
+	}
+	return nil
+}
 
 func (e IdentityContact) GetType() string {
 	return "nimona.io/identity.Contact"
@@ -685,196 +725,6 @@ func (e *ConversationParticipantProfileUpdated) FromObject(o object.Object) erro
 		eo := object.FromMap(v.PrimitiveHinted().(map[string]interface{}))
 		es.FromObject(eo)
 		e.Profile = es
-	}
-	return nil
-}
-
-func (e StreamPolicy) GetType() string {
-	return "nimona.io/stream.Policy"
-}
-
-func (e StreamPolicy) GetSchema() *object.SchemaObject {
-	return &object.SchemaObject{
-		Properties: []*object.SchemaProperty{
-			&object.SchemaProperty{
-				Name:       "datetime",
-				Type:       "string",
-				Hint:       "s",
-				IsRepeated: false,
-				IsOptional: false,
-			},
-		},
-	}
-}
-
-func (e StreamPolicy) ToObject() object.Object {
-	o := object.Object{}
-	o = o.SetType("nimona.io/stream.Policy")
-	if len(e.Stream) > 0 {
-		o = o.SetStream(e.Stream)
-	}
-	if len(e.Parents) > 0 {
-		o = o.SetParents(e.Parents)
-	}
-	if len(e.Owners) > 0 {
-		o = o.SetOwners(e.Owners)
-	}
-	o = o.AddSignature(e.Signatures...)
-	o = o.SetPolicy(e.Policy)
-	if e.Datetime != "" {
-		o = o.Set("datetime:s", e.Datetime)
-	}
-	// if schema := e.GetSchema(); schema != nil {
-	// 	m["_schema:o"] = schema.ToObject().ToMap()
-	// }
-	return o
-}
-
-func (e *StreamPolicy) FromObject(o object.Object) error {
-	data, ok := o.Raw().Value("data:o").(immutable.Map)
-	if !ok {
-		return errors.New("missing data")
-	}
-	e.raw = object.Object{}
-	e.raw = e.raw.SetType(o.GetType())
-	e.Stream = o.GetStream()
-	e.Parents = o.GetParents()
-	e.Owners = o.GetOwners()
-	e.Signatures = o.GetSignatures()
-	e.Policy = o.GetPolicy()
-	if v := data.Value("datetime:s"); v != nil {
-		e.Datetime = string(v.PrimitiveHinted().(string))
-	}
-	return nil
-}
-
-func (e StreamPolicyAdded) GetType() string {
-	return "nimona.io/stream.PolicyAdded"
-}
-
-func (e StreamPolicyAdded) GetSchema() *object.SchemaObject {
-	return &object.SchemaObject{
-		Properties: []*object.SchemaProperty{
-			&object.SchemaProperty{
-				Name:       "datetime",
-				Type:       "string",
-				Hint:       "s",
-				IsRepeated: false,
-				IsOptional: false,
-			},
-		},
-	}
-}
-
-func (e StreamPolicyAdded) ToObject() object.Object {
-	o := object.Object{}
-	o = o.SetType("nimona.io/stream.PolicyAdded")
-	if len(e.Stream) > 0 {
-		o = o.SetStream(e.Stream)
-	}
-	if len(e.Parents) > 0 {
-		o = o.SetParents(e.Parents)
-	}
-	if len(e.Owners) > 0 {
-		o = o.SetOwners(e.Owners)
-	}
-	o = o.AddSignature(e.Signatures...)
-	o = o.SetPolicy(e.Policy)
-	if e.Datetime != "" {
-		o = o.Set("datetime:s", e.Datetime)
-	}
-	// if schema := e.GetSchema(); schema != nil {
-	// 	m["_schema:o"] = schema.ToObject().ToMap()
-	// }
-	return o
-}
-
-func (e *StreamPolicyAdded) FromObject(o object.Object) error {
-	data, ok := o.Raw().Value("data:o").(immutable.Map)
-	if !ok {
-		return errors.New("missing data")
-	}
-	e.raw = object.Object{}
-	e.raw = e.raw.SetType(o.GetType())
-	e.Stream = o.GetStream()
-	e.Parents = o.GetParents()
-	e.Owners = o.GetOwners()
-	e.Signatures = o.GetSignatures()
-	e.Policy = o.GetPolicy()
-	if v := data.Value("datetime:s"); v != nil {
-		e.Datetime = string(v.PrimitiveHinted().(string))
-	}
-	return nil
-}
-
-func (e StreamSubscriptionAdded) GetType() string {
-	return "nimona.io/stream.SubscriptionAdded"
-}
-
-func (e StreamSubscriptionAdded) GetSchema() *object.SchemaObject {
-	return &object.SchemaObject{
-		Properties: []*object.SchemaProperty{
-			&object.SchemaProperty{
-				Name:       "datetime",
-				Type:       "string",
-				Hint:       "s",
-				IsRepeated: false,
-				IsOptional: false,
-			},
-			&object.SchemaProperty{
-				Name:       "topic",
-				Type:       "string",
-				Hint:       "s",
-				IsRepeated: false,
-				IsOptional: false,
-			},
-		},
-	}
-}
-
-func (e StreamSubscriptionAdded) ToObject() object.Object {
-	o := object.Object{}
-	o = o.SetType("nimona.io/stream.SubscriptionAdded")
-	if len(e.Stream) > 0 {
-		o = o.SetStream(e.Stream)
-	}
-	if len(e.Parents) > 0 {
-		o = o.SetParents(e.Parents)
-	}
-	if len(e.Owners) > 0 {
-		o = o.SetOwners(e.Owners)
-	}
-	o = o.AddSignature(e.Signatures...)
-	o = o.SetPolicy(e.Policy)
-	if e.Datetime != "" {
-		o = o.Set("datetime:s", e.Datetime)
-	}
-	if e.Topic != "" {
-		o = o.Set("topic:s", e.Topic)
-	}
-	// if schema := e.GetSchema(); schema != nil {
-	// 	m["_schema:o"] = schema.ToObject().ToMap()
-	// }
-	return o
-}
-
-func (e *StreamSubscriptionAdded) FromObject(o object.Object) error {
-	data, ok := o.Raw().Value("data:o").(immutable.Map)
-	if !ok {
-		return errors.New("missing data")
-	}
-	e.raw = object.Object{}
-	e.raw = e.raw.SetType(o.GetType())
-	e.Stream = o.GetStream()
-	e.Parents = o.GetParents()
-	e.Owners = o.GetOwners()
-	e.Signatures = o.GetSignatures()
-	e.Policy = o.GetPolicy()
-	if v := data.Value("datetime:s"); v != nil {
-		e.Datetime = string(v.PrimitiveHinted().(string))
-	}
-	if v := data.Value("topic:s"); v != nil {
-		e.Topic = string(v.PrimitiveHinted().(string))
 	}
 	return nil
 }

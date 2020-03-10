@@ -41,6 +41,10 @@ class Repository {
     return sc;
   }
 
+  void joinConversation(String hash) {
+    _dataStore.joinConversation(hash);
+  }
+
   void createConversation(String name, String topic) {
     _dataStore.startConversation(name, topic);
   }

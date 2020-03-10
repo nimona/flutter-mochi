@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mochi/data/datastore.dart';
 import 'package:mochi/data/ws_model/contact_add_request.dart';
 import 'package:mochi/data/ws_model/contacts_get_request.dart';
+import 'package:mochi/data/ws_model/conversation_join_request.dart';
 import 'package:mochi/data/ws_model/conversation_start_request.dart';
 import 'package:mochi/data/ws_model/conversations_get_request.dart';
 import 'package:mochi/data/ws_model/message_create_request.dart';
@@ -18,8 +19,8 @@ import 'package:mochi/model/own_profile.dart';
 import 'package:web_socket_channel/io.dart';
 
 const daemonChannel = const MethodChannel('mochi.io/daemon');
-const daemonPeerPort = 10200;
-const daemonApiPort = 10100;
+const daemonPeerPort = 10201;
+const daemonApiPort = 10101;
 const daemonApiUrl = 'ws://localhost:';
 
 class WsDataStore implements DataStore {
@@ -104,6 +105,19 @@ class WsDataStore implements DataStore {
       json.encode(ConversationStartRequest(
         name: name,
         topic: topic,
+      )),
+    );
+    ws.sink.close();
+  }
+
+  @override
+  void joinConversation(String hash) {
+    final ws = IOWebSocketChannel.connect(
+      daemonApiUrl + daemonApiPort.toString(),
+    );
+    ws.sink.add(
+      json.encode(ConversationJoinRequest(
+        hash: hash,
       )),
     );
     ws.sink.close();

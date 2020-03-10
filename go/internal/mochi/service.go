@@ -1,11 +1,15 @@
 package mochi
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
+	"nimona.io/pkg/context"
 	"nimona.io/pkg/crypto"
 	"nimona.io/pkg/daemon"
 	"nimona.io/pkg/object"
+	"nimona.io/pkg/peer"
 	"nimona.io/pkg/sqlobjectstore"
 
 	"mochi.io/internal/rand"
@@ -74,11 +78,10 @@ func (m *Mochi) handleStreams() {
 			}
 
 			// create participant and store
-			p := store.Participant{
+			m.store.AddParticipant(store.Participant{
 				ConversationHash: o.GetStream().String(),
 				ProfileKey:       v.PublicKey.String(),
-			}
-			m.store.AddParticipant(p)
+			})
 
 		case "mochi.io/conversation.ParticipantJoined":
 			v := ConversationParticipantJoined{}
@@ -87,12 +90,11 @@ func (m *Mochi) handleStreams() {
 			}
 
 			// create participant and store
-			p := store.Participant{
+			m.store.AddParticipant(store.Participant{
 				ConversationHash: o.GetStream().String(),
 				ProfileKey:       v.Owners[0].String(),
 				HasAccepted:      true,
-			}
-			m.store.AddParticipant(p)
+			})
 
 		case "mochi.io/conversation.ParticipantProfileUpdated":
 			v := ConversationParticipantProfileUpdated{}
@@ -105,12 +107,17 @@ func (m *Mochi) handleStreams() {
 			}
 
 			// create profile and store
-			p := store.Profile{
+			m.store.AddProfile(store.Profile{
 				Key:       v.Owners[0].String(),
 				NameFirst: v.Profile.NameFirst,
 				NameLast:  v.Profile.NameLast,
-			}
-			m.store.AddProfile(p)
+			})
+
+			m.store.AddParticipant(store.Participant{
+				ProfileKey:       v.Owners[0].String(),
+				ConversationHash: v.Stream.String(),
+				HasAccepted:      true,
+			})
 
 		case "mochi.io/conversation.MessageAdded":
 			v := ConversationMessageAdded{}
@@ -122,7 +129,7 @@ func (m *Mochi) handleStreams() {
 			t, _ := time.Parse(time.RFC3339, v.Datetime)
 			p := store.Message{
 				ConversationHash: o.GetStream().String(),
-				ProfileKey:       v.Signatures[0].Signer.String(),
+				ProfileKey:       v.Owners[0].String(),
 				Body:             v.Body,
 				Hash:             object.NewHash(o).String(),
 				Sent:             t,
@@ -134,30 +141,38 @@ func (m *Mochi) handleStreams() {
 
 // CreateMessage and store it given a conversation and body, or error
 func (m *Mochi) CreateMessage(conversationHash, body string) error {
-	// TODO(geoah) remove, temp
-	hash := rand.String(6)
+	if conversationHash == "" {
+		return errors.New("missing conversation hash")
+	}
+
 	if body == "" {
-		body = rand.Words(rand.Int(25))
+		return errors.New("missing message body")
 	}
-	c := store.Message{
-		Hash:             hash,
-		ConversationHash: conversationHash,
-		ProfileKey:       m.daemon.LocalPeer.GetIdentityPublicKey().String(),
-		Body:             body,
-		Sent:             time.Now().UTC(),
+
+	v := ConversationMessageAdded{
+		Stream:   object.Hash(conversationHash),
+		Body:     body,
+		Datetime: time.Now().UTC().Format(time.RFC3339),
+		Owners: []crypto.PublicKey{
+			m.daemon.LocalPeer.GetIdentityPublicKey(),
+		},
 	}
-	return m.store.AddMessage(c)
+
+	// add object to our peer
+	o := v.ToObject()
+	if err := m.daemon.Orchestrator.Put(o); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // CreateConversation and store it given a name and topic, or error
 func (m *Mochi) CreateConversation(name, topic string) error {
-	// TODO(geoah) remove, temp
 	if name == "" {
-		name = rand.Words(3)
+		return errors.New("missing name")
 	}
-	if topic == "" {
-		topic = rand.Words(6)
-	}
+
 	// create new stream
 	v := ConversationCreated{
 		Name:  name,
@@ -178,14 +193,46 @@ func (m *Mochi) CreateConversation(name, topic string) error {
 	return nil
 }
 
+// JoinConversation based on hash, or error
+func (m *Mochi) JoinConversation(conversationHash string) error {
+	// retrieve conversation stream
+	ctx := context.Background()
+	rootHash := object.Hash(conversationHash)
+	graph, err := m.daemon.Orchestrator.Sync(
+		ctx,
+		rootHash,
+		peer.LookupByContentHash(rootHash),
+	)
+	fmt.Println(">>>> FOUND", len(graph.Objects), err)
+	if err != nil {
+		return err
+	}
+
+	// create new stream
+	v := StreamSubcribe{
+		Nonce: rand.String(32),
+		Owners: []crypto.PublicKey{
+			m.daemon.LocalPeer.GetIdentityPublicKey(),
+		},
+		Stream: rootHash,
+	}
+
+	// add object to our peer
+	o := v.ToObject()
+	if err := m.daemon.Orchestrator.Put(o); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // AddContact and store it given a key and an alias, or error
 func (m *Mochi) AddContact(identityKey, alias string) error {
-	// TODO(geoah) remove, temp
 	if identityKey == "" {
-		identityKey = rand.String(6)
+		return errors.New("missing identity key")
 	}
 	if alias == "" {
-		alias = rand.Words(3)
+		return errors.New("missing alias")
 	}
 	// TODO find and retrieve profile from network
 	c := store.Contact{
@@ -212,6 +259,28 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast string, displayPicture []by
 	}
 	if err := m.store.AddProfile(p); err != nil {
 		return err
+	}
+
+	cs, err := m.store.GetConversations()
+	if err != nil {
+		return err
+	}
+
+	for _, c := range cs {
+		m.daemon.Orchestrator.Put(ConversationParticipantProfileUpdated{
+			Stream: object.Hash(c.Hash),
+			Owners: []crypto.PublicKey{
+				m.daemon.LocalPeer.GetIdentityPublicKey(),
+			},
+			Profile: &IdentityProfile{
+				NameFirst: nameFirst,
+				NameLast:  nameLast,
+				Owners: []crypto.PublicKey{
+					m.daemon.LocalPeer.GetIdentityPublicKey(),
+				},
+			},
+			Datetime: time.Now().UTC().Format(time.RFC3339),
+		}.ToObject())
 	}
 
 	return nil
