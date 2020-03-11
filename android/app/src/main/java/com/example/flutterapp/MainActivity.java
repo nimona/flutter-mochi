@@ -1,4 +1,4 @@
-package com.example.flutterapp;
+package io.nimona.mochi;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
