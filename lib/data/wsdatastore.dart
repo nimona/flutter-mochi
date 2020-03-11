@@ -7,6 +7,7 @@ import 'package:mochi/data/ws_model/contact_add_request.dart';
 import 'package:mochi/data/ws_model/contacts_get_request.dart';
 import 'package:mochi/data/ws_model/conversation_join_request.dart';
 import 'package:mochi/data/ws_model/conversation_start_request.dart';
+import 'package:mochi/data/ws_model/conversation_update_request.dart';
 import 'package:mochi/data/ws_model/conversations_get_request.dart';
 import 'package:mochi/data/ws_model/message_create_request.dart';
 import 'package:mochi/data/ws_model/messages_get_request.dart';
@@ -118,6 +119,21 @@ class WsDataStore implements DataStore {
     ws.sink.add(
       json.encode(ConversationJoinRequest(
         hash: hash,
+      )),
+    );
+    ws.sink.close();
+  }
+
+  @override
+  void updateConversation(String hash, name, topic) {
+    final ws = IOWebSocketChannel.connect(
+      daemonApiUrl + daemonApiPort.toString(),
+    );
+    ws.sink.add(
+      json.encode(ConversationUpdateRequest(
+        hash: hash,
+        name: name,
+        topic: topic,
       )),
     );
     ws.sink.close();

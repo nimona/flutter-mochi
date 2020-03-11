@@ -49,6 +49,10 @@ class Repository {
     _dataStore.startConversation(name, topic);
   }
 
+  void updateConversation(String hash, name, topic) {
+    _dataStore.updateConversation(hash, name, topic);
+  }
+
   void updateOwnProfile(String nameFirst, nameLast) {
     _dataStore.updateOwnProfile(nameFirst, nameLast);
   }
