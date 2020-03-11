@@ -20,8 +20,8 @@ import 'package:mochi/model/own_profile.dart';
 import 'package:web_socket_channel/io.dart';
 
 const daemonChannel = const MethodChannel('mochi.io/daemon');
-const daemonPeerPort = 10201;
-const daemonApiPort = 10101;
+const daemonPeerPort = 10200;
+const daemonApiPort = 10100;
 const daemonApiUrl = 'ws://localhost:';
 
 class WsDataStore implements DataStore {
