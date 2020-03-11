@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mochi/model/own_profile.dart';
 import 'package:mochi/view/dialog_create_contact.dart';
 import 'package:mochi/data/repository.dart';
@@ -75,41 +76,109 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+
+    String getProfileName() {
+      if (_ownProfile.nameLast != "" || _ownProfile.nameLast != "") {
+        return _ownProfile.nameFirst + " " + _ownProfile.nameLast;
+      }
+      return "Anonymous";
+    }
+
     return Scaffold(
       body: Column(
         children: <Widget>[
-          ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(2),
-              child: Image.network(
-                "http://localhost:10100/displayPictures/" + _ownProfile.key,
-                height: 56,
-              ),
-            ),
-            contentPadding: EdgeInsets.all(16.0),
-            title: () {
-              if (_ownProfile.nameLast != "" || _ownProfile.nameLast != "") {
-                return Text(_ownProfile.nameFirst + " " + _ownProfile.nameLast);
-              }
-              return Text(
-                "Anonymous",
-                style: TextStyle(
-                  color: Colors.grey,
+          Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: Image.network(
+                    "http://localhost:10100/displayPictures/" + _ownProfile.key,
+                    height: 56,
+                  ),
                 ),
-              );
-            }(),
-            subtitle: Text(
-              _ownProfile.key,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11,
               ),
-            ),
-            // trailing: Icon(Icons.account_circle),
-            onTap: () {
-              _showUpdateOwnProfileDialog();
-            },
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(right: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: GestureDetector(
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                getProfileName(),
+                                textAlign: TextAlign.left,
+                                style: textTheme.headline6,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(width: 5),
+                              Icon(
+                                Icons.mode_edit,
+                                color: Theme.of(context).secondaryHeaderColor,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            _showUpdateOwnProfileDialog(
+                              _ownProfile.nameFirst,
+                              _ownProfile.nameLast,
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: _ownProfile.key,
+                              ),
+                            );
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Public key copied'),
+                                duration: Duration(seconds: 1),
+                                action: SnackBarAction(
+                                  label: 'Ok',
+                                  onPressed: () {},
+                                ),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.content_copy,
+                                size: 13,
+                              ),
+                              SizedBox(width: 3),
+                              Expanded(
+                                child: Text(
+                                  _ownProfile.key,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.left,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: DefaultTabController(
@@ -240,7 +309,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             child: RaisedButton(
                               child: Text("Create new conversation"),
                               onPressed: () {
-                                _showCreateContactDialog();
+                                _showCreateConversationDialog();
                               },
                             ),
                           ),
@@ -269,9 +338,13 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     );
   }
 
-  void _showUpdateOwnProfileDialog() {
-    final nameFirstController = TextEditingController();
-    final nameLastController = TextEditingController();
+  void _showUpdateOwnProfileDialog(String nameFirst, nameLast) {
+    final nameFirstController = TextEditingController(
+      text: nameFirst,
+    );
+    final nameLastController = TextEditingController(
+      text: nameLast,
+    );
 
     showDialog<bool>(
         context: context,
