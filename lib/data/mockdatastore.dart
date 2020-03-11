@@ -52,6 +52,11 @@ class MockDataStore implements DataStore {
   }
 
   @override
+  void updateConversation(String hash, name, topic) {
+    return;
+  }
+
+  @override
   Stream<Conversation> getConversations() async* {
     for (var i = 0; i < 16; i++) {
       await Future.delayed(Duration(milliseconds: Random().nextInt(2500)));
