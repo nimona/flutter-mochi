@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/view/dialog_update_conversation.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
@@ -116,24 +118,103 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   Container _buildConversationHeader() {
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return new Container(
       color: Theme.of(context).cardColor,
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(2),
-          child: Image.network(
-            "http://localhost:10100/displayPictures/" +
-                currentConversation.hash,
-            height: 56,
+      child: Row(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.all(10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: Image.network(
+                "http://localhost:10100/displayPictures/" +
+                    currentConversation.hash,
+                height: 56,
+              ),
+            ),
           ),
-        ),
-        contentPadding: EdgeInsets.all(16.0),
-        title: Text(
-          currentConversation?.name,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        subtitle: Text(currentConversation?.topic),
-        trailing: Icon(Icons.settings),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(right: 10),
+              child: Column(
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            currentConversation.name,
+                            textAlign: TextAlign.left,
+                            style: textTheme.headline6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(width: 5),
+                          Icon(
+                            Icons.mode_edit,
+                            color: Theme.of(context).secondaryHeaderColor,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        _showUpdateConversationDialog(
+                          currentConversation.hash,
+                          currentConversation.name,
+                          currentConversation.topic,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(
+                          ClipboardData(
+                            text: currentConversation.hash,
+                          ),
+                        );
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Conversation hash copied'),
+                            duration: Duration(seconds: 1),
+                            action: SnackBarAction(
+                              label: 'Ok',
+                              onPressed: () {},
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            Icons.content_copy,
+                            size: 13,
+                          ),
+                          SizedBox(width: 3),
+                          Expanded(
+                            child: Text(
+                              currentConversation?.hash,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -230,5 +311,31 @@ class _MessagesContainer extends State<MessagesContainer> {
         ),
       ),
     );
+  }
+
+  void _showUpdateConversationDialog(String hash, name, topic) {
+    final nameController = TextEditingController(
+      text: name,
+    );
+    final topicController = TextEditingController(
+      text: topic,
+    );
+
+    showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return UpdateConversationDialog(
+            nameController: nameController,
+            topicController: topicController,
+          );
+        }).then<void>((bool userClickedCreate) {
+      if (userClickedCreate == true) {
+        Repository.get().updateConversation(
+          hash,
+          nameController.text,
+          topicController.text,
+        );
+      }
+    });
   }
 }
