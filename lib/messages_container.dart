@@ -51,9 +51,11 @@ class _MessagesContainer extends State<MessagesContainer> {
     if (currentConversation == null) {
       final nameController = TextEditingController();
       final topicController = TextEditingController();
+      final hashController = TextEditingController();
       return AddConversationWidget(
         nameController: nameController,
         topicController: topicController,
+        hashController: hashController,
       );
     }
     if (widget.isInTabletLayout) {
