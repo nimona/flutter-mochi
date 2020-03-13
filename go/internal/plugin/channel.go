@@ -63,6 +63,9 @@ func startDaemon(arguments interface{}) (interface{}, error) {
 	if err := os.Setenv("BIND_PRIVATE", "true"); err != nil {
 		log.DefaultLogger.Fatal("err setting env", log.Error(err))
 	}
+	if err := os.Setenv("UPNP", "true"); err != nil {
+		log.DefaultLogger.Fatal("err setting env", log.Error(err))
+	}
 	// if err := os.Setenv("LOG_LEVEL", "debug"); err != nil {
 	// 	log.DefaultLogger.Fatal("err setting env", log.Error(err))
 	// }
