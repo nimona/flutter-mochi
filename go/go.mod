@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/fsnotify/fsnotify v1.4.8 // indirect
-	github.com/go-flutter-desktop/go-flutter v0.33.0
+	github.com/go-flutter-desktop/go-flutter v0.35.3
 	github.com/go-gl/glfw v0.0.0-20200222043503-6f7a984d4dc4 // indirect
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.12
