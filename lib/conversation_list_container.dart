@@ -250,7 +250,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                         SizedBox(
                           width: double.infinity,
                           child: Container(
-                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                             child: RaisedButton(
                               child: Text("Add contact"),
                               onPressed: () {
@@ -305,23 +305,13 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                         SizedBox(
                           width: double.infinity,
                           child: Container(
-                            margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                             child: RaisedButton(
-                              child: Text("Create new conversation"),
+                              child: Text("Create or join conversation"),
                               onPressed: () {
-                                _showCreateConversationDialog();
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: RaisedButton(
-                              child: Text("Join conversation"),
-                              onPressed: () {
-                                _showJoinConversationDialog();
+                                setState(() {
+                                  itemSelectedCallback(null);
+                                });
                               },
                             ),
                           ),
