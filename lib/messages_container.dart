@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/view/add_conversation.dart';
 import 'package:mochi/view/dialog_update_conversation.dart';
 
 class MessagesContainer extends StatefulWidget {
@@ -47,6 +48,14 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   @override
   Widget build(BuildContext context) {
+    if (currentConversation == null) {
+      final nameController = TextEditingController();
+      final topicController = TextEditingController();
+      return AddConversationWidget(
+        nameController: nameController,
+        topicController: topicController,
+      );
+    }
     if (widget.isInTabletLayout) {
       return Scaffold(
         body: Center(child: _buildMessagesListContainer()),
