@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:mochi/data/datastore.dart';
@@ -27,6 +28,7 @@ const daemonApiUrl = 'ws://localhost:';
 class WsDataStore implements DataStore {
   WsDataStore() {
     startDaemon();
+    sleep(const Duration(seconds: 5));
   }
 
   @override
