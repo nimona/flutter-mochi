@@ -36,9 +36,11 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           context,
           MaterialPageRoute(
             builder: (BuildContext context) {
-              return MessagesContainer(
+              return Material(
+                child: MessagesContainer(
                 isInTabletLayout: false,
                 item: item,
+                ),
               );
             },
           ),
