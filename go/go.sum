@@ -125,3 +125,5 @@ gopkg.in/yaml.v2 v2.2.4 h1:/eiJrUcujPVeJ3xlSWaiNi3uSVmDGBK1pDHUHAnao1I=
 gopkg.in/yaml.v2 v2.2.4/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 nimona.io v0.5.6 h1:VGNECNz34+erUgiDRX7YDYq3LyZIGy1QyP+Az7n5lSg=
 nimona.io v0.5.6/go.mod h1:n81E/S+g1JAMCRqrr21Jipf7oCnnkj8TOSLwQO1A3ug=
+nimona.io v0.5.7 h1:u0BwMKw8mp++x+sFynfmO6hzljww2bgtCg9J4JJxPH8=
+nimona.io v0.5.7/go.mod h1:n81E/S+g1JAMCRqrr21Jipf7oCnnkj8TOSLwQO1A3ug=
