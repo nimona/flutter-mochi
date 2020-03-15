@@ -3,15 +3,21 @@
 ## Development
 
 The websocket datastore you will to run it using `hover`.
-For this you'll need golang version 1.14 or higher, and hover.
+For this you'll need a couple of things.
+
+* xcode, git
+* golang (v1.14)
+* [flutter](https://flutter.dev/docs/get-started/install/macos) (beta channel)
+* [hover](https://github.com/go-flutter-desktop/hover)
 
 ```sh
-brew install go
-go get -u github.com/go-flutter-desktop/hover
+git clone git@github.com:nimona/flutter-mochi.git
+cd flutter-mochi
+flutter channel beta
+flutter upgrade
+flutter doctor
 ```
 
-To run the project
-
 ```sh
-hover run
+LOG_LEVEL=debug UPNP=true hover run
 ```
