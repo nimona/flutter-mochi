@@ -60,14 +60,14 @@ class _MessagesContainer extends State<MessagesContainer> {
     }
     if (widget.isInTabletLayout) {
       return Scaffold(
-        body: Center(child: _buildMessagesListContainer()),
+        body: Container(child: _buildMessagesListContainer()),
       );
     } else {
       return Scaffold(
         appBar: AppBar(
           title: Text(currentConversation?.name),
         ),
-        body: Center(child: _buildMessagesListContainer()),
+        body: Container(child: _buildMessagesListContainer()),
       );
     }
   }
@@ -289,8 +289,6 @@ class _MessagesContainer extends State<MessagesContainer> {
       }
     }
 
-    var focusNode = new FocusNode();
-
     return new Container(
       color: Theme.of(context).cardColor,
       child: new Container(
@@ -299,9 +297,12 @@ class _MessagesContainer extends State<MessagesContainer> {
           children: <Widget>[
             new Flexible(
               child: new TextField(
-                focusNode: focusNode,
                 controller: _textController,
-                onSubmitted: _handleSubmitted,
+autofocus: true,
+                onEditingComplete: () {
+                  var text = _textController.text;
+                  _handleSubmitted(text);
+                },
                 decoration: new InputDecoration.collapsed(
                   hintText: "Send a message...",
                 ),
@@ -314,7 +315,6 @@ class _MessagesContainer extends State<MessagesContainer> {
                 color: Theme.of(context).accentColor,
                 onPressed: () {
                   _handleSubmitted(_textController.text);
-                  FocusScope.of(context).requestFocus(focusNode);
                 },
               ),
             ),
