@@ -67,7 +67,6 @@ class AddConversationWidget extends StatelessWidget {
                 children: <Widget>[
                   new TextField(
                     controller: hashController,
-                    autofocus: true,
                     decoration: new InputDecoration(
                       labelText: 'Conversation stream id',
                       hintText: 'should start with oh.',
