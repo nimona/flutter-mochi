@@ -17,6 +17,7 @@ import (
 	"nimona.io/pkg/context"
 	"nimona.io/pkg/crypto"
 	"nimona.io/pkg/daemon"
+	"nimona.io/pkg/net"
 	"nimona.io/pkg/object"
 	"nimona.io/pkg/peer"
 	"nimona.io/pkg/sqlobjectstore"
@@ -24,6 +25,11 @@ import (
 	"mochi.io/internal/rand"
 	"mochi.io/internal/store"
 )
+
+func init() {
+	net.UseUPNP = true
+	net.BindPrivate = true
+}
 
 // Mochi is the main service that contains business logic
 type Mochi struct {
