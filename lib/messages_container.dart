@@ -74,58 +74,44 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildMessagesListContainer() {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return StreamBuilder(
+    var sb = StreamBuilder(
         stream: Repository.get()
             .getMessagesForConversation(currentConversation?.hash)
             .stream,
         initialData: List<Message>(),
         builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
-          if (currentConversation == null) {
-            return Center(
-                child: Text(
-              'Select conversation',
-              style: textTheme.headline6,
-            ));
-          }
-
           if (snapshot.hasError) {
             return Text(snapshot.error);
           }
 
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.waiting) {
-            return new Container(
-              child: new Column(children: <Widget>[
-                _buildConversationHeader(),
-                new Divider(height: 1.0),
-                new Flexible(
-                  child: new Center(
-                      child: Text(
-                    "No messages yet",
-                    style: textTheme.headline6,
-                  )),
-                ),
-                new Divider(height: 1.0),
-                _buildTextComposer(),
-              ]),
+            return new Center(
+              child: Text(
+                "No messages yet",
+                style: textTheme.headline6,
+              ),
             );
           }
 
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.active) {
-            return new Container(
-              child: new Column(children: <Widget>[
-                _buildConversationHeader(),
-                new Divider(height: 1.0),
-                new Flexible(child: _buildMessagesList(snapshot)),
-                new Divider(height: 1.0),
-                _buildTextComposer(),
-              ]),
+            return new Flexible(
+              child: _buildMessagesList(snapshot),
             );
           }
 
           return Container();
         });
+
+    return new Container(
+        child: new Column(children: <Widget>[
+      _buildConversationHeader(),
+      new Divider(height: 1.0),
+      sb,
+      new Divider(height: 1.0),
+      _buildTextComposer(),
+    ]));
   }
 
   Container _buildConversationHeader() {
@@ -298,7 +284,7 @@ class _MessagesContainer extends State<MessagesContainer> {
             new Flexible(
               child: new TextField(
                 controller: _textController,
-autofocus: true,
+                autofocus: true,
                 onEditingComplete: () {
                   var text = _textController.text;
                   _handleSubmitted(text);
