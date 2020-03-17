@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/fsnotify/fsnotify v1.4.8 // indirect
+	github.com/geoah/go-nimona-notifier v0.0.1
 	github.com/go-flutter-desktop/go-flutter v0.33.0
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.12
@@ -14,6 +15,7 @@ require (
 	github.com/tjarratt/babble v0.0.0-20191209142150-eecdf8c2339d
 	github.com/tsdtsdtsd/identicon v0.3.2
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
+	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7
 	nimona.io v0.5.7
 )

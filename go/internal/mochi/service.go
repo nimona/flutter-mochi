@@ -1,9 +1,18 @@
 package mochi
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"image/png"
+	"io/ioutil"
+	"os"
+	"strings"
+	"sync"
 	"time"
+
+	notifier "github.com/geoah/go-nimona-notifier"
+	"github.com/tsdtsdtsd/identicon"
 
 	"nimona.io/pkg/context"
 	"nimona.io/pkg/crypto"
@@ -20,6 +29,40 @@ import (
 type Mochi struct {
 	store  *store.Store
 	daemon *daemon.Daemon
+}
+
+func getAssetsPath() string {
+	assetsPath := "./go/assets"
+	cwd, _ := os.Getwd()
+	if strings.HasSuffix(strings.Trim(cwd, "/"), "Resources") {
+		assetsPath = "../MacOS/assets"
+	}
+	return assetsPath
+}
+
+var (
+	dpLock = sync.RWMutex{}
+	dpMap  = map[string]string{}
+)
+
+func getConversationDisplayPicture(h string) string {
+	dpLock.RLock()
+	if v, ok := dpMap[h]; ok {
+		dpLock.RUnlock()
+		return v
+	}
+	dpLock.RUnlock()
+	dpLock.Lock()
+	defer dpLock.Unlock()
+
+	p := "/tmp/nimona-mochi-conversation-" + h + ".png"
+	if _, err := os.Stat(p); err == nil {
+		return p
+	}
+	if err := ioutil.WriteFile(p, getIdenticon(h), 0644); err != nil {
+		return ""
+	}
+	return p
 }
 
 // New returns a new mochi service given a store
@@ -135,6 +178,44 @@ func (m *Mochi) handleStreams() {
 				Sent:             t,
 			}
 			m.store.AddMessage(p)
+
+			if time.Now().Sub(p.Sent).Seconds() < 60 &&
+				m.daemon.LocalPeer.GetIdentityPublicKey().String() != p.ProfileKey {
+				msg, err := m.store.GetMessage(p.Hash)
+				if err != nil {
+					fmt.Println("could not get message for notification")
+					continue
+				}
+				con, err := m.store.GetConversation(p.ConversationHash)
+				if err != nil {
+					fmt.Println("could not get conversation for notification")
+					continue
+				}
+				note := notifier.NewNotification(msg.Body)
+				note.Title = "New message"
+				name := strings.Join(
+					[]string{
+						msg.Participant.Profile.NameFirst,
+						msg.Participant.Profile.NameLast,
+					}, " ",
+				)
+				if name != "" {
+					note.Title = name
+				}
+				note.Subtitle = con.Name
+				note.Sound = notifier.Basso
+				note.Group = "io.nimona.mochi"
+				note.Sender = "io.nimona.mochi"
+				note.Link = "io.nimona.mochi"
+				cdp := getConversationDisplayPicture(con.Hash)
+				if cdp != "" {
+					note.ContentImage = getConversationDisplayPicture(con.Hash)
+				}
+				// note.AppIcon = getConversationDisplayPicture(con.Hash)
+				if err := note.Push(); err != nil {
+					fmt.Println("could not send notification", err)
+				}
+			}
 		}
 	}
 }
@@ -284,4 +365,21 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast string, displayPicture []by
 	}
 
 	return nil
+}
+
+func getIdenticon(key string) []byte {
+	ic, err := identicon.New(key, &identicon.Options{
+		BackgroundColor: identicon.RGB(240, 240, 240),
+		ImageSize:       500,
+	})
+	if err != nil {
+		panic(err)
+	}
+	buf := &bytes.Buffer{}
+	err = png.Encode(buf, ic)
+	if err != nil {
+		panic(err)
+	}
+	return buf.Bytes()
+	// return base64.StdEncoding.EncodeToString(b)
 }

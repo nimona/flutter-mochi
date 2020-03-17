@@ -236,6 +236,26 @@ func (s *Store) GetConversations() ([]Conversation, error) {
 	return cs, nil
 }
 
+// GetConversation returns a single conversation
+func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
+	c := Conversation{}
+	if err := s.db.
+		Set("gorm:auto_preload", true).
+		Preload("Participants.Profile.Contact").
+		Preload("Messages.Participant.Profile.Contact").
+		Preload("UnreadMessagesLatest", "is_read = false").
+		Where(
+			"hash = ?",
+			conversationHash,
+		).
+		First(&c).
+		Error; err != nil {
+		return c, err
+	}
+
+	return c, nil
+}
+
 // GetMessages returns messages for conversation
 func (s *Store) GetMessages(conversationHash string) ([]Message, error) {
 	ms := []Message{}
