@@ -17,7 +17,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7
-	nimona.io v0.5.8
+	nimona.io v0.5.9-rc1
 )
 
 // replace nimona.io => ../../../../nimona.io
