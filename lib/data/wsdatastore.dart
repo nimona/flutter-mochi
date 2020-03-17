@@ -28,7 +28,7 @@ const daemonApiUrl = 'ws://localhost:';
 class WsDataStore implements DataStore {
   WsDataStore() {
     startDaemon();
-    sleep(const Duration(seconds: 5));
+    sleep(const Duration(seconds: 10));
   }
 
   @override
