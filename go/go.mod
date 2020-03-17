@@ -14,10 +14,12 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/tjarratt/babble v0.0.0-20191209142150-eecdf8c2339d
 	github.com/tsdtsdtsd/identicon v0.3.2
+	gitlab.com/NebulousLabs/fastrand v0.0.0-20181126182046-603482d69e40 // indirect
+	gitlab.com/NebulousLabs/go-upnp v0.0.0-20181011194642-3a71999ed0d3 // indirect
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7
-	nimona.io v0.5.9-rc1
+	nimona.io v0.5.9-rc2
 )
 
 // replace nimona.io => ../../../../nimona.io

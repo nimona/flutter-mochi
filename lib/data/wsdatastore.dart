@@ -21,7 +21,7 @@ import 'package:mochi/model/own_profile.dart';
 import 'package:web_socket_channel/io.dart';
 
 const daemonChannel = const MethodChannel('mochi.io/daemon');
-const daemonPeerPort = 10200;
+const daemonPeerPort = 10800;
 const daemonApiPort = 10100;
 const daemonApiUrl = 'ws://localhost:';
 
