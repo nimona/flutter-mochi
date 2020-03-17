@@ -11,8 +11,6 @@ github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5/go.mod h1:a
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.8 h1:vmjGRBE6skJRlqYIcSsh9B823pS/MqsvxevqbMnBPbI=
 github.com/fsnotify/fsnotify v1.4.8/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
-github.com/geoah/go-nimona-notifier v0.0.0-20200317003830-de61d84afedd h1:cjCSsgtpSHdTrD1jG8a7BHIXt34Swbf29I4P0wBjG20=
-github.com/geoah/go-nimona-notifier v0.0.0-20200317003830-de61d84afedd/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
 github.com/geoah/go-nimona-notifier v0.0.1 h1:TjFfmuLD5XTny6oVeUk4IVb/3wkNET0pRWNkJi9/bnw=
 github.com/geoah/go-nimona-notifier v0.0.1/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
 github.com/geoah/go-queue v2.0.0+incompatible h1:eLFmhPSYebanEi7t6D80vNBvPv0V6lLGyiMg6TFoEXY=
@@ -129,5 +127,5 @@ gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v2 v2.2.4 h1:/eiJrUcujPVeJ3xlSWaiNi3uSVmDGBK1pDHUHAnao1I=
 gopkg.in/yaml.v2 v2.2.4/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
-nimona.io v0.5.7 h1:u0BwMKw8mp++x+sFynfmO6hzljww2bgtCg9J4JJxPH8=
-nimona.io v0.5.7/go.mod h1:n81E/S+g1JAMCRqrr21Jipf7oCnnkj8TOSLwQO1A3ug=
+nimona.io v0.5.8 h1:8mbBofXv3G3Qxw4F9SC0peBmcyzuqYRniJJ/o4eboGQ=
+nimona.io v0.5.8/go.mod h1:n81E/S+g1JAMCRqrr21Jipf7oCnnkj8TOSLwQO1A3ug=
