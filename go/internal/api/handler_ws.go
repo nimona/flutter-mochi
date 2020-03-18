@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"image/png"
 	"io"
 	"net/http"
@@ -136,25 +135,23 @@ func (api *API) HandleWS(c *router.Context) {
 			continue
 		}
 
-		fmt.Println("got", string(msg))
-
 		m := map[string]interface{}{}
 		if err := json.Unmarshal(msg, &m); err != nil {
 			logger.Error("could not unmarshal outgoing object", log.Error(err))
 			continue
 		}
 
-		fmt.Println("Got", string(msg))
+		// fmt.Println("Got", string(msg))
 
 		switch m["_action"] {
 		case "contactsGet":
 			api.store.HandleProfiles(func(p store.Contact) {
-				fmt.Println("Handling contact", p)
+				// fmt.Println("Handling contact", p)
 				write(conn, p)
 			})
 			ps, _ := api.store.GetContacts()
 			for _, p := range ps {
-				fmt.Println("Handling old contact", p)
+				// fmt.Println("Handling old contact", p)
 				if err := write(conn, p); err != nil {
 					panic(err)
 				}
@@ -167,11 +164,11 @@ func (api *API) HandleWS(c *router.Context) {
 
 		case "ownProfileGet":
 			api.store.HandleOwnProfile(func(p store.OwnProfile) {
-				fmt.Println("Handling own profile", p)
+				// fmt.Println("Handling own profile", p)
 				write(conn, p)
 			})
 			p, _ := api.store.GetOwnProfile()
-			fmt.Println("Handling old own profile", p)
+			// fmt.Println("Handling old own profile", p)
 			if err := write(conn, p); err != nil {
 				panic(err)
 			}
@@ -183,12 +180,12 @@ func (api *API) HandleWS(c *router.Context) {
 
 		case "conversationsGet":
 			api.store.HandleConversations(func(c store.Conversation) {
-				fmt.Println("Handling conv", c)
+				// fmt.Println("Handling conv", c)
 				write(conn, c)
 			})
 			cs, _ := api.store.GetConversations()
 			for _, c := range cs {
-				fmt.Println("Handling old conv", c)
+				// fmt.Println("Handling old conv", c)
 				if err := write(conn, c); err != nil {
 					panic(err)
 				}
@@ -209,15 +206,15 @@ func (api *API) HandleWS(c *router.Context) {
 			json.Unmarshal(msg, &r)
 			api.store.HandleMessages(func(m store.Message) {
 				if m.ConversationHash != r.Conversation {
-					fmt.Println("Handling msg, ignoring", m)
+					// fmt.Println("Handling msg, ignoring", m)
 					return
 				}
-				fmt.Println("Handling msg", m)
+				// fmt.Println("Handling msg", m)
 				write(conn, m)
 			})
 			ms, _ := api.store.GetMessages(r.Conversation)
 			for _, m := range ms {
-				fmt.Println("Handling old msg", m)
+				// fmt.Println("Handling old msg", m)
 				if err := write(conn, m); err != nil {
 					panic(err)
 				}
