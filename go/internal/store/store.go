@@ -227,7 +227,7 @@ func (s *Store) GetConversations() ([]Conversation, error) {
 		Set("gorm:auto_preload", true).
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
-		Preload("UnreadMessagesLatest", "is_read = false").
+		// Preload("UnreadMessagesLatest", "is_read = false").
 		Find(&cs).
 		Error; err != nil {
 		return nil, err
@@ -243,7 +243,7 @@ func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
 		Set("gorm:auto_preload", true).
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
-		Preload("UnreadMessagesLatest", "is_read = false").
+		// Preload("UnreadMessagesLatest", "is_read = false").
 		Where(
 			"hash = ?",
 			conversationHash,
