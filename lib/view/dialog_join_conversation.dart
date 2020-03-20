@@ -17,20 +17,18 @@ class JoinConversationDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.all(24.0),
       content: new Container(
         width: dialogContentWidth,
-        child: new Expanded(
-          child: new Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              new TextField(
-                controller: hashController,
-                autofocus: true,
-                decoration: new InputDecoration(
-                  labelText: 'Conversation stream id',
-                  hintText: 'should start with oh.',
-                ),
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            new TextField(
+              controller: hashController,
+              autofocus: true,
+              decoration: new InputDecoration(
+                labelText: 'Conversation stream id',
+                hintText: 'should start with oh.',
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       actions: <Widget>[

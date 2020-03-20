@@ -18,30 +18,29 @@ class UpdateOwnProfileDialog extends StatelessWidget {
       title: Text('Update profile info'),
       contentPadding: const EdgeInsets.all(24.0),
       content: new Container(
-          width: dialogContentWidth,
-          child: new Expanded(
-            child: new Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                new TextField(
-                  controller: nameFirstController,
-                  autofocus: true,
-                  decoration: new InputDecoration(
-                    labelText: 'First name',
-                    hintText: 'John',
-                  ),
-                ),
-                new TextField(
-                  controller: nameLastController,
-                  autofocus: true,
-                  decoration: new InputDecoration(
-                    labelText: 'Last name',
-                    hintText: 'Doe',
-                  ),
-                )
-              ],
+        width: dialogContentWidth,
+        child: new Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            new TextField(
+              controller: nameFirstController,
+              autofocus: true,
+              decoration: new InputDecoration(
+                labelText: 'First name',
+                hintText: 'John',
+              ),
             ),
-          )),
+            new TextField(
+              controller: nameLastController,
+              autofocus: true,
+              decoration: new InputDecoration(
+                labelText: 'Last name',
+                hintText: 'Doe',
+              ),
+            )
+          ],
+        ),
+      ),
       actions: <Widget>[
         new FlatButton(
             child: const Text('CANCEL'),
