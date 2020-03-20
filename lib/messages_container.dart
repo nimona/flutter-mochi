@@ -5,6 +5,7 @@ import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/view/add_conversation.dart';
 import 'package:mochi/view/dialog_update_conversation.dart';
+import 'package:intl/intl.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
@@ -52,22 +53,30 @@ class _MessagesContainer extends State<MessagesContainer> {
       final nameController = TextEditingController();
       final topicController = TextEditingController();
       final hashController = TextEditingController();
-      return AddConversationWidget(
-        nameController: nameController,
-        topicController: topicController,
-        hashController: hashController,
+      return Scaffold(
+        body: Container(
+          child: AddConversationWidget(
+            nameController: nameController,
+            topicController: topicController,
+            hashController: hashController,
+          ),
+        ),
       );
     }
     if (widget.isInTabletLayout) {
       return Scaffold(
-        body: Container(child: _buildMessagesListContainer()),
+        body: Container(
+          child: _buildMessagesListContainer(),
+        ),
       );
     } else {
       return Scaffold(
         appBar: AppBar(
           title: Text(currentConversation?.name),
         ),
-        body: Container(child: _buildMessagesListContainer()),
+        body: Container(
+          child: _buildMessagesListContainer(),
+        ),
       );
     }
   }
@@ -218,49 +227,91 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildMessagesList(AsyncSnapshot<List<Message>> snapshot) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final dateFormatFull = new DateFormat('hh:mm');
+    final dateFormatSmall = new DateFormat('hh:mm');
 
     return Scrollbar(
-      child: ListView(
-        reverse: true,
-        children: snapshot.data.reversed.map((message) {
-          return Container(
-            margin: EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right: 16.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
-                    child: Image.network(
-                      "http://localhost:10100/displayPictures/" +
-                          message.participant?.key,
-                      height: 40,
-                    ),
-                  ),
-                ),
-                Column(
+      child: Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: ListView(
+          reverse: true,
+          children: snapshot.data.reversed.map((message) {
+            return () {
+              if (message.isDense == true) {
+                return Container(
+                    margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: SizedBox(
+                            width: 40,
+                            height: 18,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Text(
+                                dateFormatSmall.format(message.sent),
+                                style: TextStyle(
+                                  color: textTheme.caption.color,
+                                  fontSize: textTheme.caption.fontSize - 2,
+                                ),
+                                // textAlign: TextAlign.,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          message.body,
+                          style: textTheme.bodyText2,
+                        ),
+                      ],
+                    ));
+              }
+              return Container(
+                margin: EdgeInsets.fromLTRB(10, 18, 10, 2),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      message.participant?.profile?.nameFirst.toString() +
-                          " " +
-                          message.participant?.profile?.nameLast.toString(),
-                      style: textTheme.caption,
-                    ),
                     Container(
-                      margin: EdgeInsets.only(top: 5.0),
-                      child: Text(
-                        message.body,
-                        style: textTheme.bodyText2,
+                      margin: EdgeInsets.only(right: 10.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: Image.network(
+                          "http://localhost:10100/displayPictures/" +
+                              message.participant?.key,
+                          height: 40,
+                        ),
                       ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          message.participant?.profile?.nameFirst.toString() +
+                              " " +
+                              message.participant?.profile?.nameLast
+                                  .toString() +
+                              " (" +
+                              dateFormatFull.format(message.sent) +
+                              ")",
+                          style: textTheme.caption,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            message.body,
+                            style: textTheme.bodyText2,
+                          ),
+                        )
+                      ],
                     )
                   ],
-                )
-              ],
-            ),
-          );
-        }).toList(),
+                ),
+              );
+            }();
+          }).toList(),
+        ),
       ),
     );
   }
