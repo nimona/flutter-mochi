@@ -28,7 +28,7 @@ const daemonApiUrl = 'ws://localhost:';
 class WsDataStore implements DataStore {
   WsDataStore() {
     startDaemon();
-    sleep(const Duration(seconds: 10));
+    // sleep(const Duration(seconds: 5));
   }
 
   @override
@@ -94,7 +94,43 @@ class WsDataStore implements DataStore {
       )),
     );
     await for (final dynamic message in ws.stream) {
-      list.add(Message.fromJson(json.decode(message)));
+      var msg = Message.fromJson(json.decode(message));
+      if (list.length == 0) {
+        list.insert(0, msg);
+        yield list;
+      } else if (list.length == 1) {
+        if (list[0].sent.isBefore(msg.sent)) {
+          list.insert(1, msg);
+        } else {
+          list.insert(0, msg);
+        }
+      } else {
+        var previousMsgIndex = list.length - 1;
+        for (var i = 1; i < list.length; i++) {
+          var currentMsg = list[i];
+          if (currentMsg.sent.isAfter(msg.sent)) {
+            previousMsgIndex = i - 1;
+            break;
+          }
+        }
+        var previousMsg = list[previousMsgIndex];
+        if (previousMsg.participant.key == msg.participant.key) {
+          if (previousMsg.sent.difference(msg.sent).inSeconds.abs() < 6*60*60) {
+            msg = Message(
+              hash: msg.hash,
+              body: msg.body,
+              sent: msg.sent,
+              participant: msg.participant,
+              isDense: true,
+            );
+            list.insert(previousMsgIndex+1, msg);
+          } else {
+            list.insert(previousMsgIndex+1, msg);
+          }
+        } else {
+          list.insert(previousMsgIndex + 1, msg);
+        }
+      }
       yield list;
     }
   }
