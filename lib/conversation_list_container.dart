@@ -282,12 +282,13 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                       height: 40,
                                     ),
                                   ),
-                                  trailing: Text(
-                                    (conversation
-                                                .unreadMessagesLatest?.length ??
-                                            0)
-                                        .toString(),
-                                  ),
+                                  // TODO add unread count once backend supports it
+                                  // trailing: Text(
+                                  //   (conversation
+                                  //               .unreadMessagesLatest?.length ??
+                                  //           0)
+                                  //       .toString(),
+                                  // ),
                                   subtitle: Text(
                                     conversation.topic,
                                     maxLines: 1,
