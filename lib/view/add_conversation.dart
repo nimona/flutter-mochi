@@ -15,79 +15,71 @@ class AddConversationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var dialogContentWidth = width * 0.5;
-    return Center(
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return Container(
+      margin: EdgeInsets.all(50),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new Container(
-            width: dialogContentWidth,
-            child: new Expanded(
-              child: new Column(
-                children: <Widget>[
-                  new TextField(
-                    controller: nameController,
-                    decoration: new InputDecoration(
-                      labelText: 'Conversation name',
-                      hintText: 'eg. Worse than random',
-                    ),
-                  ),
-                  new TextField(
-                    controller: topicController,
-                    decoration: new InputDecoration(
-                      labelText: 'Topic',
-                      hintText: 'eg. typewriters',
-                    ),
-                  ),
-                  new ButtonBar(
-                    children: <Widget>[
-                      RaisedButton(
-                        child: Text("Create conversations"),
-                        onPressed: () {
-                          Repository.get().createConversation(
-                            nameController.text,
-                            topicController.text,
-                          );
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
+          new Text(
+            "Start new conversation",
+            style: textTheme.headline4,
+            textAlign: TextAlign.left,
+          ),
+          new TextField(
+            controller: nameController,
+            decoration: new InputDecoration(
+              labelText: 'Conversation name',
+              hintText: 'eg. Worse than random',
             ),
+          ),
+          new TextField(
+            controller: topicController,
+            decoration: new InputDecoration(
+              labelText: 'Topic',
+              hintText: '',
+            ),
+          ),
+          new ButtonBar(
+            children: <Widget>[
+              RaisedButton(
+                child: Text("Create conversations"),
+                onPressed: () {
+                  Repository.get().createConversation(
+                    nameController.text,
+                    topicController.text,
+                  );
+                },
+              ),
+            ],
           ),
           SizedBox(
             height: 50,
           ),
-          new Container(
-            width: dialogContentWidth,
-            child: new Expanded(
-              child: new Column(
-                children: <Widget>[
-                  new TextField(
-                    controller: hashController,
-                    decoration: new InputDecoration(
-                      labelText: 'Conversation stream id',
-                      hintText: 'should start with oh.',
-                    ),
-                  ),
-                  new ButtonBar(
-                    children: <Widget>[
-                      RaisedButton(
-                        child: Text("Join conversations"),
-                        onPressed: () {
-                          Repository.get().joinConversation(
-                            hashController.text,
-                          );
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
+          new Text(
+            "Join existing conversation",
+            style: textTheme.headline4,
+            textAlign: TextAlign.left,
+          ),
+          new TextField(
+            controller: hashController,
+            decoration: new InputDecoration(
+              labelText: 'Conversation stream id',
+              hintText: 'should start with oh1.',
             ),
           ),
+          new ButtonBar(
+            children: <Widget>[
+              RaisedButton(
+                child: Text("Join conversations"),
+                onPressed: () {
+                  Repository.get().joinConversation(
+                    hashController.text,
+                  );
+                },
+              ),
+            ],
+          )
         ],
       ),
     );
