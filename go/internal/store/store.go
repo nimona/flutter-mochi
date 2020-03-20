@@ -259,10 +259,14 @@ func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
 // GetMessages returns messages for conversation
 func (s *Store) GetMessages(conversationHash string) ([]Message, error) {
 	ms := []Message{}
-	if err := s.db.Set("gorm:auto_preload", true).Where(
-		"conversation_hash = ?",
-		conversationHash,
-	).Find(&ms).Error; err != nil {
+	if err := s.db.
+		Set("gorm:auto_preload", true).
+		Where(
+			"conversation_hash = ?",
+			conversationHash,
+		).
+		Order("sent ASC").
+		Find(&ms).Error; err != nil {
 		return nil, err
 	}
 
