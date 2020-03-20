@@ -223,7 +223,9 @@ func (api *API) HandleWS(c *router.Context) {
 		case "messageCreate":
 			r := MessageCreateRequest{}
 			json.Unmarshal(msg, &r)
-			api.mochi.CreateMessage(r.Conversation, r.Body)
+			if err := api.mochi.CreateMessage(r.Conversation, r.Body); err != nil {
+				logger.Error("could create message", log.Error(err))
+			}
 		}
 
 	}
