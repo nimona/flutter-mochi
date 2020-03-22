@@ -396,7 +396,7 @@ class _MessagesContainer extends State<MessagesContainer> {
       );
     }
 
-    return new Menu(
+     Widget m = new Menu(
       clickType: ClickType.click,
       items: [
         MenuItem(
@@ -413,6 +413,23 @@ class _MessagesContainer extends State<MessagesContainer> {
             );
           },
         ),
+        MenuItem("copy key", () {
+          Clipboard.setData(
+            ClipboardData(
+              text: message.participant.key,
+            ),
+          );
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Public key copied'),
+              duration: Duration(seconds: 1),
+              action: SnackBarAction(
+                label: 'Ok',
+                onPressed: () {},
+              ),
+            ),
+          );
+        })
       ],
       decoration: MenuDecoration(
         color: Colors.blueAccent,
@@ -425,6 +442,8 @@ class _MessagesContainer extends State<MessagesContainer> {
         ),
       ),
     );
+
+    return m;
   }
 
   Widget _buildTextComposer() {
