@@ -31,6 +31,8 @@ dependencies:
   menu:
     git:
       url: git@github.com:geoah/flutter_long_tap_menu.git
+  flutter_linkify: ^3.1.0
+  url_launcher: ^5.4.2
 
 dev_dependencies:
   flutter_test:

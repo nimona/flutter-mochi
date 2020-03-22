@@ -13,6 +13,7 @@ github.com/geoah/go-nimona-notifier v0.0.1 h1:TjFfmuLD5XTny6oVeUk4IVb/3wkNET0pRW
 github.com/geoah/go-nimona-notifier v0.0.1/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
 github.com/geoah/go-queue v2.0.0+incompatible h1:eLFmhPSYebanEi7t6D80vNBvPv0V6lLGyiMg6TFoEXY=
 github.com/geoah/go-queue v2.0.0+incompatible/go.mod h1:NPL2o6Frb0vYP2U/WlgENrrYsd8kN0fdq946szaCbY4=
+github.com/go-flutter-desktop/go-flutter v0.30.0/go.mod h1:NCryd/AqiRbYSd8pMzQldYkgH1tZIFGt2ToUghZcWGA=
 github.com/go-flutter-desktop/go-flutter v0.33.0 h1:+0R9hn+oOKj5A9p95H7jcgPoWrjdxmHFu1NODf0uOKk=
 github.com/go-flutter-desktop/go-flutter v0.33.0/go.mod h1:NCryd/AqiRbYSd8pMzQldYkgH1tZIFGt2ToUghZcWGA=
 github.com/go-flutter-desktop/go-flutter v0.34.0 h1:g5p1JTviSGBBFnj+snPxHWQrEDY6Db4OaYicKAwk7ks=
@@ -21,6 +22,9 @@ github.com/go-flutter-desktop/go-flutter v0.34.1 h1:YtVeb+wNhGxJFqP0ZDTi1uzrU4jE
 github.com/go-flutter-desktop/go-flutter v0.34.1/go.mod h1:NCryd/AqiRbYSd8pMzQldYkgH1tZIFGt2ToUghZcWGA=
 github.com/go-flutter-desktop/go-flutter v0.36.0 h1:n/SBmYrZaLMfVev1ut97GCRlYoMeGThBIPtwqF7GS04=
 github.com/go-flutter-desktop/go-flutter v0.36.0/go.mod h1:8tjt3yZ3lTNLqgzWeH90f1uhCR9BL68LFoiy/n0aw/w=
+github.com/go-flutter-desktop/plugins v0.0.0-20200317170052-fbf33df55ff9 h1:vP2hqJKs5yt274hU0xHorqc1XgRa3Gtz+F05ZIlce3w=
+github.com/go-flutter-desktop/plugins/url_launcher v0.1.2 h1:oFiIJjotMQvF8rfKWVJrf+1/JgTXShEIsibkiXrQnUw=
+github.com/go-flutter-desktop/plugins/url_launcher v0.1.2/go.mod h1:GYgRDaLDAJRYvaASQk8HEmI8YJurbZGW5VVDIMxwzBU=
 github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7 h1:SCYMcCJ89LjRGwEa0tRluNRiMjZHalQZrVrvTbPh+qw=
 github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7/go.mod h1:482civXOzJJCPzJ4ZOX/pwvXBWSnzD4OKMdH4ClKGbk=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1 h1:QbL/5oDUmRBzO9/Z7Seo6zf912W/a6Sr4Eu0G/3Jho0=

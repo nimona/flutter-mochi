@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:menu/menu.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
@@ -236,39 +238,78 @@ class _MessagesContainer extends State<MessagesContainer> {
       child: Container(
         margin: EdgeInsets.only(bottom: 8),
         child: ListView(
+          shrinkWrap: true,
           reverse: true,
           children: snapshot.data.reversed.map((message) {
             return () {
+              var bodies = <Widget>[
+                Linkify(
+                  text: message.body,
+                  style: textTheme.bodyText2,
+                  options: LinkifyOptions(
+                    humanize: false,
+                  ),
+                  onOpen: (link) async {
+                    if (await canLaunch(link.url)) {
+                      await launch(link.url);
+                    } else {
+                      throw 'Could not launch $link';
+                    }
+                  },
+                ),
+              ];
+              var exp = RegExp(r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)');
+              Iterable<RegExpMatch> matches = exp.allMatches(message.body);
+              matches.forEach((match) {
+                bodies.add(
+                  Container(
+                    width: 250,
+                    margin: EdgeInsets.only(
+                      top: 5,
+                    ),
+                    child: Image.network(
+                      message.body.substring(match.start, match.end),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                );
+              });
               if (message.isDense == true) {
                 return Container(
-                    margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(right: 10),
-                          child: SizedBox(
-                            width: 40,
-                            height: 18,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Text(
-                                dateFormatSmall.format(message.sent),
-                                style: TextStyle(
-                                  color: textTheme.caption.color,
-                                  fontSize: textTheme.caption.fontSize - 2,
-                                ),
-                                // textAlign: TextAlign.,
+                  margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 50,
+                        height: 18,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              dateFormatSmall.format(message.sent),
+                              style: TextStyle(
+                                color: textTheme.caption.color,
+                                fontSize: textTheme.caption.fontSize - 2,
                               ),
+                              // textAlign: TextAlign.,
                             ),
                           ),
                         ),
-                        Text(
-                          message.body,
-                          style: textTheme.bodyText2,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: bodies,
                         ),
-                      ],
-                    ));
+                      ),
+                    ],
+                  ),
+                );
               }
               return Container(
                 margin: EdgeInsets.fromLTRB(10, 18, 10, 2),
@@ -286,20 +327,27 @@ class _MessagesContainer extends State<MessagesContainer> {
                         ),
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        createParticipantName(
-                            message, dateFormatFull, textTheme),
-                        Container(
-                          margin: EdgeInsets.only(top: 5.0),
-                          child: Text(
-                            message.body,
-                            style: textTheme.bodyText2,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          createParticipantName(
+                            message,
+                            dateFormatFull,
+                            textTheme,
                           ),
-                        )
-                      ],
-                    )
+                          Container(
+                            margin: EdgeInsets.only(top: 5.0),
+                            child: Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: bodies,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -396,7 +444,7 @@ class _MessagesContainer extends State<MessagesContainer> {
       );
     }
 
-     Widget m = new Menu(
+    Widget m = new Menu(
       clickType: ClickType.click,
       items: [
         MenuItem(
