@@ -25,6 +25,11 @@ type (
 		Alias       string `json:"alias"`
 		IdentityKey string `json:"identityKey"`
 	}
+	// ContactUpdateRequest -
+	ContactUpdateRequest struct {
+		Alias       string `json:"alias"`
+		IdentityKey string `json:"identityKey"`
+	}
 	// ContactsGetRequest -
 	ContactsGetRequest struct {
 	}
@@ -177,6 +182,11 @@ func (api *API) HandleWS(c *router.Context) {
 			r := ContactAddRequest{}
 			json.Unmarshal(msg, &r)
 			api.mochi.AddContact(r.IdentityKey, r.Alias)
+
+		case "contactUpdate":
+			r := ContactUpdateRequest{}
+			json.Unmarshal(msg, &r)
+			api.mochi.UpdateContact(r.IdentityKey, r.Alias)
 
 		case "conversationsGet":
 			api.store.HandleConversations(func(c store.Conversation) {

@@ -5,7 +5,10 @@ class CreateContactDialog extends StatelessWidget {
     Key key,
     @required this.aliasController,
     @required this.publicKeyController,
+    @required this.updateContact,
   }) : super(key: key);
+
+  final bool updateContact;
 
   final TextEditingController aliasController;
   final TextEditingController publicKeyController;
@@ -15,7 +18,12 @@ class CreateContactDialog extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     var dialogContentWidth = width * 0.8;
     return new AlertDialog(
-      title: Text('Create a new contact'),
+      title: () {
+        if (updateContact) {
+          return new Text('Update contact');
+        }
+        return new Text('Add new contact');
+      }(),
       contentPadding: const EdgeInsets.all(24.0),
       content: new Container(
         width: dialogContentWidth,
@@ -47,11 +55,14 @@ class CreateContactDialog extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context, false);
             }),
-        new FlatButton(
-            child: const Text('ADD'),
-            onPressed: () {
-              Navigator.pop(context, true);
-            })
+        new FlatButton(child: () {
+          if (updateContact) {
+            return new Text('UPDATE');
+          }
+          return new Text('ADD');
+        }(), onPressed: () {
+          Navigator.pop(context, true);
+        })
       ],
     );
   }

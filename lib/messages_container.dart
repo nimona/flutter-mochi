@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:menu/menu.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/view/add_conversation.dart';
+import 'package:mochi/view/dialog_create_contact.dart';
 import 'package:mochi/view/dialog_update_conversation.dart';
 import 'package:intl/intl.dart';
 
@@ -287,16 +289,8 @@ class _MessagesContainer extends State<MessagesContainer> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          message.participant?.profile?.nameFirst.toString() +
-                              " " +
-                              message.participant?.profile?.nameLast
-                                  .toString() +
-                              " (" +
-                              dateFormatFull.format(message.sent) +
-                              ")",
-                          style: textTheme.caption,
-                        ),
+                        createParticipantName(
+                            message, dateFormatFull, textTheme),
                         Container(
                           margin: EdgeInsets.only(top: 5.0),
                           child: Text(
@@ -311,6 +305,123 @@ class _MessagesContainer extends State<MessagesContainer> {
               );
             }();
           }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget createParticipantName(
+    Message message,
+    DateFormat dateFormatFull,
+    TextTheme textTheme,
+  ) {
+    var displayName = "";
+    var children = <TextSpan>[];
+
+    if (message.participant?.profile?.nameFirst != "") {
+      displayName = message.participant.profile.nameFirst;
+    }
+
+    if (message.participant?.profile?.nameLast != "") {
+      if (displayName != "") {
+        displayName = displayName + " ";
+      }
+      displayName = displayName + message.participant.profile.nameLast;
+    }
+
+    var updateContactAlias = "";
+    var updateContact = false;
+
+    if (message.participant?.contact?.alias != "") {
+      updateContact = true;
+      updateContactAlias = message.participant.contact.alias;
+      children.add(
+        new TextSpan(
+          text: message.participant.contact.alias + " ",
+          style: TextStyle(
+            color: Colors.blueAccent,
+          ),
+        ),
+      );
+    }
+
+    if (displayName != "") {
+      children.add(
+        new TextSpan(
+          text: displayName + " ",
+          style: textTheme.caption,
+        ),
+      );
+    }
+
+    children.add(
+      new TextSpan(
+        text: dateFormatFull.format(message.sent),
+        style: textTheme.caption,
+      ),
+    );
+
+    void _showCreateContactDialog(String key, alias) {
+      final aliasController = TextEditingController(
+        text: alias,
+      );
+      final publicKeyController = TextEditingController(
+        text: key,
+      );
+      showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return CreateContactDialog(
+            aliasController: aliasController,
+            publicKeyController: publicKeyController,
+            updateContact: updateContact,
+          );
+        },
+      ).then<void>(
+        (bool userClickedSave) {
+          if (userClickedSave == true && aliasController.text.isNotEmpty) {
+            if (updateContact) {
+              Repository.get().updateContact(
+                publicKeyController.text,
+                aliasController.text,
+              );
+            } else {
+              Repository.get().createContact(
+                publicKeyController.text,
+                aliasController.text,
+              );
+            }
+          }
+        },
+      );
+    }
+
+    return new Menu(
+      clickType: ClickType.click,
+      items: [
+        MenuItem(
+          () {
+            if (updateContact) {
+              return "update contact for " + updateContactAlias;
+            }
+            return "add " + updateContactAlias + "as contact";
+          }(),
+          () {
+            _showCreateContactDialog(
+              message.participant.key,
+              updateContactAlias,
+            );
+          },
+        ),
+      ],
+      decoration: MenuDecoration(
+        color: Colors.blueAccent,
+        padding: const EdgeInsets.all(10),
+        constraints: BoxConstraints(),
+      ),
+      child: new RichText(
+        text: new TextSpan(
+          children: children,
         ),
       ),
     );

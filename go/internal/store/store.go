@@ -80,8 +80,8 @@ func (s *Store) HandleOwnProfile(h OwnProfileHandler) {
 	s.lock.Unlock()
 }
 
-// AddContact to the store and publish it
-func (s *Store) AddContact(p Contact) error {
+// PutContact to the store and publish it
+func (s *Store) PutContact(p Contact) error {
 	err := s.db.
 		Where(Contact{
 			Key: p.Key,
@@ -227,6 +227,7 @@ func (s *Store) GetConversations() ([]Conversation, error) {
 		Set("gorm:auto_preload", true).
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
+		Preload("Messages.Participant.Contact").
 		// Preload("UnreadMessagesLatest", "is_read = false").
 		Find(&cs).
 		Error; err != nil {
@@ -243,6 +244,7 @@ func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
 		Set("gorm:auto_preload", true).
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
+		Preload("Messages.Participant.Contact").
 		// Preload("UnreadMessagesLatest", "is_read = false").
 		Where(
 			"hash = ?",
@@ -261,6 +263,8 @@ func (s *Store) GetMessages(conversationHash string) ([]Message, error) {
 	ms := []Message{}
 	if err := s.db.
 		Set("gorm:auto_preload", true).
+		Preload("Participant.Profile").
+		Preload("Participant.Profile.Contact").
 		Where(
 			"conversation_hash = ?",
 			conversationHash,
@@ -322,6 +326,7 @@ func (s *Store) AddMessage(m Message) error {
 		Set("gorm:auto_preload", true).
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
+		Preload("Messages.Participant.Contact").
 		Preload("UnreadMessagesLatest", "is_read = false").
 		Where(
 			"hash = ?",

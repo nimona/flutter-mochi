@@ -53,6 +53,7 @@ type Participant struct {
 	ConversationHash string  `json:"-"`
 	ProfileKey       string  `json:"key"`
 	Profile          Profile `json:"profile"`
+	Contact          Contact `json:"contact" gorm:"foreignKey:profileKey"`
 	HasAccepted      bool    `json:"has_accepted"`
 }
 

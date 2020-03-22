@@ -15,6 +15,11 @@ class MockDataStore implements DataStore {
   }
 
   @override
+  void updateContact(String identityKey, String alias) {
+    return;
+  }
+
+  @override
   Stream<Contact> getContacts() async* {
     return;
   }
