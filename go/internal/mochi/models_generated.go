@@ -56,6 +56,17 @@ type (
 		Topic      string
 		Nonce      string
 	}
+	ConversationUpdated struct {
+		raw        object.Object
+		Stream     object.Hash
+		Parents    []object.Hash
+		Owners     []crypto.PublicKey
+		Policy     object.Policy
+		Signatures []object.Signature
+		Datetime   string
+		Name       string
+		Topic      string
+	}
 	ConversationMessageAdded struct {
 		raw        object.Object
 		Stream     object.Hash
@@ -447,6 +458,91 @@ func (e *ConversationCreated) FromObject(o object.Object) error {
 	}
 	if v := data.Value("nonce:s"); v != nil {
 		e.Nonce = string(v.PrimitiveHinted().(string))
+	}
+	return nil
+}
+
+func (e ConversationUpdated) GetType() string {
+	return "mochi.io/conversation.Updated"
+}
+
+func (e ConversationUpdated) GetSchema() *object.SchemaObject {
+	return &object.SchemaObject{
+		Properties: []*object.SchemaProperty{
+			&object.SchemaProperty{
+				Name:       "datetime",
+				Type:       "string",
+				Hint:       "s",
+				IsRepeated: false,
+				IsOptional: false,
+			},
+			&object.SchemaProperty{
+				Name:       "name",
+				Type:       "string",
+				Hint:       "s",
+				IsRepeated: false,
+				IsOptional: false,
+			},
+			&object.SchemaProperty{
+				Name:       "topic",
+				Type:       "string",
+				Hint:       "s",
+				IsRepeated: false,
+				IsOptional: false,
+			},
+		},
+	}
+}
+
+func (e ConversationUpdated) ToObject() object.Object {
+	o := object.Object{}
+	o = o.SetType("mochi.io/conversation.Updated")
+	if len(e.Stream) > 0 {
+		o = o.SetStream(e.Stream)
+	}
+	if len(e.Parents) > 0 {
+		o = o.SetParents(e.Parents)
+	}
+	if len(e.Owners) > 0 {
+		o = o.SetOwners(e.Owners)
+	}
+	o = o.AddSignature(e.Signatures...)
+	o = o.SetPolicy(e.Policy)
+	if e.Datetime != "" {
+		o = o.Set("datetime:s", e.Datetime)
+	}
+	if e.Name != "" {
+		o = o.Set("name:s", e.Name)
+	}
+	if e.Topic != "" {
+		o = o.Set("topic:s", e.Topic)
+	}
+	// if schema := e.GetSchema(); schema != nil {
+	// 	m["_schema:o"] = schema.ToObject().ToMap()
+	// }
+	return o
+}
+
+func (e *ConversationUpdated) FromObject(o object.Object) error {
+	data, ok := o.Raw().Value("data:o").(immutable.Map)
+	if !ok {
+		return errors.New("missing data")
+	}
+	e.raw = object.Object{}
+	e.raw = e.raw.SetType(o.GetType())
+	e.Stream = o.GetStream()
+	e.Parents = o.GetParents()
+	e.Owners = o.GetOwners()
+	e.Signatures = o.GetSignatures()
+	e.Policy = o.GetPolicy()
+	if v := data.Value("datetime:s"); v != nil {
+		e.Datetime = string(v.PrimitiveHinted().(string))
+	}
+	if v := data.Value("name:s"); v != nil {
+		e.Name = string(v.PrimitiveHinted().(string))
+	}
+	if v := data.Value("topic:s"); v != nil {
+		e.Topic = string(v.PrimitiveHinted().(string))
 	}
 	return nil
 }

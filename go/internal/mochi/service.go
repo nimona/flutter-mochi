@@ -111,7 +111,7 @@ func (m *Mochi) handleStreams() {
 				Name:  v.Name,
 				Topic: v.Topic,
 			}
-			m.store.AddConversation(c)
+			m.store.PutConversation(c)
 			for _, owner := range v.Owners {
 				m.store.AddParticipant(store.Participant{
 					ProfileKey:       owner.String(),
@@ -119,6 +119,20 @@ func (m *Mochi) handleStreams() {
 					HasAccepted:      true,
 				})
 			}
+
+		case "mochi.io/conversation.Updated":
+			v := ConversationUpdated{}
+			if err := v.FromObject(o); err != nil {
+				continue
+			}
+
+			// update conversation and store
+			c := store.Conversation{
+				Hash:  v.Stream.String(),
+				Name:  v.Name,
+				Topic: v.Topic,
+			}
+			m.store.PutConversation(c)
 
 		case "mochi.io/conversation.ParticipantInvited":
 			v := ConversationParticipantInvited{}
@@ -265,6 +279,32 @@ func (m *Mochi) CreateConversation(name, topic string) error {
 		Name:  name,
 		Topic: topic,
 		Nonce: rand.String(32),
+		Owners: []crypto.PublicKey{
+			m.daemon.LocalPeer.GetIdentityPublicKey(),
+		},
+		Datetime: time.Now().Format(time.RFC3339),
+	}
+
+	// add object to our peer
+	o := v.ToObject()
+	if err := m.daemon.Orchestrator.Put(o); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateConversation and store it given a name and topic, or error
+func (m *Mochi) UpdateConversation(conversationHash, name, topic string) error {
+	if name == "" {
+		return errors.New("missing name")
+	}
+
+	// create new stream
+	v := ConversationUpdated{
+		Stream: object.Hash(conversationHash),
+		Name:   name,
+		Topic:  topic,
 		Owners: []crypto.PublicKey{
 			m.daemon.LocalPeer.GetIdentityPublicKey(),
 		},

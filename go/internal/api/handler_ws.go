@@ -51,6 +51,12 @@ type (
 		Name  string `json:"name"`
 		Topic string `json:"topic"`
 	}
+	// ConversationUpdateRequest -
+	ConversationUpdateRequest struct {
+		ConversationHash string `json:"hash"`
+		Name             string `json:"name"`
+		Topic            string `json:"topic"`
+	}
 	// ConversationJoinRequest -
 	ConversationJoinRequest struct {
 		ConversationHash string `json:"hash"`
@@ -205,6 +211,11 @@ func (api *API) HandleWS(c *router.Context) {
 			r := ConversationStartRequest{}
 			json.Unmarshal(msg, &r)
 			api.mochi.CreateConversation(r.Name, r.Topic)
+
+		case "conversationUpdate":
+			r := ConversationUpdateRequest{}
+			json.Unmarshal(msg, &r)
+			api.mochi.UpdateConversation(r.ConversationHash, r.Name, r.Topic)
 
 		case "conversationJoin":
 			r := ConversationJoinRequest{}

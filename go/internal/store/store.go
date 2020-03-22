@@ -198,8 +198,8 @@ func (s *Store) AddParticipant(p Participant) error {
 	return nil
 }
 
-// AddConversation to the store and publish it
-func (s *Store) AddConversation(c Conversation) error {
+// PutConversation to the store and publish it
+func (s *Store) PutConversation(c Conversation) error {
 	err := s.db.
 		Where(Conversation{
 			Hash: c.Hash,
