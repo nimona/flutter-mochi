@@ -498,7 +498,6 @@ class _MessagesContainer extends State<MessagesContainer> {
     final TextEditingController _textController = new TextEditingController();
 
     void _handleSubmitted(String text) {
-      _textController.clear();
       if (text.isNotEmpty) {
         Repository.get().createMessage(currentConversation.hash, text);
       }
@@ -516,6 +515,7 @@ class _MessagesContainer extends State<MessagesContainer> {
                 autofocus: true,
                 onEditingComplete: () {
                   var text = _textController.text;
+                  _textController.text = "";
                   _handleSubmitted(text);
                 },
                 decoration: new InputDecoration.collapsed(
@@ -529,7 +529,9 @@ class _MessagesContainer extends State<MessagesContainer> {
                 icon: new Icon(Icons.send),
                 color: Theme.of(context).accentColor,
                 onPressed: () {
-                  _handleSubmitted(_textController.text);
+                  var text = _textController.text;
+                  _textController.text = "";
+                  _handleSubmitted(text);
                 },
               ),
             ),
