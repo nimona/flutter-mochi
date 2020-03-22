@@ -24,6 +24,10 @@ class Repository {
     _dataStore.createContact(identityKey, alias);
   }
 
+  void updateContact(String identityKey, String alias) {
+    _dataStore.updateContact(identityKey, alias);
+  }
+
   StreamController<Contact> getContacts() {
     StreamController<Contact> sc = new StreamController();
     sc.addStream(_dataStore.getContacts());

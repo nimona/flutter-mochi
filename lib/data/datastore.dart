@@ -5,6 +5,8 @@ import 'package:mochi/model/own_profile.dart';
 
 abstract class DataStore {
   void createContact(String identityKey, String alias);
+  
+  void updateContact(String identityKey, String alias);
 
   Stream<Contact> getContacts();
 

@@ -402,6 +402,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
           return CreateContactDialog(
             aliasController: aliasController,
             publicKeyController: publicKeyController,
+            updateContact: false,
           );
         }).then<void>((bool userClickedCreate) {
       if (userClickedCreate == true && aliasController.text.isNotEmpty) {

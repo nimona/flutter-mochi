@@ -291,6 +291,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.6"
+  menu:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: c844f65f3ca66be81e4bb5ccb647296bf4325899
+      url: "git@github.com:geoah/flutter_long_tap_menu.git"
+    source: git
+    version: "0.1.4"
   meta:
     dependency: transitive
     description:
@@ -456,7 +465,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.14"
+    version: "0.2.15"
   timing:
     dependency: transitive
     description:

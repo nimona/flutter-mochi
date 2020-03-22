@@ -15,6 +15,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     body: json['body'] as String,
     sent: json['sent'] == null ? null : DateTime.parse(json['sent'] as String),
     isEdited: json['isEdited'] as bool,
+    isDense: json['isDense'] as bool,
   );
 }
 
@@ -24,4 +25,5 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'sent': instance.sent?.toIso8601String(),
       'participant': instance.participant,
       'isEdited': instance.isEdited,
+      'isDense': instance.isDense,
     };

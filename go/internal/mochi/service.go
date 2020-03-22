@@ -326,7 +326,23 @@ func (m *Mochi) AddContact(identityKey, alias string) error {
 		Key:   identityKey,
 		Alias: alias,
 	}
-	return m.store.AddContact(c)
+	return m.store.PutContact(c)
+}
+
+// UpdateContact and store it given a key and an alias, or error
+func (m *Mochi) UpdateContact(identityKey, alias string) error {
+	if identityKey == "" {
+		return errors.New("missing identity key")
+	}
+	if alias == "" {
+		return errors.New("missing alias")
+	}
+	// TODO find and retrieve profile from network
+	c := store.Contact{
+		Key:   identityKey,
+		Alias: alias,
+	}
+	return m.store.PutContact(c)
 }
 
 // UpdateOwnProfile and store it given a first and last name, or error

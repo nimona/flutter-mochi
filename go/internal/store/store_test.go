@@ -100,6 +100,10 @@ func TestStore_GetConversations(t *testing.T) {
 	require.Equal(t, "c1", cs[0].Messages[0].Participant.ConversationHash)
 	require.Equal(t, "f00", cs[0].Messages[0].Participant.ProfileKey)
 
+	// check relationships for participant.contact
+	require.Equal(t, "f00", cs[0].Messages[0].Participant.Contact.Key)
+	require.Equal(t, "local", cs[0].Messages[0].Participant.Contact.Alias)
+
 	// check relationships for message.participant.profile
 	require.Equal(t, "f00", cs[0].Messages[0].Participant.Profile.Key)
 	require.Equal(t, "John", cs[0].Messages[0].Participant.Profile.NameFirst)
