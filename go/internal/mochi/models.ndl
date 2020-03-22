@@ -26,6 +26,11 @@ stream mochi.io/conversation {
         topic string
         nonce string
     }
+    signed object Updated {
+        datetime string
+        name string
+        topic string
+    }
     signed object MessageAdded {
         datetime string
         body string

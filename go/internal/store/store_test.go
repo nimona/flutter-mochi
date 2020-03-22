@@ -22,7 +22,7 @@ func TestStore_GetConversations(t *testing.T) {
 		Participants:         []Participant{},
 		Messages:             []Message{},
 	}
-	err = s.AddConversation(c)
+	err = s.PutConversation(c)
 	require.NoError(t, err)
 
 	// get conversation
