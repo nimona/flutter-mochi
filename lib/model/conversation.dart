@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mochi/model/message.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mochi/model/participant.dart';
 
 part 'conversation.g.dart';
 
@@ -13,6 +14,7 @@ class Conversation {
   final DateTime lastMessage;
   final int unreadMessagesCount;
   final List<Message> unreadMessagesLatest;
+  final List<Participant> participants;
 
   Conversation({
     @required this.hash,
@@ -22,6 +24,7 @@ class Conversation {
     this.lastMessage,
     this.unreadMessagesCount = 0,
     this.unreadMessagesLatest,
+    this.participants,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
