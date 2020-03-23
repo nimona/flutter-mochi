@@ -130,17 +130,27 @@ class WsDataStore implements DataStore {
         }
         var previousMsg = list[previousMsgIndex];
         if (previousMsg.participant.key == msg.participant.key) {
-          if (previousMsg.sent.difference(msg.sent).inSeconds.abs() < 6*60*60) {
+          if (previousMsg.sent.difference(msg.sent).inSeconds.abs() <
+              6 * 60 * 60) {
             msg = Message(
               hash: msg.hash,
               body: msg.body,
               sent: msg.sent,
               participant: msg.participant,
               isDense: true,
+              isSameMinute: roundDown(
+                previousMsg.sent,
+                Duration(seconds: 60),
+              ).isAtSameMomentAs(
+                roundDown(
+                  msg.sent,
+                  Duration(seconds: 60),
+                ),
+              ),
             );
-            list.insert(previousMsgIndex+1, msg);
+            list.insert(previousMsgIndex + 1, msg);
           } else {
-            list.insert(previousMsgIndex+1, msg);
+            list.insert(previousMsgIndex + 1, msg);
           }
         } else {
           list.insert(previousMsgIndex + 1, msg);
@@ -231,4 +241,9 @@ class WsDataStore implements DataStore {
       yield OwnProfile.fromJson(json.decode(message));
     }
   }
+}
+
+DateTime roundDown(DateTime dt, Duration delta) {
+  return DateTime.fromMillisecondsSinceEpoch(dt.millisecondsSinceEpoch -
+      dt.millisecondsSinceEpoch % delta.inMilliseconds);
 }
