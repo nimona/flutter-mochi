@@ -63,6 +63,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
             child: ConversationListContainer(
               itemSelectedCallback: (item) {
                 setState(() {
+                  FocusScope.of(context).requestFocus(new FocusNode());
                   _selectedItem = item;
                   messagesContainer.updateConversation(item);
                 });
