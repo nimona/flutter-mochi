@@ -1,7 +1,7 @@
+import 'package:adhara_markdown/mdviewer.dart';
+import 'package:adhara_markdown/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:menu/menu.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
@@ -243,19 +243,16 @@ class _MessagesContainer extends State<MessagesContainer> {
           children: snapshot.data.reversed.map((message) {
             return () {
               var bodies = <Widget>[
-                Linkify(
-                  text: message.body,
-                  style: textTheme.bodyText2,
-                  options: LinkifyOptions(
-                    humanize: false,
-                  ),
-                  onOpen: (link) async {
-                    if (await canLaunch(link.url)) {
-                      await launch(link.url);
-                    } else {
-                      throw 'Could not launch $link';
-                    }
-                  },
+                MarkdownViewer(
+                  content: message.body,
+                  formatTypes: [
+                    MarkdownTokenTypes.bold,
+                    MarkdownTokenTypes.italic,
+                    MarkdownTokenTypes.strikeThrough,
+                    MarkdownTokenTypes.code,
+                    MarkdownTokenTypes.link,
+                    MarkdownTokenTypes.mention,
+                  ],
                 ),
               ];
               var exp = RegExp(r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)');
