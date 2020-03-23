@@ -35,7 +35,7 @@ class MessagesContainer extends StatefulWidget {
 
 class _MessagesContainer extends State<MessagesContainer> {
   Conversation currentConversation;
-
+  Stream<List<Message>> _streamMessages;
   @override
   void initState() {
     super.initState();
@@ -43,12 +43,18 @@ class _MessagesContainer extends State<MessagesContainer> {
       // For the mobile-case where screen is initialised by the constructor
       currentConversation = widget.item;
     });
+    _streamMessages = Repository.get()
+        .getMessagesForConversation(currentConversation?.hash)
+        .stream;
   }
 
   void updateConversation(Conversation conversation) {
     setState(() {
       currentConversation = conversation;
     });
+    _streamMessages = Repository.get()
+        .getMessagesForConversation(currentConversation?.hash)
+        .stream;
   }
 
   @override
@@ -88,9 +94,7 @@ class _MessagesContainer extends State<MessagesContainer> {
   Widget _buildMessagesListContainer() {
     final TextTheme textTheme = Theme.of(context).textTheme;
     var sb = StreamBuilder(
-        stream: Repository.get()
-            .getMessagesForConversation(currentConversation?.hash)
-            .stream,
+        stream: _streamMessages,
         initialData: List<Message>(),
         builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
           if (snapshot.hasError) {
