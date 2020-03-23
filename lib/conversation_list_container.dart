@@ -32,7 +32,9 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   Conversation selectedItem;
 
   Map<String, Conversation> _conversationItems = {};
-  StreamSubscription _streamSubscription;
+  StreamSubscription _streamSubscriptionConversation;
+  StreamSubscription _streamSubscriptionContact;
+  StreamSubscription _streamSubscriptionOwnProfile;
 
   Map<String, Contact> _contacts = {};
 
@@ -42,7 +44,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   void initState() {
     super.initState();
     var conversationsStream = Repository.get().getConversations().stream;
-    _streamSubscription = conversationsStream.listen((conversation) {
+    _streamSubscriptionConversation = conversationsStream.listen((conversation) {
       if (mounted) {
         setState(() {
           _conversationItems[conversation.hash] = conversation;
@@ -50,7 +52,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
       }
     });
     var contactsStream = Repository.get().getContacts().stream;
-    _streamSubscription = contactsStream.listen((contact) {
+    _streamSubscriptionContact = contactsStream.listen((contact) {
       if (mounted) {
         setState(() {
           _contacts[contact.key] = contact;
@@ -58,7 +60,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
       }
     });
     var ownProfileStream = Repository.get().getOwnProfile().stream;
-    _streamSubscription = ownProfileStream.listen((ownProfile) {
+    _streamSubscriptionOwnProfile = ownProfileStream.listen((ownProfile) {
       if (mounted) {
         setState(() {
           _ownProfile = ownProfile;
@@ -69,7 +71,9 @@ class _ConversationListContainer extends State<ConversationListContainer> {
 
   @override
   void dispose() {
-    _streamSubscription.cancel();
+    _streamSubscriptionConversation.cancel();
+    _streamSubscriptionContact.cancel();
+    _streamSubscriptionOwnProfile.cancel();
     super.dispose();
   }
 
