@@ -2,14 +2,14 @@ import 'package:adhara_markdown/mdviewer.dart';
 import 'package:adhara_markdown/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:menu/menu.dart';
+import 'package:mochi/conversation_details_container.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/view/add_conversation.dart';
-import 'package:mochi/view/dialog_create_contact.dart';
 import 'package:mochi/view/dialog_update_conversation.dart';
 import 'package:intl/intl.dart';
+import 'package:mochi/view/participant_name.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
@@ -169,11 +169,19 @@ class _MessagesContainer extends State<MessagesContainer> {
                         ],
                       ),
                       onTap: () {
-                        _showUpdateConversationDialog(
-                          currentConversation.hash,
-                          currentConversation.name,
-                          currentConversation.topic,
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ConversationDetailsContainer(
+                              selectedConversation: currentConversation,
+                            ),
+                          ),
                         );
+                        // _showUpdateConversationDialog(
+                        //   currentConversation.hash,
+                        //   currentConversation.name,
+                        //   currentConversation.topic,
+                        // );
                       },
                     ),
                   ),
@@ -330,10 +338,10 @@ class _MessagesContainer extends State<MessagesContainer> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          createParticipantName(
-                            message,
-                            dateFormatFull,
-                            textTheme,
+                          ParticipantName(
+                            context: context,
+                            participant: message.participant,
+                            textTheme: textTheme,
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5.0),
@@ -355,142 +363,6 @@ class _MessagesContainer extends State<MessagesContainer> {
         ),
       ),
     );
-  }
-
-  Widget createParticipantName(
-    Message message,
-    DateFormat dateFormatFull,
-    TextTheme textTheme,
-  ) {
-    var displayName = "";
-    var children = <TextSpan>[];
-
-    if (message.participant?.profile?.nameFirst != "") {
-      displayName = message.participant.profile.nameFirst;
-    }
-
-    if (message.participant?.profile?.nameLast != "") {
-      if (displayName != "") {
-        displayName = displayName + " ";
-      }
-      displayName = displayName + message.participant.profile.nameLast;
-    }
-
-    var updateContactAlias = "";
-    var updateContact = false;
-
-    if (message.participant?.contact?.alias != "") {
-      updateContact = true;
-      updateContactAlias = message.participant.contact.alias;
-      children.add(
-        new TextSpan(
-          text: message.participant.contact.alias + " ",
-          style: TextStyle(
-            color: Colors.blueAccent,
-          ),
-        ),
-      );
-    }
-
-    if (displayName != "") {
-      children.add(
-        new TextSpan(
-          text: displayName + " ",
-          style: textTheme.caption,
-        ),
-      );
-    }
-
-    children.add(
-      new TextSpan(
-        text: dateFormatFull.format(message.sent),
-        style: textTheme.caption,
-      ),
-    );
-
-    void _showCreateContactDialog(String key, alias) {
-      final aliasController = TextEditingController(
-        text: alias,
-      );
-      final publicKeyController = TextEditingController(
-        text: key,
-      );
-      showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return CreateContactDialog(
-            aliasController: aliasController,
-            publicKeyController: publicKeyController,
-            updateContact: updateContact,
-          );
-        },
-      ).then<void>(
-        (bool userClickedSave) {
-          if (userClickedSave == true && aliasController.text.isNotEmpty) {
-            if (updateContact) {
-              Repository.get().updateContact(
-                publicKeyController.text,
-                aliasController.text,
-              );
-            } else {
-              Repository.get().createContact(
-                publicKeyController.text,
-                aliasController.text,
-              );
-            }
-          }
-        },
-      );
-    }
-
-    Widget m = new Menu(
-      clickType: ClickType.click,
-      items: [
-        MenuItem(
-          () {
-            if (updateContact) {
-              return "update contact for " + updateContactAlias;
-            }
-            return "add " + updateContactAlias + "as contact";
-          }(),
-          () {
-            _showCreateContactDialog(
-              message.participant.key,
-              updateContactAlias,
-            );
-          },
-        ),
-        MenuItem("copy key", () {
-          Clipboard.setData(
-            ClipboardData(
-              text: message.participant.key,
-            ),
-          );
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Public key copied'),
-              duration: Duration(seconds: 1),
-              action: SnackBarAction(
-                label: 'Ok',
-                onPressed: () {},
-              ),
-            ),
-          );
-        })
-      ],
-      decoration: MenuDecoration(
-        color: Colors.blueAccent,
-        padding: const EdgeInsets.all(10),
-        constraints: BoxConstraints(),
-      ),
-      child: new RichText(
-        text: new TextSpan(
-          children: children,
-        ),
-      ),
-    );
-
-    return m;
   }
 
   Widget _buildTextComposer() {

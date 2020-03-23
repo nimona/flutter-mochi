@@ -20,6 +20,10 @@ Conversation _$ConversationFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : Message.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    participants: (json['participants'] as List)
+        ?.map((e) =>
+            e == null ? null : Participant.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
@@ -32,4 +36,5 @@ Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
       'lastMessage': instance.lastMessage?.toIso8601String(),
       'unreadMessagesCount': instance.unreadMessagesCount,
       'unreadMessagesLatest': instance.unreadMessagesLatest,
+      'participants': instance.participants,
     };
