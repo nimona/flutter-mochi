@@ -12,6 +12,7 @@ class Message {
   final Participant participant;
   final bool isEdited;
   final bool isDense;
+  final bool isSameMinute;
 
   Message({
     @required this.hash,
@@ -20,6 +21,7 @@ class Message {
     @required this.sent,
     this.isEdited,
     this.isDense,
+    this.isSameMinute,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {

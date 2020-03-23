@@ -286,15 +286,17 @@ class _MessagesContainer extends State<MessagesContainer> {
                             right: 10,
                           ),
                           child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Text(
-                              dateFormatSmall.format(message.sent),
-                              style: TextStyle(
-                                color: textTheme.caption.color,
-                                fontSize: textTheme.caption.fontSize - 2,
-                              ),
-                              // textAlign: TextAlign.,
-                            ),
+                            alignment: Alignment.center,
+                            child: message.isSameMinute
+                                ? Text("")
+                                : Text(
+                                    dateFormatSmall.format(message.sent),
+                                    style: TextStyle(
+                                      color: textTheme.caption.color,
+                                      fontSize: textTheme.caption.fontSize - 2,
+                                    ),
+                                    // textAlign: TextAlign.,
+                                  ),
                           ),
                         ),
                       ),
