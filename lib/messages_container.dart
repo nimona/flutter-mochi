@@ -495,12 +495,15 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildTextComposer() {
     final TextEditingController _textController = new TextEditingController();
+    final messageFocusNode = FocusNode();
 
     void _handleSubmitted(String text) {
       if (text.isNotEmpty) {
         Repository.get().createMessage(currentConversation.hash, text);
       }
     }
+
+    FocusScope.of(context).requestFocus(messageFocusNode);
 
     return new Container(
       color: Theme.of(context).cardColor,
@@ -511,11 +514,15 @@ class _MessagesContainer extends State<MessagesContainer> {
             new Flexible(
               child: new TextField(
                 controller: _textController,
-                autofocus: true,
+                // autofocus: true,
+                focusNode: messageFocusNode,
                 onEditingComplete: () {
                   var text = _textController.text;
                   _textController.text = "";
                   _handleSubmitted(text);
+                  // WidgetsBinding.instance.addPostFrameCallback(
+                  //   (_) => _textController.text="",
+                  // );
                 },
                 decoration: new InputDecoration.collapsed(
                   hintText: "Send a message...",
@@ -531,6 +538,9 @@ class _MessagesContainer extends State<MessagesContainer> {
                   var text = _textController.text;
                   _textController.text = "";
                   _handleSubmitted(text);
+                  // WidgetsBinding.instance.addPostFrameCallback(
+                  //   (_) => _textController.text="",
+                  // );
                 },
               ),
             ),
