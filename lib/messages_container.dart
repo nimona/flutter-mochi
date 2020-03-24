@@ -73,20 +73,26 @@ class _MessagesContainer extends State<MessagesContainer> {
         ),
       );
     }
+
+    // messages list
+    Widget w = _buildMessagesListContainer();
+
+    // container
+    w = Container(
+      child: w,
+    );
+
+    // scaffold
     if (widget.isInTabletLayout) {
       return Scaffold(
-        body: Container(
-          child: _buildMessagesListContainer(),
-        ),
+        body: w,
       );
     } else {
       return Scaffold(
         appBar: AppBar(
           title: Text(currentConversation?.name),
         ),
-        body: Container(
-          child: _buildMessagesListContainer(),
-        ),
+        body: w,
       );
     }
   }
@@ -173,19 +179,9 @@ class _MessagesContainer extends State<MessagesContainer> {
                         ],
                       ),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ConversationDetailsContainer(
-                              selectedConversation: currentConversation,
-                            ),
-                          ),
+                        _showConversationDetailsDialog(
+                          currentConversation,
                         );
-                        // _showUpdateConversationDialog(
-                        //   currentConversation.hash,
-                        //   currentConversation.name,
-                        //   currentConversation.topic,
-                        // );
                       },
                     ),
                   ),
@@ -349,12 +345,10 @@ class _MessagesContainer extends State<MessagesContainer> {
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5.0),
-                            child: Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: bodies,
                               ),
-                            ),
                           ),
                         ],
                       ),
@@ -426,28 +420,29 @@ class _MessagesContainer extends State<MessagesContainer> {
     );
   }
 
-  void _showUpdateConversationDialog(String hash, name, topic) {
-    final nameController = TextEditingController(
-      text: name,
-    );
-    final topicController = TextEditingController(
-      text: topic,
-    );
+  void _showConversationDetailsDialog(Conversation conversation) {
+    // final nameController = TextEditingController(
+    //   text: conversation.name,
+    // );
+    // final topicController = TextEditingController(
+    //   text: conversation.topic,
+    // );
 
     showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
-          return UpdateConversationDialog(
-            nameController: nameController,
-            topicController: topicController,
+          return ConversationDetailsContainer(
+            conversation: conversation,
+            // nameController: nameController,
+            // topicController: topicController,
           );
         }).then<void>((bool userClickedCreate) {
       if (userClickedCreate == true) {
-        Repository.get().updateConversation(
-          hash,
-          nameController.text,
-          topicController.text,
-        );
+        // Repository.get().updateConversation(
+        //   hash,
+        //   nameController.text,
+        //   topicController.text,
+        // );
       }
     });
   }
