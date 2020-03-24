@@ -1,10 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/view/participant_name.dart';
 
-class ConversationDetailsContainer extends StatelessWidget {
+class ConversationDetailsContainer extends StatefulWidget {
   const ConversationDetailsContainer({
     Key key,
     @required this.conversation,
@@ -15,25 +22,34 @@ class ConversationDetailsContainer extends StatelessWidget {
   final Function(bool update, String name, String topic) callback;
 
   @override
+  _ConversationDetailsContainerState createState() =>
+      _ConversationDetailsContainerState();
+}
+
+class _ConversationDetailsContainerState
+    extends State<ConversationDetailsContainer> {
+  String displayPicture;
+
+  @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     final nameController = TextEditingController(
-      text: conversation.name,
+      text: widget.conversation.name,
     );
     final topicController = TextEditingController(
-      text: conversation.topic,
+      text: widget.conversation.topic,
     );
 
     Widget ps = Text("no participants");
 
     // participants list
-    if (conversation.participants != null) {
+    if (widget.conversation.participants != null) {
       ps = ListView(
         primary: false,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        children: conversation.participants.map((participant) {
+        children: widget.conversation.participants.map((participant) {
           return ListTile(
             contentPadding: EdgeInsets.all(0),
             leading: ClipRRect(
@@ -61,10 +77,64 @@ class ConversationDetailsContainer extends StatelessWidget {
       );
     }
 
+    if (displayPicture == null) {
+      displayPicture = "";
+    }
+
     // conversation details
     Widget d = Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+        Row(
+          children: <Widget>[
+            Container(
+              width: 100,
+              height: 100,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: () {
+                  if (displayPicture == null || displayPicture.isEmpty) {
+                    return Image.network(
+                      "http://localhost:10100/displayPictures/" +
+                          widget.conversation.hash,
+                      fit: BoxFit.cover,
+                    );
+                  }
+                  return Image.memory(
+                    base64.decode(displayPicture),
+                    fit: BoxFit.cover,
+                  );
+                }(),
+              ),
+            ),
+            SizedBox(width: 10),
+            Container(
+              // width: MediaQuery.of(context).size.width,
+              // padding: EdgeInsets.only(top: 5),
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: EdgeInsets.all(15),
+                onPressed: () {
+                  var b = _selectFile();
+                  b.then((String d) {
+                    setState(() {
+                      displayPicture = d;
+                    });
+                  });
+                },
+                child: Container(
+                  child: Center(
+                    child: Text(
+                      'Pick new display picture',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
         new TextField(
           controller: nameController,
           decoration: new InputDecoration(
@@ -105,7 +175,7 @@ class ConversationDetailsContainer extends StatelessWidget {
                 RaisedButton(
                   child: Text("Update"),
                   onPressed: () {
-                    callback(
+                    widget.callback(
                       false,
                       nameController.text,
                       topicController.text,
@@ -118,7 +188,7 @@ class ConversationDetailsContainer extends StatelessWidget {
                 RaisedButton(
                   child: Text("Cancel"),
                   onPressed: () {
-                    callback(false, "", "");
+                    widget.callback(false, "", "");
                   },
                 ),
               ],
@@ -141,5 +211,23 @@ class ConversationDetailsContainer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String base64String(Uint8List data) {
+    return base64Encode(data);
+  }
+
+  Future<String> _selectFile() async {
+    String _path;
+    try {
+      _path = await FilePicker.getFilePath(
+        type: FileType.any,
+      );
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    var b = File(_path).readAsBytesSync();
+    var s = base64String(b);
+    return s;
   }
 }
