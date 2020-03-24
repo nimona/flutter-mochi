@@ -211,6 +211,11 @@ func (s *Store) PutConversation(c Conversation) error {
 		return err
 	}
 
+	c, err = s.GetConversation(c.Hash)
+	if err != nil {
+		return err
+	}
+
 	s.lock.RLock()
 	for _, h := range s.conversationHandlers {
 		h(c)
