@@ -8,9 +8,11 @@ github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5/go.mod h1:a
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.8 h1:vmjGRBE6skJRlqYIcSsh9B823pS/MqsvxevqbMnBPbI=
 github.com/fsnotify/fsnotify v1.4.8/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
+github.com/gen2brain/dlgs v0.0.0-20190708095831-3854608588f7 h1:qA8Mdjwrlv/r/aMqArqO0IMHUiy6ApdW4+8DtKr7PvA=
+github.com/gen2brain/dlgs v0.0.0-20190708095831-3854608588f7/go.mod h1:/eFcjDXaU2THSOOqLxOPETIbHETnamk8FA/hMjhg/gU=
+github.com/geoah/flutter_file_picker/go v0.0.0-20200324175203-1e268c804959 h1:O6G8OPnPL/VZdxidOnzdD8BJLP0i7HMjKtZCj86Vl7c=
+github.com/geoah/flutter_file_picker/go v0.0.0-20200324175203-1e268c804959/go.mod h1:csuW+TFyYKtiUwNvcvhcpyX4quPI7Pvv0SUogdqCW4I=
 github.com/geoah/genny v1.0.0/go.mod h1:U3SEc7AasfrKyZ8DSYxj72OtVemUINJo+0Nv+ccERaM=
-github.com/geoah/go-flutter v0.36.1-0.20200323001144-93acfdd8f40f h1:up1kVKLDFHsgUz9S+8A7hw8Zh4d/SP7tdhfHUropBWk=
-github.com/geoah/go-flutter v0.36.1-0.20200323001144-93acfdd8f40f/go.mod h1:8tjt3yZ3lTNLqgzWeH90f1uhCR9BL68LFoiy/n0aw/w=
 github.com/geoah/go-nimona-notifier v0.0.1 h1:TjFfmuLD5XTny6oVeUk4IVb/3wkNET0pRWNkJi9/bnw=
 github.com/geoah/go-nimona-notifier v0.0.1/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
 github.com/geoah/go-queue v2.0.0+incompatible h1:eLFmhPSYebanEi7t6D80vNBvPv0V6lLGyiMg6TFoEXY=
@@ -29,6 +31,8 @@ github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe h1:lXe2qZdvpiX5WZ
 github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe/go.mod h1:8vg3r2VgvsThLBIFL93Qb5yWzgyZWhEmBwUJWevAkK0=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
+github.com/gopherjs/gopherjs v0.0.0-20190915194858-d3ddacdb130f h1:TyqzGm2z1h3AGhjOoRYyeLcW4WlW81MDQkWa+rx/000=
+github.com/gopherjs/gopherjs v0.0.0-20190915194858-d3ddacdb130f/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
 github.com/gorilla/websocket v1.4.1 h1:q7AeDBpnBk8AogcD4DSag/Ukw/KV+YhzLj2bP5HvKCM=
 github.com/gorilla/websocket v1.4.1/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542/go.mod h1:Ow0tF8D4Kplbc8s8sSb3V2oUCygFHVp8gC3Dn6U4MNI=
