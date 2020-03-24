@@ -14,17 +14,17 @@ import 'package:mochi/view/participant_name.dart';
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
     this.isInTabletLayout,
-    this.item,
+    this.conversation,
   });
 
   final bool isInTabletLayout;
-  Conversation item;
+  Conversation conversation;
 
   final _MessagesContainer state = new _MessagesContainer();
 
-  void updateConversation(Conversation item) {
-    this.item = item;
-    state.updateConversation(item);
+  void updateConversation(Conversation conversation) {
+    this.conversation = conversation;
+    state.updateConversation(conversation);
   }
 
   @override
@@ -36,105 +36,146 @@ class MessagesContainer extends StatefulWidget {
 class _MessagesContainer extends State<MessagesContainer> {
   Conversation currentConversation;
   Stream<List<Message>> _streamMessages;
+
+  bool showDetails = false;
+  Widget w;
+
   @override
   void initState() {
+    print("INIT");
     super.initState();
-    setState(() {
-      // For the mobile-case where screen is initialised by the constructor
-      currentConversation = widget.item;
-    });
+    // setState(() {
+    //   // For the mobile-case where screen is initialised by the constructor
+    //   currentConversation = widget.conversation;
+    // });
     _streamMessages = Repository.get()
         .getMessagesForConversation(currentConversation?.hash)
-        .stream;
+        .stream
+        .asBroadcastStream();
   }
 
   void updateConversation(Conversation conversation) {
+    print("UPDATE");
     setState(() {
       currentConversation = conversation;
+      showDetails = false;
     });
     _streamMessages = Repository.get()
         .getMessagesForConversation(currentConversation?.hash)
-        .stream;
+        .stream
+        .asBroadcastStream();
+    w = _buildMessagesListContainer();
   }
 
   @override
   Widget build(BuildContext context) {
     if (currentConversation == null) {
-      final nameController = TextEditingController();
-      final topicController = TextEditingController();
-      final hashController = TextEditingController();
-      return Scaffold(
-        body: Container(
-          child: AddConversationWidget(
-            nameController: nameController,
-            topicController: topicController,
-            hashController: hashController,
-          ),
-        ),
-      );
+      return _buildLanding();
     }
 
+    if (showDetails) {
+      return _buildDetails();
+    }
+
+    print("BUILD");
+
     // messages list
-    Widget w = _buildMessagesListContainer();
+    if (w == null) {
+      w = _buildMessagesListContainer();
+    }
 
     // container
-    w = Container(
+    var cw = Container(
       child: w,
     );
 
     // scaffold
     if (widget.isInTabletLayout) {
       return Scaffold(
-        body: w,
+        body: cw,
       );
     } else {
       return Scaffold(
         appBar: AppBar(
           title: Text(currentConversation?.name),
         ),
-        body: w,
+        body: cw,
       );
     }
+  }
+
+  Widget _buildLanding() {
+    final nameController = TextEditingController();
+    final topicController = TextEditingController();
+    final hashController = TextEditingController();
+    return Scaffold(
+      body: Container(
+        child: AddConversationWidget(
+          nameController: nameController,
+          topicController: topicController,
+          hashController: hashController,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetails() {
+    return ConversationDetailsContainer(
+      conversation: currentConversation,
+      callback: (bool update, String name, String topic) {
+        Repository.get().updateConversation(
+          this.currentConversation.hash,
+          name,
+          topic,
+        );
+        updateConversation(this.currentConversation);
+      },
+    );
   }
 
   Widget _buildMessagesListContainer() {
     final TextTheme textTheme = Theme.of(context).textTheme;
     var sb = StreamBuilder(
-        stream: _streamMessages,
-        initialData: List<Message>(),
-        builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
-          if (snapshot.hasError) {
-            return Text(snapshot.error);
-          }
+      stream: _streamMessages,
+      initialData: List<Message>(),
+      builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
+        if (snapshot.hasError) {
+          return Text(snapshot.error);
+        }
 
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.waiting) {
-            return new Center(
+        if (snapshot.hasData &&
+            snapshot.connectionState == ConnectionState.waiting) {
+          return new Expanded(
+            child: Center(
               child: Text(
                 "No messages yet",
-                style: textTheme.headline6,
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.active) {
-            return new Flexible(
-              child: _buildMessagesList(snapshot),
-            );
-          }
+        if (snapshot.hasData &&
+            snapshot.connectionState == ConnectionState.active) {
+          return new Flexible(
+            child: _buildMessagesList(snapshot),
+          );
+        }
 
-          return Container();
-        });
+        return Container();
+      },
+    );
 
     return new Container(
-        child: new Column(children: <Widget>[
-      _buildConversationHeader(),
-      new Divider(height: 1.0),
-      sb,
-      new Divider(height: 1.0),
-      _buildTextComposer(),
-    ]));
+      child: new Column(
+        children: <Widget>[
+          _buildConversationHeader(),
+          new Divider(height: 1.0),
+          sb,
+          new Divider(height: 1.0),
+          _buildTextComposer(),
+        ],
+      ),
+    );
   }
 
   Container _buildConversationHeader() {
@@ -179,9 +220,9 @@ class _MessagesContainer extends State<MessagesContainer> {
                         ],
                       ),
                       onTap: () {
-                        _showConversationDetailsDialog(
-                          currentConversation,
-                        );
+                        setState(() {
+                          showDetails = true;
+                        });
                       },
                     ),
                   ),
@@ -345,10 +386,10 @@ class _MessagesContainer extends State<MessagesContainer> {
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: bodies,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: bodies,
+                            ),
                           ),
                         ],
                       ),
@@ -420,30 +461,30 @@ class _MessagesContainer extends State<MessagesContainer> {
     );
   }
 
-  void _showConversationDetailsDialog(Conversation conversation) {
-    // final nameController = TextEditingController(
-    //   text: conversation.name,
-    // );
-    // final topicController = TextEditingController(
-    //   text: conversation.topic,
-    // );
+  // void _BuildConversationDetails(Conversation conversation) {
+  //   // final nameController = TextEditingController(
+  //   //   text: conversation.name,
+  //   // );
+  //   // final topicController = TextEditingController(
+  //   //   text: conversation.topic,
+  //   // );
 
-    showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return ConversationDetailsContainer(
-            conversation: conversation,
-            // nameController: nameController,
-            // topicController: topicController,
-          );
-        }).then<void>((bool userClickedCreate) {
-      if (userClickedCreate == true) {
-        // Repository.get().updateConversation(
-        //   hash,
-        //   nameController.text,
-        //   topicController.text,
-        // );
-      }
-    });
-  }
+  //   showDialog<bool>(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return ConversationDetailsContainer(
+  //           conversation: conversation,
+  //           // nameController: nameController,
+  //           // topicController: topicController,
+  //         );
+  //       }).then<void>((bool userClickedCreate) {
+  //     if (userClickedCreate == true) {
+  //       // Repository.get().updateConversation(
+  //       //   hash,
+  //       //   nameController.text,
+  //       //   topicController.text,
+  //       // );
+  //     }
+  //   });
+  // }
 }

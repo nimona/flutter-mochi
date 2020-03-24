@@ -39,7 +39,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
               return Material(
                 child: MessagesContainer(
                 isInTabletLayout: false,
-                item: item,
+                conversation: item,
                 ),
               );
             },
@@ -52,7 +52,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   Widget _buildTabletLayout() {
     var messagesContainer = MessagesContainer(
       isInTabletLayout: true,
-      item: _selectedItem,
+      conversation: _selectedItem,
     );
     return Row(
       children: <Widget>[
