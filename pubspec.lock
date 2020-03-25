@@ -344,7 +344,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: c844f65f3ca66be81e4bb5ccb647296bf4325899
-      url: "git@github.com:geoah/flutter_long_tap_menu.git"
+      url: "https://github.com/geoah/flutter_long_tap_menu.git"
     source: git
     version: "0.1.4"
   meta:
