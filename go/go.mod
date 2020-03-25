@@ -9,7 +9,6 @@ require (
 	github.com/go-flutter-desktop/plugins/url_launcher v0.1.2
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.12
-	github.com/miguelpruivo/flutter_file_picker v1.4.3 // indirect
 	github.com/miguelpruivo/flutter_file_picker/go v0.0.0-20191218104902-b68ee11c6ac1
 	github.com/onsi/ginkgo v1.12.0 // indirect
 	github.com/onsi/gomega v1.9.0 // indirect
