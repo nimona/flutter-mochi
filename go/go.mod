@@ -4,12 +4,14 @@ go 1.14
 
 require (
 	github.com/fsnotify/fsnotify v1.4.8 // indirect
+	github.com/gen2brain/dlgs v0.0.0-20200211102745-b9c2664df42f // indirect
 	github.com/geoah/go-nimona-notifier v0.0.1
 	github.com/go-flutter-desktop/go-flutter v0.36.1
 	github.com/go-flutter-desktop/plugins/url_launcher v0.1.2
+	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.12
-	github.com/miguelpruivo/flutter_file_picker/go v0.0.0-20191218104902-b68ee11c6ac1
+	github.com/miguelpruivo/flutter_file_picker/go v0.0.0-20200324175432-e35b6aae601f
 	github.com/onsi/ginkgo v1.12.0 // indirect
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1

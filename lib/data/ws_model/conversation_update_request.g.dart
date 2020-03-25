@@ -13,6 +13,7 @@ ConversationUpdateRequest _$ConversationUpdateRequestFromJson(
     hash: json['hash'] as String,
     name: json['name'] as String,
     topic: json['topic'] as String,
+    displayPicture: json['displayPicture'] as String,
   );
 }
 
@@ -23,4 +24,5 @@ Map<String, dynamic> _$ConversationUpdateRequestToJson(
       'hash': instance.hash,
       'name': instance.name,
       'topic': instance.topic,
+      'displayPicture': instance.displayPicture,
     };

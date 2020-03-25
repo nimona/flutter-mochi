@@ -5,7 +5,7 @@ import 'package:mochi/model/own_profile.dart';
 
 abstract class DataStore {
   void createContact(String identityKey, String alias);
-  
+
   void updateContact(String identityKey, String alias);
 
   Stream<Contact> getContacts();
@@ -20,9 +20,11 @@ abstract class DataStore {
 
   void updateConversation(String hash, name, topic);
 
+  void updateConversationDisplayPicture(String hash, diplayPicture);
+
   Stream<Conversation> getConversations();
 
   Stream<OwnProfile> getOwnProfile();
 
-  void updateOwnProfile(String nameFirst, nameLast);
+  void updateOwnProfile(String nameFirst, nameLast, displayPicture);
 }

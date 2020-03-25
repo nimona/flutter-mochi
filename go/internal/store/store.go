@@ -1,7 +1,9 @@
 package store
 
 import (
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/jinzhu/gorm"
 
@@ -48,6 +50,7 @@ func New(dbPath string) (*Store, error) {
 	db.AutoMigrate(&OwnProfile{})
 	db.AutoMigrate(&Participant{})
 	db.AutoMigrate(&Profile{})
+	db.AutoMigrate(&DisplayPicture{})
 
 	return &Store{db: db}, nil
 }
@@ -78,6 +81,55 @@ func (s *Store) HandleOwnProfile(h OwnProfileHandler) {
 	s.lock.Lock()
 	s.ownProfileHandlers = append(s.ownProfileHandlers, h)
 	s.lock.Unlock()
+}
+
+// PutDisplayPicture to the store and publish it
+func (s *Store) PutDisplayPicture(key, data string) error {
+	p := DisplayPicture{
+		Key:     key,
+		DataB64: data,
+	}
+	err := s.db.
+		Where(DisplayPicture{
+			Key: key,
+		}).
+		Assign(p).
+		FirstOrCreate(&p).
+		Error
+	if err != nil {
+		return err
+	}
+
+	s.lock.RLock()
+	// if this is a conversation picture
+	if strings.HasPrefix(key, "oh1.") {
+		// update conversation to trigger an update and push to handlers
+		c, err := s.GetConversation(key)
+		if err != nil {
+			// TODO log error
+			return nil
+		}
+		if err := s.PutConversation(c); err != nil {
+			return nil
+		}
+	}
+	// TODO find way to deal with updating contacts
+	// TODO find way to deal with updating participants
+	s.lock.RUnlock()
+
+	return nil
+}
+
+// GetDisplayPicture -
+func (s *Store) GetDisplayPicture(key string) (string, error) {
+	p := DisplayPicture{
+		Key: key,
+	}
+	if err := s.db.Find(&p).Error; err != nil {
+		return "", err
+	}
+
+	return p.DataB64, nil
 }
 
 // PutContact to the store and publish it
@@ -200,6 +252,7 @@ func (s *Store) AddParticipant(p Participant) error {
 
 // PutConversation to the store and publish it
 func (s *Store) PutConversation(c Conversation) error {
+	c.Updated = time.Now()
 	err := s.db.
 		Where(Conversation{
 			Hash: c.Hash,

@@ -7,6 +7,7 @@ import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/view/add_conversation.dart';
+import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:mochi/view/dialog_update_conversation.dart';
 import 'package:intl/intl.dart';
 import 'package:mochi/view/participant_name.dart';
@@ -122,11 +123,15 @@ class _MessagesContainer extends State<MessagesContainer> {
   Widget _buildDetails() {
     return ConversationDetailsContainer(
       conversation: currentConversation,
-      callback: (bool update, String name, String topic) {
+      callback: (bool update, String name, topic, displayPicture) {
         Repository.get().updateConversation(
           this.currentConversation.hash,
           name,
           topic,
+        );
+        Repository.get().updateConversationDisplayPicture(
+          this.currentConversation.hash,
+          displayPicture,
         );
         updateConversation(this.currentConversation);
       },
@@ -186,13 +191,9 @@ class _MessagesContainer extends State<MessagesContainer> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.all(10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(2),
-              child: Image.network(
-                "http://localhost:10100/displayPictures/" +
-                    currentConversation.hash,
-                height: 56,
-              ),
+            child: ConversationDisplayPicture(
+              conversation: currentConversation,
+              size: 56,
             ),
           ),
           Expanded(
@@ -344,7 +345,6 @@ class _MessagesContainer extends State<MessagesContainer> {
                                       color: textTheme.caption.color,
                                       fontSize: textTheme.caption.fontSize - 2,
                                     ),
-                                    // textAlign: TextAlign.,
                                   ),
                           ),
                         ),
@@ -379,10 +379,18 @@ class _MessagesContainer extends State<MessagesContainer> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          ParticipantName(
-                            context: context,
-                            participant: message.participant,
-                            textTheme: textTheme,
+                          Row(
+                            children: <Widget>[
+                              ParticipantName(
+                                context: context,
+                                participant: message.participant,
+                                textTheme: textTheme,
+                              ),
+                              Text(
+                                dateFormatFull.format(message.sent),
+                                style: textTheme.caption,
+                              ),
+                            ],
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 5.0),

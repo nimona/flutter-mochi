@@ -58,13 +58,6 @@ class ParticipantName extends StatelessWidget {
       );
     }
 
-    // children.add(
-    //   new TextSpan(
-    //     text: dateFormatFull.format(sent),
-    //     style: textTheme.caption,
-    //   ),
-    // );
-
     void _showCreateContactDialog(String key, alias) {
       final aliasController = TextEditingController(
         text: alias,

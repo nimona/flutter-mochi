@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mochi/model/own_profile.dart';
+import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:mochi/view/dialog_create_contact.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/contact.dart';
@@ -44,7 +45,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   void initState() {
     super.initState();
     var conversationsStream = Repository.get().getConversations().stream;
-    _streamSubscriptionConversation = conversationsStream.listen((conversation) {
+    _streamSubscriptionConversation =
+        conversationsStream.listen((conversation) {
       if (mounted) {
         setState(() {
           _conversationItems[conversation.hash] = conversation;
@@ -278,13 +280,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(2),
-                                    child: Image.network(
-                                      "http://localhost:10100/displayPictures/" +
-                                          conversation.hash,
-                                      height: 40,
-                                    ),
+                                  leading: ConversationDisplayPicture(
+                                    conversation: conversation,
                                   ),
                                   // TODO add unread count once backend supports it
                                   // trailing: Text(
@@ -353,6 +350,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
         Repository.get().updateOwnProfile(
           nameFirstController.text,
           nameLastController.text,
+          "", // TODO missing display picture
         );
       }
     });

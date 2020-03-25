@@ -25,6 +25,7 @@ type Conversation struct {
 	UnreadMessagesLatest []Message     `json:"unreadMessagesLatest" gorm:"PRELOAD:false"`
 	Participants         []Participant `json:"participants"`
 	Messages             []Message     `json:"messages"`
+	Updated              time.Time     `json:"updated"`
 }
 
 // Message -
@@ -80,4 +81,10 @@ type OwnProfile struct {
 	NameLast       string `json:"nameLast"`
 	LocalAlias     string `json:"alias"`
 	DisplayPicture string `json:"displayPicture"`
+}
+
+// DisplayPicture -
+type DisplayPicture struct {
+	Key     string `json:"key" gorm:"primary_key"`
+	DataB64 string `json:"dataB64"`
 }

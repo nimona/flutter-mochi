@@ -24,6 +24,9 @@ Conversation _$ConversationFromJson(Map<String, dynamic> json) {
         ?.map((e) =>
             e == null ? null : Participant.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    updated: json['updated'] == null
+        ? null
+        : DateTime.parse(json['updated'] as String),
   );
 }
 
@@ -37,4 +40,5 @@ Map<String, dynamic> _$ConversationToJson(Conversation instance) =>
       'unreadMessagesCount': instance.unreadMessagesCount,
       'unreadMessagesLatest': instance.unreadMessagesLatest,
       'participants': instance.participants,
+      'updated': instance.updated?.toIso8601String(),
     };

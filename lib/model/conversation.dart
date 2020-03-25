@@ -15,6 +15,7 @@ class Conversation {
   final int unreadMessagesCount;
   final List<Message> unreadMessagesLatest;
   final List<Participant> participants;
+  final DateTime updated;
 
   Conversation({
     @required this.hash,
@@ -25,6 +26,7 @@ class Conversation {
     this.unreadMessagesCount = 0,
     this.unreadMessagesLatest,
     this.participants,
+    this.updated,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) {

@@ -16,6 +16,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     sent: json['sent'] == null ? null : DateTime.parse(json['sent'] as String),
     isEdited: json['isEdited'] as bool,
     isDense: json['isDense'] as bool,
+    isSameMinute: json['isSameMinute'] as bool,
   );
 }
 
@@ -26,4 +27,5 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'participant': instance.participant,
       'isEdited': instance.isEdited,
       'isDense': instance.isDense,
+      'isSameMinute': instance.isSameMinute,
     };

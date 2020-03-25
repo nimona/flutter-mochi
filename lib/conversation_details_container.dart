@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:mochi/model/conversation.dart';
+import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:mochi/view/participant_name.dart';
 
 class ConversationDetailsContainer extends StatefulWidget {
@@ -19,7 +19,8 @@ class ConversationDetailsContainer extends StatefulWidget {
   }) : super(key: key);
 
   final Conversation conversation;
-  final Function(bool update, String name, String topic) callback;
+  final Function(bool update, String name, String topic, String displayPicture)
+      callback;
 
   @override
   _ConversationDetailsContainerState createState() =>
@@ -90,22 +91,19 @@ class _ConversationDetailsContainerState
             Container(
               width: 100,
               height: 100,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(2),
-                child: () {
-                  if (displayPicture == null || displayPicture.isEmpty) {
-                    return Image.network(
-                      "http://localhost:10100/displayPictures/" +
-                          widget.conversation.hash,
-                      fit: BoxFit.cover,
-                    );
-                  }
-                  return Image.memory(
-                    base64.decode(displayPicture),
-                    fit: BoxFit.cover,
+              child: () {
+                if (displayPicture.isEmpty) {
+                  return ConversationDisplayPicture(
+                    conversation: widget.conversation,
                   );
-                }(),
-              ),
+                }
+                return ConversationDisplayPicture(
+                  conversation: widget.conversation,
+                  image: MemoryImage(
+                    base64.decode(displayPicture),
+                  ),
+                );
+              }(),
             ),
             SizedBox(width: 10),
             Container(
@@ -163,6 +161,7 @@ class _ConversationDetailsContainerState
               style: textTheme.headline4,
               textAlign: TextAlign.left,
             ),
+            SizedBox(height: 10),
             Container(
               child: d,
             ),
@@ -179,6 +178,7 @@ class _ConversationDetailsContainerState
                       false,
                       nameController.text,
                       topicController.text,
+                      displayPicture,
                     );
                   },
                 ),
@@ -188,7 +188,7 @@ class _ConversationDetailsContainerState
                 RaisedButton(
                   child: Text("Cancel"),
                   onPressed: () {
-                    widget.callback(false, "", "");
+                    widget.callback(false, "", "", "");
                   },
                 ),
               ],

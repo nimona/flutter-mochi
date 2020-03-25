@@ -35,8 +35,9 @@ type (
 	}
 	// OwnProfileUpdateRequest -
 	OwnProfileUpdateRequest struct {
-		NameFirst string `json:"nameFirst"`
-		NameLast  string `json:"nameLast"`
+		NameFirst      string `json:"nameFirst"`
+		NameLast       string `json:"nameLast"`
+		DisplayPicture string `json:"displayPicture"`
 	}
 	// OwnProfileGetRequest -
 	OwnProfileGetRequest struct {
@@ -56,6 +57,7 @@ type (
 		ConversationHash string `json:"hash"`
 		Name             string `json:"name"`
 		Topic            string `json:"topic"`
+		DisplayPicture   string `json:"displayPicture"`
 	}
 	// ConversationJoinRequest -
 	ConversationJoinRequest struct {
@@ -171,7 +173,7 @@ func (api *API) HandleWS(c *router.Context) {
 		case "ownProfileUpdate":
 			r := OwnProfileUpdateRequest{}
 			json.Unmarshal(msg, &r)
-			api.mochi.UpdateOwnProfile(r.NameFirst, r.NameLast, nil)
+			api.mochi.UpdateOwnProfile(r.NameFirst, r.NameLast, "")
 
 		case "ownProfileGet":
 			api.store.HandleOwnProfile(func(p store.OwnProfile) {
@@ -215,6 +217,9 @@ func (api *API) HandleWS(c *router.Context) {
 		case "conversationUpdate":
 			r := ConversationUpdateRequest{}
 			json.Unmarshal(msg, &r)
+			if r.DisplayPicture != "" {
+				api.mochi.UpdateConversationPicture(r.ConversationHash, r.DisplayPicture)
+			}
 			api.mochi.UpdateConversation(r.ConversationHash, r.Name, r.Topic)
 
 		case "conversationJoin":

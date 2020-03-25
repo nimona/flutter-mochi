@@ -17,11 +17,15 @@ class ConversationUpdateRequest extends BaseRequest {
   @JsonKey(name: 'topic')
   String topic;
 
+  @JsonKey(name: 'displayPicture')
+  String displayPicture;
+
   ConversationUpdateRequest({
     this.action = "conversationUpdate",
     this.hash,
     this.name,
     this.topic,
+    this.displayPicture,
   });
 
   factory ConversationUpdateRequest.fromJson(Map<String, dynamic> json) =>

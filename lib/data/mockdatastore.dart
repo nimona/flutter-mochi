@@ -62,6 +62,11 @@ class MockDataStore implements DataStore {
   }
 
   @override
+  void updateConversationDisplayPicture(String hash, diplayPicture) {
+    return;
+  }
+
+  @override
   Stream<Conversation> getConversations() async* {
     for (var i = 0; i < 16; i++) {
       await Future.delayed(Duration(milliseconds: Random().nextInt(2500)));
@@ -70,7 +75,7 @@ class MockDataStore implements DataStore {
   }
 
   @override
-  void updateOwnProfile(String nameFirst, nameLast) {
+  void updateOwnProfile(String nameFirst, nameLast, displayPicture) {
     return;
   }
 

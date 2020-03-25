@@ -203,6 +203,20 @@ class WsDataStore implements DataStore {
   }
 
   @override
+  void updateConversationDisplayPicture(String hash, diplayPicture) {
+    final ws = IOWebSocketChannel.connect(
+      daemonApiUrl + daemonApiPort.toString(),
+    );
+    ws.sink.add(
+      json.encode(ConversationUpdateRequest(
+        hash: hash,
+        displayPicture: diplayPicture,
+      )),
+    );
+    ws.sink.close();
+  }
+
+  @override
   Stream<Conversation> getConversations() async* {
     final ws = IOWebSocketChannel.connect(
       daemonApiUrl + daemonApiPort.toString(),
@@ -216,7 +230,7 @@ class WsDataStore implements DataStore {
   }
 
   @override
-  void updateOwnProfile(String nameFirst, nameLast) {
+  void updateOwnProfile(String nameFirst, nameLast, displayPicture) {
     final ws = IOWebSocketChannel.connect(
       daemonApiUrl + daemonApiPort.toString(),
     );
@@ -224,6 +238,7 @@ class WsDataStore implements DataStore {
       json.encode(OwnProfileUpdateRequest(
         nameFirst: nameFirst,
         nameLast: nameLast,
+        displayPicture: displayPicture,
       )),
     );
     ws.sink.close();

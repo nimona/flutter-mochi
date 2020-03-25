@@ -2,6 +2,7 @@ package mochi
 
 import (
 	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"image/png"
@@ -134,6 +135,18 @@ func (m *Mochi) handleStreams() {
 			}
 			m.store.PutConversation(c)
 
+		case "mochi.io/conversation.DisplayPictureUpdated":
+			v := ConversationDisplayPictureUpdated{}
+			if err := v.FromObject(o); err != nil {
+				continue
+			}
+
+			// update display picture and store
+			dp := base64.StdEncoding.EncodeToString(v.DisplayPicture)
+			if err := m.store.PutDisplayPicture(v.Stream.String(), dp); err != nil {
+				continue
+			}
+
 		case "mochi.io/conversation.ParticipantInvited":
 			v := ConversationParticipantInvited{}
 			if err := v.FromObject(o); err != nil {
@@ -169,11 +182,14 @@ func (m *Mochi) handleStreams() {
 				continue
 			}
 
+			dp := base64.StdEncoding.EncodeToString(v.Profile.DisplayPicture)
+
 			// create profile and store
 			m.store.AddProfile(store.Profile{
-				Key:       v.Owners[0].String(),
-				NameFirst: v.Profile.NameFirst,
-				NameLast:  v.Profile.NameLast,
+				Key:            v.Owners[0].String(),
+				NameFirst:      v.Profile.NameFirst,
+				NameLast:       v.Profile.NameLast,
+				DisplayPicture: dp,
 			})
 
 			m.store.AddParticipant(store.Participant{
@@ -181,6 +197,11 @@ func (m *Mochi) handleStreams() {
 				ConversationHash: v.Stream.String(),
 				HasAccepted:      true,
 			})
+
+			err = m.store.PutDisplayPicture(v.Owners[0].String(), dp)
+			if err != nil {
+				continue
+			}
 
 		case "mochi.io/conversation.MessageAdded":
 			v := ConversationMessageAdded{}
@@ -300,11 +321,41 @@ func (m *Mochi) UpdateConversation(conversationHash, name, topic string) error {
 		return errors.New("missing name")
 	}
 
-	// create new stream
+	// create new object
 	v := ConversationUpdated{
 		Stream: object.Hash(conversationHash),
 		Name:   name,
 		Topic:  topic,
+		Owners: []crypto.PublicKey{
+			m.daemon.LocalPeer.GetIdentityPublicKey(),
+		},
+		Datetime: time.Now().Format(time.RFC3339),
+	}
+
+	// add object to our peer
+	o := v.ToObject()
+	if err := m.daemon.Orchestrator.Put(o); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateConversationPicture and store it, or error
+func (m *Mochi) UpdateConversationPicture(conversationHash, displayPicture string) error {
+	if displayPicture == "" {
+		return errors.New("missing displayPicture")
+	}
+
+	dp, err := base64.StdEncoding.DecodeString(displayPicture)
+	if err != nil {
+		return err
+	}
+
+	// create new object
+	v := ConversationDisplayPictureUpdated{
+		Stream:         object.Hash(conversationHash),
+		DisplayPicture: dp,
 		Owners: []crypto.PublicKey{
 			m.daemon.LocalPeer.GetIdentityPublicKey(),
 		},
@@ -387,7 +438,7 @@ func (m *Mochi) UpdateContact(identityKey, alias string) error {
 
 // UpdateOwnProfile and store it given a first and last name, or error
 // TODO(geoah) add display picture support
-func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast string, displayPicture []byte) error {
+func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast, displayPicture string) error {
 	op, _ := m.store.GetOwnProfile()
 	op.NameFirst = nameFirst
 	op.NameLast = nameLast
@@ -395,13 +446,21 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast string, displayPicture []by
 		return err
 	}
 
+	pubKey := m.daemon.LocalPeer.GetIdentityPublicKey().String()
 	p := store.Profile{
-		Key:       m.daemon.LocalPeer.GetIdentityPublicKey().String(),
-		NameFirst: nameFirst,
-		NameLast:  nameLast,
+		Key:            pubKey,
+		NameFirst:      nameFirst,
+		NameLast:       nameLast,
+		DisplayPicture: displayPicture,
 	}
 	if err := m.store.AddProfile(p); err != nil {
 		return err
+	}
+
+	if displayPicture != "" {
+		if err := m.store.PutDisplayPicture(pubKey, displayPicture); err != nil {
+			return err
+		}
 	}
 
 	cs, err := m.store.GetConversations()

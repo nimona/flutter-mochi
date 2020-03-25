@@ -31,6 +31,10 @@ stream mochi.io/conversation {
         name string
         topic string
     }
+    signed object DisplayPictureUpdated {
+        datetime string
+        displayPicture data
+    }
     signed object MessageAdded {
         datetime string
         body string

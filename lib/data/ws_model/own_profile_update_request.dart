@@ -17,12 +17,12 @@ class OwnProfileUpdateRequest extends BaseRequest {
   @JsonKey(name: 'displayPicture')
   String displayPicture;
 
-  OwnProfileUpdateRequest(
-      {this.action = "ownProfileUpdate",
-      this.nameFirst,
-      this.nameLast,
-      this.displayPicture})
-      : super();
+  OwnProfileUpdateRequest({
+    this.action = "ownProfileUpdate",
+    this.nameFirst,
+    this.nameLast,
+    this.displayPicture,
+  }) : super();
 
   factory OwnProfileUpdateRequest.fromJson(Map<String, dynamic> json) =>
       _$OwnProfileUpdateRequestFromJson(json);

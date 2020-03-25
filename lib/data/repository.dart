@@ -57,8 +57,12 @@ class Repository {
     _dataStore.updateConversation(hash, name, topic);
   }
 
-  void updateOwnProfile(String nameFirst, nameLast) {
-    _dataStore.updateOwnProfile(nameFirst, nameLast);
+  void updateConversationDisplayPicture(String hash, diplayPicture) {
+    _dataStore.updateConversationDisplayPicture(hash, diplayPicture);
+  }
+
+  void updateOwnProfile(String nameFirst, nameLast, displayPicture) {
+    _dataStore.updateOwnProfile(nameFirst, nameLast, displayPicture);
   }
 
   StreamController<OwnProfile> getOwnProfile() {

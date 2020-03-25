@@ -13,11 +13,11 @@ For this you'll need a couple of things.
 ```sh
 git clone git@github.com:nimona/flutter-mochi.git
 cd flutter-mochi
-flutter channel master
-flutter upgrade
+flutter channel beta
+flutter upgrade --force
 flutter doctor
 ```
 
 ```sh
-LOG_LEVEL=debug UPNP=true hover run
+LOG_LEVEL=debug hover run
 ```
