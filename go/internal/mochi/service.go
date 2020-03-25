@@ -463,6 +463,7 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast, displayPicture string) err
 		return err
 	}
 
+	dpBytes, _ := base64.StdEncoding.DecodeString(displayPicture)
 	for _, c := range cs {
 		m.daemon.Orchestrator.Put(ConversationParticipantProfileUpdated{
 			Stream: object.Hash(c.Hash),
@@ -470,8 +471,9 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast, displayPicture string) err
 				m.daemon.LocalPeer.GetIdentityPublicKey(),
 			},
 			Profile: &IdentityProfile{
-				NameFirst: nameFirst,
-				NameLast:  nameLast,
+				NameFirst:      nameFirst,
+				NameLast:       nameLast,
+				DisplayPicture: dpBytes,
 				Owners: []crypto.PublicKey{
 					m.daemon.LocalPeer.GetIdentityPublicKey(),
 				},

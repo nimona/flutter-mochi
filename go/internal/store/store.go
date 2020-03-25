@@ -172,6 +172,12 @@ func (s *Store) GetContacts() ([]Contact, error) {
 // TODO(geoah) this should publish various updates for messages,
 // contacts, participants, etc
 func (s *Store) AddProfile(p Profile) error {
+	if p.DisplayPicture != "" {
+		if err := s.PutDisplayPicture(p.Key, p.DisplayPicture); err != nil {
+			return err
+		}
+	}
+
 	p.Updated = time.Now()
 	err := s.db.
 		Where(Profile{
