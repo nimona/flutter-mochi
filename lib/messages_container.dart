@@ -8,7 +8,6 @@ import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/view/add_conversation.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
-import 'package:mochi/view/dialog_update_conversation.dart';
 import 'package:intl/intl.dart';
 import 'package:mochi/view/participant_name.dart';
 
