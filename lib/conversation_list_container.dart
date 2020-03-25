@@ -11,6 +11,7 @@ import 'package:mochi/model/conversation.dart';
 import 'package:mochi/view/dialog_create_conversation.dart';
 import 'package:mochi/view/dialog_join_conversation.dart';
 import 'package:mochi/view/dialog_modify_profile.dart';
+import 'package:mochi/view/own_profile_display_picture.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
@@ -97,12 +98,9 @@ class _ConversationListContainer extends State<ConversationListContainer> {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.all(10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: Image.network(
-                    "http://localhost:10100/displayPictures/" + _ownProfile.key,
-                    height: 56,
-                  ),
+                child: OwnProfileDisplayPicture(
+                  profile: _ownProfile,
+                  size: 56,
                 ),
               ),
               Expanded(
@@ -131,8 +129,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           ),
                           onTap: () {
                             _showUpdateOwnProfileDialog(
-                              _ownProfile.nameFirst,
-                              _ownProfile.nameLast,
+                              _ownProfile,
                             );
                           },
                         ),
@@ -330,30 +327,22 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     );
   }
 
-  void _showUpdateOwnProfileDialog(String nameFirst, nameLast) {
-    final nameFirstController = TextEditingController(
-      text: nameFirst,
-    );
-    final nameLastController = TextEditingController(
-      text: nameLast,
-    );
-
+  void _showUpdateOwnProfileDialog(OwnProfile profile) {
     showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
           return UpdateOwnProfileDialog(
-            nameFirstController: nameFirstController,
-            nameLastController: nameLastController,
+            profile: profile,
+            callback:
+                (bool update, String nameFirst, nameLast, displayPicture) {
+              Repository.get().updateOwnProfile(
+                nameFirst,
+                nameLast,
+                displayPicture,
+              );
+            },
           );
-        }).then<void>((bool userClickedCreate) {
-      if (userClickedCreate == true) {
-        Repository.get().updateOwnProfile(
-          nameFirstController.text,
-          nameLastController.text,
-          "", // TODO missing display picture
-        );
-      }
-    });
+        }).then<void>((bool userClickedCreate) {});
   }
 
   void _showCreateConversationDialog() {

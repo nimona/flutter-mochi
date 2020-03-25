@@ -13,6 +13,9 @@ OwnProfile _$OwnProfileFromJson(Map<String, dynamic> json) {
     nameLast: json['nameLast'] as String,
     alias: json['alias'] as String,
     displayPicture: json['displayPicture'] as String,
+    updated: json['updated'] == null
+        ? null
+        : DateTime.parse(json['updated'] as String),
   );
 }
 
@@ -23,4 +26,5 @@ Map<String, dynamic> _$OwnProfileToJson(OwnProfile instance) =>
       'nameLast': instance.nameLast,
       'alias': instance.alias,
       'displayPicture': instance.displayPicture,
+      'updated': instance.updated?.toIso8601String(),
     };

@@ -173,7 +173,11 @@ func (api *API) HandleWS(c *router.Context) {
 		case "ownProfileUpdate":
 			r := OwnProfileUpdateRequest{}
 			json.Unmarshal(msg, &r)
-			api.mochi.UpdateOwnProfile(r.NameFirst, r.NameLast, "")
+			api.mochi.UpdateOwnProfile(
+				r.NameFirst,
+				r.NameLast,
+				r.DisplayPicture,
+			)
 
 		case "ownProfileGet":
 			api.store.HandleOwnProfile(func(p store.OwnProfile) {

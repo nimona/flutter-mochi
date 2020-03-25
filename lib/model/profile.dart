@@ -9,12 +9,14 @@ class Profile {
   final String nameFirst;
   final String nameLast;
   final String displayPicture;
+  final DateTime updated;
 
   Profile({
     @required this.key,
     this.nameFirst = "",
     this.nameLast = "",
     this.displayPicture,
+    this.updated,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {

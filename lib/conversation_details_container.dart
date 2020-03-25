@@ -107,12 +107,7 @@ class _ConversationDetailsContainerState
             ),
             SizedBox(width: 10),
             Container(
-              // width: MediaQuery.of(context).size.width,
-              // padding: EdgeInsets.only(top: 5),
               child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
                 padding: EdgeInsets.all(15),
                 onPressed: () {
                   var b = _selectFile();
@@ -221,7 +216,7 @@ class _ConversationDetailsContainerState
     String _path;
     try {
       _path = await FilePicker.getFilePath(
-        type: FileType.any,
+        type: FileType.image,
       );
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());

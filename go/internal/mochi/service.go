@@ -442,6 +442,7 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast, displayPicture string) err
 	op, _ := m.store.GetOwnProfile()
 	op.NameFirst = nameFirst
 	op.NameLast = nameLast
+	op.DisplayPicture = displayPicture
 	if err := m.store.UpdateOwnProfile(op); err != nil {
 		return err
 	}
@@ -455,12 +456,6 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast, displayPicture string) err
 	}
 	if err := m.store.AddProfile(p); err != nil {
 		return err
-	}
-
-	if displayPicture != "" {
-		if err := m.store.PutDisplayPicture(pubKey, displayPicture); err != nil {
-			return err
-		}
 	}
 
 	cs, err := m.store.GetConversations()

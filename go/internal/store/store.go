@@ -42,7 +42,7 @@ func New(dbPath string) (*Store, error) {
 		return nil, err
 	}
 
-	db = db.Debug()
+	// db = db.Debug()
 
 	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&Conversation{})
@@ -172,6 +172,7 @@ func (s *Store) GetContacts() ([]Contact, error) {
 // TODO(geoah) this should publish various updates for messages,
 // contacts, participants, etc
 func (s *Store) AddProfile(p Profile) error {
+	p.Updated = time.Now()
 	err := s.db.
 		Where(Profile{
 			Key: p.Key,
@@ -201,7 +202,15 @@ func (s *Store) GetProfiles() ([]Profile, error) {
 
 // UpdateOwnProfile to the store and publish it
 func (s *Store) UpdateOwnProfile(p OwnProfile) error {
+	if p.DisplayPicture != "" {
+		if err := s.PutDisplayPicture(p.Key, p.DisplayPicture); err != nil {
+			return err
+		}
+	}
+
 	p.ID = 1
+
+	p.Updated = time.Now()
 	err := s.db.
 		Where(OwnProfile{ID: 1}).
 		Assign(p).

@@ -66,21 +66,23 @@ func (p Participant) GetID() string {
 
 // Profile -
 type Profile struct {
-	Key            string   `json:"key" gorm:"primary_key"`
-	NameFirst      string   `json:"nameFirst"`
-	NameLast       string   `json:"nameLast"`
-	DisplayPicture string   `json:"displayPicture"`
-	Contact        *Contact `json:"contact" gorm:"foreignKey:key;PRELOAD:false"`
+	Key            string    `json:"key" gorm:"primary_key"`
+	NameFirst      string    `json:"nameFirst"`
+	NameLast       string    `json:"nameLast"`
+	DisplayPicture string    `json:"displayPicture"`
+	Contact        *Contact  `json:"contact" gorm:"foreignKey:key;PRELOAD:false"`
+	Updated        time.Time `json:"updated"`
 }
 
 // OwnProfile -
 type OwnProfile struct {
-	ID             int    `json:"id" gorm:"primary_key"`
-	Key            string `json:"key"`
-	NameFirst      string `json:"nameFirst"`
-	NameLast       string `json:"nameLast"`
-	LocalAlias     string `json:"alias"`
-	DisplayPicture string `json:"displayPicture"`
+	ID             int       `json:"id" gorm:"primary_key"`
+	Key            string    `json:"key"`
+	NameFirst      string    `json:"nameFirst"`
+	NameLast       string    `json:"nameLast"`
+	LocalAlias     string    `json:"alias"`
+	DisplayPicture string    `json:"displayPicture"`
+	Updated        time.Time `json:"updated"`
 }
 
 // DisplayPicture -

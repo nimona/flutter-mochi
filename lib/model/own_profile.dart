@@ -10,6 +10,7 @@ class OwnProfile {
   final String nameLast;
   final String alias;
   final String displayPicture;
+  final DateTime updated;
 
   OwnProfile({
     @required this.key,
@@ -17,6 +18,7 @@ class OwnProfile {
     this.nameLast = "",
     this.alias = "",
     this.displayPicture,
+    this.updated,
   });
 
   factory OwnProfile.fromJson(Map<String, dynamic> json) {
