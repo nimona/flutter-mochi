@@ -42,95 +42,92 @@ class _UpdateOwnProfileDialogState extends State<UpdateOwnProfileDialog> {
 
     var width = MediaQuery.of(context).size.width;
     var dialogContentWidth = width * 0.8;
-    return new AlertDialog(
-      title: Text('Update profile info'),
-      contentPadding: const EdgeInsets.all(24.0),
-      content: new Container(
-        width: dialogContentWidth,
-        child: new Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            new TextField(
-              controller: nameFirstController,
-              autofocus: true,
-              decoration: new InputDecoration(
-                labelText: 'First name',
-                hintText: 'John',
+    return Scaffold(
+      body: Scrollbar(
+        child: new Container(
+          padding: EdgeInsets.all(10),
+          width: dialogContentWidth,
+          child: new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new TextField(
+                controller: nameFirstController,
+                decoration: new InputDecoration(
+                  labelText: 'First name',
+                  hintText: 'John',
+                ),
               ),
-            ),
-            new TextField(
-              controller: nameLastController,
-              autofocus: true,
-              decoration: new InputDecoration(
-                labelText: 'Last name',
-                hintText: 'Doe',
+              new TextField(
+                controller: nameLastController,
+                decoration: new InputDecoration(
+                  labelText: 'Last name',
+                  hintText: 'Doe',
+                ),
               ),
-            ),
-            Container(
-              width: 100,
-              height: 100,
-              child: () {
-                if (displayPicture == null || displayPicture.isEmpty) {
+              SizedBox(height:10),
+              Container(
+                width: 100,
+                height: 100,
+                child: () {
+                  if (displayPicture == null || displayPicture.isEmpty) {
+                    return OwnProfileDisplayPicture(
+                      profile: widget.profile,
+                      size: 100,
+                    );
+                  }
                   return OwnProfileDisplayPicture(
                     profile: widget.profile,
+                    image: MemoryImage(
+                      base64.decode(displayPicture),
+                    ),
+                    size: 100,
                   );
-                }
-                return OwnProfileDisplayPicture(
-                  profile: widget.profile,
-                  image: MemoryImage(
-                    base64.decode(displayPicture),
-                  ),
-                );
-              }(),
-            ),
-            SizedBox(width: 10),
-            Container(
-              child: RaisedButton(
-                padding: EdgeInsets.all(15),
-                onPressed: () {
-                  var b = _selectFile();
-                  b.then((String d) {
-                    setState(() {
-                      displayPicture = d;
+                }(),
+              ),
+              SizedBox(height: 10),
+              Container(
+                child: RaisedButton(
+                  padding: EdgeInsets.all(15),
+                  onPressed: () {
+                    var b = _selectFile();
+                    b.then((String d) {
+                      setState(() {
+                        displayPicture = d;
+                      });
                     });
-                  });
-                },
-                child: Container(
-                  child: Center(
-                    child: Text(
-                      'Pick new display picture',
+                  },
+                  child: Container(
+                    child: Center(
+                      child: Text(
+                        'Pick new display picture',
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text("Update"),
+                    onPressed: () {
+                      widget.callback(
+                        true,
+                        nameFirstController.text,
+                        nameLastController.text,
+                        displayPicture,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-      actions: <Widget>[
-        new FlatButton(
-            child: const Text('CANCEL'),
-            onPressed: () {
-              widget.callback(
-                false,
-                "",
-                "",
-                "",
-              );
-              Navigator.pop(context, false);
-            }),
-        new FlatButton(
-            child: const Text('UPDATE'),
-            onPressed: () {
-              widget.callback(
-                true,
-                nameFirstController.text,
-                nameLastController.text,
-                displayPicture,
-              );
-              Navigator.pop(context, true);
-            })
-      ],
     );
   }
 

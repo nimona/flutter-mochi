@@ -8,8 +8,6 @@ import 'package:mochi/view/dialog_create_contact.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
-import 'package:mochi/view/dialog_create_conversation.dart';
-import 'package:mochi/view/dialog_join_conversation.dart';
 import 'package:mochi/view/dialog_modify_profile.dart';
 import 'package:mochi/view/own_profile_display_picture.dart';
 
@@ -110,28 +108,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     children: <Widget>[
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                getProfileName(),
-                                textAlign: TextAlign.left,
-                                style: textTheme.headline6,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(width: 5),
-                              Icon(
-                                Icons.mode_edit,
-                                color: Theme.of(context).secondaryHeaderColor,
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            _showUpdateOwnProfileDialog(
-                              _ownProfile,
-                            );
-                          },
+                        child: Text(
+                          getProfileName(),
+                          textAlign: TextAlign.left,
+                          style: textTheme.headline6,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       SizedBox(height: 5),
@@ -186,25 +167,31 @@ class _ConversationListContainer extends State<ConversationListContainer> {
           Expanded(
             child: DefaultTabController(
               initialIndex: 1,
-              length: 2,
+              length: 3,
               child: new Scaffold(
                 appBar: new PreferredSize(
                   preferredSize: Size.fromHeight(kToolbarHeight),
                   child: new Container(
-                    height: 56,
+                    height: 40,
                     child: new TabBar(
                       labelColor: Colors.blue,
                       tabs: [
                         Container(
-                          height: 56,
-                          child: Center(
-                            child: Text("contacts"),
+                          height: 40,
+                          child: Icon(
+                            Icons.people,
                           ),
                         ),
                         Container(
-                          height: 50,
-                          child: Center(
-                            child: Text("conversations"),
+                          height: 40,
+                          child: Icon(
+                            Icons.chat,
+                          ),
+                        ),
+                        Container(
+                          height: 40,
+                          child: Icon(
+                            Icons.settings,
                           ),
                         ),
                       ],
@@ -214,109 +201,25 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 body: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: Scaffold(
-                            body: Scrollbar(
-                              child: ListView(
-                                children: _contacts.keys.map((i) {
-                                  var contact = _contacts[i];
-                                  return ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(2),
-                                      child: Image.network(
-                                        "http://localhost:10100/displayPictures/" +
-                                            contact.key,
-                                        height: 40,
-                                      ),
-                                    ),
-                                    title: Text(
-                                      "@" + contact.alias,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    subtitle: Text(
-                                      contact.key,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    // onTap: () => itemSelectedCallback(contact),
-                                    // selected: widget.selectedItem == contact,
-                                    dense: true,
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                            child: RaisedButton(
-                              child: Text("Add contact"),
-                              onPressed: () {
-                                _showCreateContactDialog();
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: Scrollbar(
-                            child: ListView(
-                              children: _conversationItems.keys.map((i) {
-                                var conversation = _conversationItems[i];
-                                return ListTile(
-                                  title: Text(
-                                    conversation.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  leading: ConversationDisplayPicture(
-                                    conversation: conversation,
-                                  ),
-                                  // TODO add unread count once backend supports it
-                                  // trailing: Text(
-                                  //   (conversation
-                                  //               .unreadMessagesLatest?.length ??
-                                  //           0)
-                                  //       .toString(),
-                                  // ),
-                                  subtitle: Text(
-                                    conversation.topic,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  onTap: () =>
-                                      itemSelectedCallback(conversation),
-                                  selected: widget.selectedItem == conversation,
-                                  dense: true,
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                            child: RaisedButton(
-                              child: Text("Create or join conversation"),
-                              onPressed: () {
-                                setState(() {
-                                  itemSelectedCallback(null);
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    buildContactsTab(),
+                    buildConversationsTab(),
+                    UpdateOwnProfileDialog(
+                      profile: _ownProfile,
+                      callback: (
+                        bool update,
+                        String nameFirst,
+                        String nameLast,
+                        String displayPicture,
+                      ) {
+                        if (update) {
+                          Repository.get().updateOwnProfile(
+                            nameFirst,
+                            nameLast,
+                            displayPicture,
+                          );
+                        }
+                      },
+                    )
                   ],
                 ),
               ),
@@ -327,61 +230,166 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     );
   }
 
-  void _showUpdateOwnProfileDialog(OwnProfile profile) {
-    showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return UpdateOwnProfileDialog(
-            profile: profile,
-            callback:
-                (bool update, String nameFirst, nameLast, displayPicture) {
-              Repository.get().updateOwnProfile(
-                nameFirst,
-                nameLast,
-                displayPicture,
-              );
-            },
-          );
-        }).then<void>((bool userClickedCreate) {});
+  Column buildConversationsTab() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Scrollbar(
+            child: ListView(
+              children: _conversationItems.keys.map((i) {
+                var conversation = _conversationItems[i];
+                return ListTile(
+                  title: Text(
+                    conversation.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  leading: ConversationDisplayPicture(
+                    conversation: conversation,
+                  ),
+                  // TODO add unread count once backend supports it
+                  // trailing: Text(
+                  //   (conversation
+                  //               .unreadMessagesLatest?.length ??
+                  //           0)
+                  //       .toString(),
+                  // ),
+                  subtitle: Text(
+                    conversation.topic,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () => itemSelectedCallback(conversation),
+                  selected: widget.selectedItem == conversation,
+                  dense: true,
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: RaisedButton(
+              child: Text("Create or join conversation"),
+              onPressed: () {
+                setState(() {
+                  itemSelectedCallback(null);
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
-  void _showCreateConversationDialog() {
-    final nameController = TextEditingController();
-    final topicController = TextEditingController();
-
-    showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return CreateConversationDialog(
-            nameController: nameController,
-            topicController: topicController,
-          );
-        }).then<void>((bool userClickedCreate) {
-      if (userClickedCreate == true && nameController.text.isNotEmpty) {
-        Repository.get().createConversation(
-          nameController.text,
-          topicController.text,
-        );
-      }
-    });
+  Column buildContactsTab() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Scaffold(
+            body: Scrollbar(
+              child: ListView(
+                children: _contacts.keys.map((i) {
+                  var contact = _contacts[i];
+                  return ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: Image.network(
+                        "http://localhost:10100/displayPictures/" + contact.key,
+                        height: 40,
+                      ),
+                    ),
+                    title: Text(
+                      "@" + contact.alias,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      contact.key,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    dense: true,
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: RaisedButton(
+              child: Text("Add contact"),
+              onPressed: () {
+                _showCreateContactDialog();
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
-  void _showJoinConversationDialog() {
-    final hashController = TextEditingController();
-    showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return JoinConversationDialog(
-            hashController: hashController,
-          );
-        }).then<void>((bool userClickedJoin) {
-      if (userClickedJoin == true && hashController.text.isNotEmpty) {
-        Repository.get().joinConversation(
-          hashController.text,
-        );
-      }
-    });
-  }
+  // void _showUpdateOwnProfileDialog(OwnProfile profile) {
+  //   showDialog<bool>(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return UpdateOwnProfileDialog(
+  //           profile: profile,
+  //           callback:
+  //               (bool update, String nameFirst, nameLast, displayPicture) {
+  //             Repository.get().updateOwnProfile(
+  //               nameFirst,
+  //               nameLast,
+  //               displayPicture,
+  //             );
+  //           },
+  //         );
+  //       }).then<void>((bool userClickedCreate) {});
+  // }
+
+  // void _showCreateConversationDialog() {
+  //   final nameController = TextEditingController();
+  //   final topicController = TextEditingController();
+
+  //   showDialog<bool>(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return CreateConversationDialog(
+  //           nameController: nameController,
+  //           topicController: topicController,
+  //         );
+  //       }).then<void>((bool userClickedCreate) {
+  //     if (userClickedCreate == true && nameController.text.isNotEmpty) {
+  //       Repository.get().createConversation(
+  //         nameController.text,
+  //         topicController.text,
+  //       );
+  //     }
+  //   });
+  // }
+
+  // void _showJoinConversationDialog() {
+  //   final hashController = TextEditingController();
+  //   showDialog<bool>(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return JoinConversationDialog(
+  //           hashController: hashController,
+  //         );
+  //       }).then<void>((bool userClickedJoin) {
+  //     if (userClickedJoin == true && hashController.text.isNotEmpty) {
+  //       Repository.get().joinConversation(
+  //         hashController.text,
+  //       );
+  //     }
+  //   });
+  // }
 
   void _showCreateContactDialog() {
     final aliasController = TextEditingController();
