@@ -6,12 +6,12 @@ class OwnProfileDisplayPicture extends StatelessWidget {
     Key key,
     @required this.profile,
     this.image,
-    this.size,
+    @required this.size,
   }) : super(key: key);
 
   final OwnProfile profile;
   final ImageProvider image;
-  final double size;
+  final int size;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,14 @@ class OwnProfileDisplayPicture extends StatelessWidget {
         "http://localhost:10100/displayPictures/" +
             profile.key +
             "?_cb=" +
-            profile.updated.toString(),
+            profile.updated.millisecondsSinceEpoch.toString() +
+            "&size=" +
+            size.toString(),
       );
     }
     return Container(
-      width: size ?? 40,
-      height: size ?? 40,
+      width: size.toDouble(),
+      height: size.toDouble(),
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
@@ -36,7 +38,8 @@ class OwnProfileDisplayPicture extends StatelessWidget {
               alignment: FractionalOffset.topCenter,
               image: img,
             ),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(3),
+            // borderRadius: BorderRadius.circular(size.toDouble()),
           ),
         ),
       ),

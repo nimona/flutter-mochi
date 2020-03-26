@@ -10,6 +10,7 @@ import 'package:mochi/view/add_conversation.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:intl/intl.dart';
 import 'package:mochi/view/participant_name.dart';
+import 'package:mochi/view/profile_display_picture.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
@@ -331,7 +332,6 @@ class _MessagesContainer extends State<MessagesContainer> {
                         height: 18,
                         child: Container(
                           margin: EdgeInsets.only(
-                            left: 10,
                             right: 10,
                           ),
                           child: Align(
@@ -365,13 +365,9 @@ class _MessagesContainer extends State<MessagesContainer> {
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.only(right: 10.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: Image.network(
-                          "http://localhost:10100/displayPictures/" +
-                              message.participant?.key,
-                          height: 40,
-                        ),
+                      child: ProfileDisplayPicture(
+                        profile: message.participant.profile,
+                        size: 40,
                       ),
                     ),
                     Expanded(

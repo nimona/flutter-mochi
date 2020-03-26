@@ -59,7 +59,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
         Flexible(
           flex: 3,
           child: Material(
-            elevation: 4.0,
+            // elevation: 4.0,
             child: ConversationListContainer(
               itemSelectedCallback: (item) {
                 setState(() {
@@ -75,7 +75,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
         Flexible(
           flex: 7,
           child: Material(
-            elevation: 1.0,
+            // elevation: 1.0,
             child: messagesContainer,
           ),
         ),

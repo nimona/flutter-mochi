@@ -6,12 +6,12 @@ class ConversationDisplayPicture extends StatelessWidget {
     Key key,
     @required this.conversation,
     this.image,
-    this.size,
+    @required this.size,
   }) : super(key: key);
 
   final Conversation conversation;
   final ImageProvider image;
-  final double size;
+  final int size;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,15 @@ class ConversationDisplayPicture extends StatelessWidget {
         "http://localhost:10100/displayPictures/" +
             conversation.hash +
             "?_cb=" +
-            conversation.updated.toString(),
+            conversation.updated.millisecondsSinceEpoch.toString() +
+            "&size=" +
+            size.toString(),
       );
     }
     return Container(
-      width: size??40,
-      height: size??40,
+      width: size.toDouble(),
+      height: size.toDouble(),
+      margin: EdgeInsets.all(0),
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
@@ -36,7 +39,8 @@ class ConversationDisplayPicture extends StatelessWidget {
               alignment: FractionalOffset.topCenter,
               image: img,
             ),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(3),
+            // borderRadius: BorderRadius.circular(size.toDouble()),
           ),
         ),
       ),

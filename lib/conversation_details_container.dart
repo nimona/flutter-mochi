@@ -95,6 +95,7 @@ class _ConversationDetailsContainerState
                 if (displayPicture.isEmpty) {
                   return ConversationDisplayPicture(
                     conversation: widget.conversation,
+                    size: 100,
                   );
                 }
                 return ConversationDisplayPicture(
@@ -102,6 +103,7 @@ class _ConversationDetailsContainerState
                   image: MemoryImage(
                     base64.decode(displayPicture),
                   ),
+                  size: 100,
                 );
               }(),
             ),

@@ -12,6 +12,8 @@ require (
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.12
 	github.com/miguelpruivo/flutter_file_picker/go v0.0.0-20200324175432-e35b6aae601f
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+	github.com/oliamb/cutter v0.2.2
 	github.com/onsi/ginkgo v1.12.0 // indirect
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1

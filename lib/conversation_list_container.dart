@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mochi/model/own_profile.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:mochi/view/dialog_create_contact.dart';
@@ -10,6 +12,7 @@ import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/view/dialog_modify_profile.dart';
 import 'package:mochi/view/own_profile_display_picture.dart';
+import 'package:mochi/view/profile_display_picture.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
@@ -17,8 +20,8 @@ class ConversationListContainer extends StatefulWidget {
     this.selectedItem,
   });
 
-  ValueChanged<Conversation> itemSelectedCallback;
-  Conversation selectedItem;
+ final ValueChanged<Conversation> itemSelectedCallback;
+  final Conversation selectedItem;
 
   @override
   _ConversationListContainer createState() =>
@@ -98,7 +101,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 margin: EdgeInsets.all(10),
                 child: OwnProfileDisplayPicture(
                   profile: _ownProfile,
-                  size: 56,
+                  size: 54,
                 ),
               ),
               Expanded(
@@ -178,21 +181,45 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       tabs: [
                         Container(
                           height: 40,
-                          child: Icon(
-                            Icons.people,
+                          child: Center(
+                            child: Text(
+                              "contacts",
+                              style: textTheme.button,
+                              overflow: TextOverflow.ellipsis,
+                              semanticsLabel: "contacts",
+                            ),
                           ),
+                          // child: Icon(
+                          //   Icons.people,
+                          // ),
                         ),
                         Container(
                           height: 40,
-                          child: Icon(
-                            Icons.chat,
+                          child: Center(
+                            child: Text(
+                              "conversations",
+                              style: textTheme.button,
+                              overflow: TextOverflow.ellipsis,
+                              semanticsLabel: "conversations",
+                            ),
                           ),
+                          // child: Icon(
+                          //   Icons.chat,
+                          // ),
                         ),
                         Container(
                           height: 40,
-                          child: Icon(
-                            Icons.settings,
+                          child: Center(
+                            child: Text(
+                              "settings",
+                              style: textTheme.button,
+                              overflow: TextOverflow.ellipsis,
+                              semanticsLabel: "settings",
+                            ),
                           ),
+                          // child: Icon(
+                          //   Icons.settings,
+                          // ),
                         ),
                       ],
                     ),
@@ -219,7 +246,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           );
                         }
                       },
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -230,166 +257,238 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     );
   }
 
-  Column buildConversationsTab() {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Scrollbar(
-            child: ListView(
-              children: _conversationItems.keys.map((i) {
-                var conversation = _conversationItems[i];
-                return ListTile(
-                  title: Text(
-                    conversation.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  leading: ConversationDisplayPicture(
-                    conversation: conversation,
-                  ),
-                  // TODO add unread count once backend supports it
-                  // trailing: Text(
-                  //   (conversation
-                  //               .unreadMessagesLatest?.length ??
-                  //           0)
-                  //       .toString(),
-                  // ),
-                  subtitle: Text(
-                    conversation.topic,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onTap: () => itemSelectedCallback(conversation),
-                  selected: widget.selectedItem == conversation,
-                  dense: true,
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: RaisedButton(
-              child: Text("Create or join conversation"),
-              onPressed: () {
-                setState(() {
-                  itemSelectedCallback(null);
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Column buildContactsTab() {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Scaffold(
-            body: Scrollbar(
+  Widget buildConversationsTab() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final dateFormatFull = new DateFormat("EEE, MMM d, hh:mm");
+    return Container(
+      color: Color(0xFFF3F3FB),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: Scrollbar(
               child: ListView(
-                children: _contacts.keys.map((i) {
-                  var contact = _contacts[i];
-                  return ListTile(
-                    leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(2),
-                      child: Image.network(
-                        "http://localhost:10100/displayPictures/" + contact.key,
-                        height: 40,
+                children: _conversationItems.keys.map((i) {
+                  var conversation = _conversationItems[i];
+                  return GestureDetector(
+                    onTap: () => itemSelectedCallback(conversation),
+                    child: Card(
+                      shape: widget.selectedItem == conversation
+                          ? new RoundedRectangleBorder(
+                              side: new BorderSide(
+                                color: colorScheme.background,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(4.0),
+                            )
+                          : new RoundedRectangleBorder(
+                              side: new BorderSide(
+                                color: Colors.white,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      elevation: 0,
+                      color: Colors.white,
+                      child: ClipPath(
+                        clipper: ShapeBorderClipper(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        child: Container(
+                          // decoration: BoxDecoration(
+                          //   border: Border(
+                          //     left: BorderSide(
+                          //       color: widget.selectedItem == conversation
+                          //           ? colorScheme.primary
+                          //           : colorScheme.surface,
+                          //       width: 5,
+                          //     ),
+                          //   ),
+                          // ),
+                          padding: EdgeInsets.all(10),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(right: 10),
+                                child: ConversationDisplayPicture(
+                                  size: 50,
+                                  conversation: conversation,
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                              conversation.name,
+                                              style: textTheme.subtitle1,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                        conversation.unreadMessagesCount == 0
+                                            ? Container()
+                                            : Badge(
+                                                badgeContent: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    conversation
+                                                        .unreadMessagesCount
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      color:
+                                                          colorScheme.onPrimary,
+                                                      fontSize: textTheme
+                                                          .caption.fontSize,
+                                                    ),
+                                                  ),
+                                                ),
+                                                badgeColor: colorScheme.primary,
+                                                // shape: BadgeShape.square,
+                                                // borderRadius: 5,
+                                              ),
+                                      ],
+                                    ),
+                                    Divider(
+                                      height: 5,
+                                      thickness: 1,
+                                      color: Color(0xFFF3F3FB),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        conversation.topic,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: textTheme.bodyText1,
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        dateFormatFull
+                                            .format(conversation.updated),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: textTheme.caption,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // child: ListTile(
+                        //   contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        //   title: Text(
+                        //     conversation.name,
+                        //     maxLines: 1,
+                        //     overflow: TextOverflow.ellipsis,
+                        //   ),
+                        //   leading: ConversationDisplayPicture(
+                        //     size: 50,
+                        //     conversation: conversation,
+                        //   ),
+                        //   // TODO add unread count once backend supports it
+                        //   // trailing: Text(
+                        //   //   (conversation
+                        //   //               .unreadMessagesLatest?.length ??
+                        //   //           0)
+                        //   //       .toString(),
+                        //   // ),
+                        //   subtitle: Text(
+                        //     conversation.topic,
+                        //     maxLines: 1,
+                        //     overflow: TextOverflow.ellipsis,
+                        //   ),
+                        //   onTap: () => itemSelectedCallback(conversation),
+                        //   selected: widget.selectedItem == conversation,
+                        //   dense: true,
+                        // ),
                       ),
                     ),
-                    title: Text(
-                      "@" + contact.alias,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      contact.key,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    dense: true,
                   );
                 }).toList(),
               ),
             ),
           ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: Container(
-            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: RaisedButton(
-              child: Text("Add contact"),
-              onPressed: () {
-                _showCreateContactDialog();
-              },
+          SizedBox(
+            width: double.infinity,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: RaisedButton(
+                child: Text("Create or join conversation"),
+                onPressed: () {
+                  setState(() {
+                    itemSelectedCallback(null);
+                  });
+                },
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  // void _showUpdateOwnProfileDialog(OwnProfile profile) {
-  //   showDialog<bool>(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return UpdateOwnProfileDialog(
-  //           profile: profile,
-  //           callback:
-  //               (bool update, String nameFirst, nameLast, displayPicture) {
-  //             Repository.get().updateOwnProfile(
-  //               nameFirst,
-  //               nameLast,
-  //               displayPicture,
-  //             );
-  //           },
-  //         );
-  //       }).then<void>((bool userClickedCreate) {});
-  // }
-
-  // void _showCreateConversationDialog() {
-  //   final nameController = TextEditingController();
-  //   final topicController = TextEditingController();
-
-  //   showDialog<bool>(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return CreateConversationDialog(
-  //           nameController: nameController,
-  //           topicController: topicController,
-  //         );
-  //       }).then<void>((bool userClickedCreate) {
-  //     if (userClickedCreate == true && nameController.text.isNotEmpty) {
-  //       Repository.get().createConversation(
-  //         nameController.text,
-  //         topicController.text,
-  //       );
-  //     }
-  //   });
-  // }
-
-  // void _showJoinConversationDialog() {
-  //   final hashController = TextEditingController();
-  //   showDialog<bool>(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return JoinConversationDialog(
-  //           hashController: hashController,
-  //         );
-  //       }).then<void>((bool userClickedJoin) {
-  //     if (userClickedJoin == true && hashController.text.isNotEmpty) {
-  //       Repository.get().joinConversation(
-  //         hashController.text,
-  //       );
-  //     }
-  //   });
-  // }
+  Widget buildContactsTab() {
+    return Container(
+      color: Color(0xF3F3FB),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: Scaffold(
+              body: Scrollbar(
+                child: ListView(
+                  children: _contacts.keys.map((i) {
+                    var contact = _contacts[i];
+                    return ListTile(
+                      leading: ProfileDisplayPicture(
+                        profile: contact.profile,
+                        size: 40,
+                        ),
+                      title: Text(
+                        "@" + contact.alias,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        contact.key,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      dense: true,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: RaisedButton(
+                child: Text("Add contact"),
+                onPressed: () {
+                  _showCreateContactDialog();
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _showCreateContactDialog() {
     final aliasController = TextEditingController();
