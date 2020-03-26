@@ -29,7 +29,6 @@ class ConversationDisplayPicture extends StatelessWidget {
     return Container(
       width: size.toDouble(),
       height: size.toDouble(),
-      margin: EdgeInsets.all(0),
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(
@@ -39,8 +38,9 @@ class ConversationDisplayPicture extends StatelessWidget {
               alignment: FractionalOffset.topCenter,
               image: img,
             ),
-            borderRadius: BorderRadius.circular(3),
-            // borderRadius: BorderRadius.circular(size.toDouble()),
+            borderRadius: BorderRadius.circular(
+              size.toDouble(),
+            ),
           ),
         ),
       ),
