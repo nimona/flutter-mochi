@@ -57,6 +57,11 @@ class MockDataStore implements DataStore {
   }
 
   @override
+  void conversationMarkRead(String hash) {
+    return;
+  }
+
+  @override
   void updateConversation(String hash, name, topic) {
     return;
   }

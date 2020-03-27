@@ -217,6 +217,9 @@ func (m *Mochi) handleStreams() {
 				Body:             v.Body,
 				Hash:             object.NewHash(o).String(),
 				Sent:             t,
+				IsRead: v.Owners[0].Equals(
+					m.daemon.LocalPeer.GetIdentityPublicKey(),
+				),
 			}
 			m.store.AddMessage(p)
 
@@ -341,6 +344,15 @@ func (m *Mochi) UpdateConversation(conversationHash, name, topic string) error {
 	return nil
 }
 
+// ConversationMarkRead marks all messages as read for this conversation
+func (m *Mochi) ConversationMarkRead(conversationHash string) error {
+	if conversationHash == "" {
+		return errors.New("missing conversation hash")
+	}
+
+	return m.store.ConversationMarkRead(conversationHash)
+}
+
 // UpdateConversationPicture and store it, or error
 func (m *Mochi) UpdateConversationPicture(conversationHash, displayPicture string) error {
 	if displayPicture == "" {
@@ -384,6 +396,10 @@ func (m *Mochi) JoinConversation(conversationHash string) error {
 	fmt.Println(">>>> FOUND", len(graph.Objects), err)
 	if err != nil {
 		return err
+	}
+
+	if len(graph.Objects) == 0 {
+		return errors.New("not found")
 	}
 
 	// create new stream

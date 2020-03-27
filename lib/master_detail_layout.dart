@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 
 import 'conversation_list_container.dart';
@@ -11,7 +12,7 @@ class MasterDetailLayout extends StatefulWidget {
 
 class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   static const int kTabletBreakpoint = 600;
-  Conversation _selectedItem;
+  Conversation selectedConversation;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +33,15 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   Widget _buildMobileLayout() {
     return ConversationListContainer(
       itemSelectedCallback: (item) {
+        Repository.get().conversationMarkRead(item.hash);
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (BuildContext context) {
               return Material(
                 child: MessagesContainer(
-                isInTabletLayout: false,
-                conversation: item,
+                  isInTabletLayout: false,
+                  conversation: item,
                 ),
               );
             },
@@ -52,7 +54,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   Widget _buildTabletLayout() {
     var messagesContainer = MessagesContainer(
       isInTabletLayout: true,
-      conversation: _selectedItem,
+      conversation: selectedConversation,
     );
     return Row(
       children: <Widget>[
@@ -61,14 +63,27 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           child: Material(
             // elevation: 4.0,
             child: ConversationListContainer(
-              itemSelectedCallback: (item) {
+              itemSelectedCallback: (conversation) {
+                // mark both old and new conversation as read
+                // we do this as the backend is not clever enough to know
+                // that we had the conversation open until now
+                if (selectedConversation != null) {
+                  Repository.get().conversationMarkRead(
+                    selectedConversation.hash,
+                  );
+                }
+                if (conversation != null) {
+                  Repository.get().conversationMarkRead(
+                    conversation.hash,
+                  );
+                }
                 setState(() {
+                  // reset the focus of everything, this is because of 221
                   FocusScope.of(context).requestFocus(new FocusNode());
-                  _selectedItem = item;
-                  messagesContainer.updateConversation(item);
+                  selectedConversation = conversation;
+                  messagesContainer.updateConversation(conversation);
                 });
               },
-              selectedItem: _selectedItem,
             ),
           ),
         ),

@@ -18,6 +18,8 @@ abstract class DataStore {
 
   void joinConversation(String hash);
 
+  void conversationMarkRead(String hash);
+  
   void updateConversation(String hash, name, topic);
 
   void updateConversationDisplayPicture(String hash, diplayPicture);

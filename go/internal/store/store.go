@@ -293,6 +293,33 @@ func (s *Store) PutConversation(c Conversation) error {
 	return nil
 }
 
+// ConversationMarkRead to update all messages for this conversation as read
+func (s *Store) ConversationMarkRead(conversationHash string) error {
+	err := s.db.
+		Model(&Message{}).
+		Where(Message{
+			ConversationHash: conversationHash,
+		}).
+		UpdateColumn("is_read", true).
+		Error
+	if err != nil {
+		return err
+	}
+
+	c, err := s.GetConversation(conversationHash)
+	if err != nil {
+		return err
+	}
+
+	s.lock.RLock()
+	for _, h := range s.conversationHandlers {
+		h(c)
+	}
+	s.lock.RUnlock()
+
+	return nil
+}
+
 // GetConversations returns all conversations
 func (s *Store) GetConversations() ([]Conversation, error) {
 	cs := []Conversation{}
@@ -301,7 +328,7 @@ func (s *Store) GetConversations() ([]Conversation, error) {
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
 		Preload("Messages.Participant.Contact").
-		// Preload("UnreadMessagesLatest", "is_read = false").
+		Preload("UnreadMessagesLatest", "is_read = false").
 		Find(&cs).
 		Error; err != nil {
 		return nil, err
@@ -318,7 +345,7 @@ func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
 		Preload("Participants.Profile.Contact").
 		Preload("Messages.Participant.Profile.Contact").
 		Preload("Messages.Participant.Contact").
-		// Preload("UnreadMessagesLatest", "is_read = false").
+		Preload("UnreadMessagesLatest", "is_read = false").
 		Where(
 			"hash = ?",
 			conversationHash,

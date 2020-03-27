@@ -57,6 +57,10 @@ class Repository {
     _dataStore.updateConversation(hash, name, topic);
   }
 
+  void conversationMarkRead(String hash) {
+    _dataStore.conversationMarkRead(hash);
+  }
+
   void updateConversationDisplayPicture(String hash, diplayPicture) {
     _dataStore.updateConversationDisplayPicture(hash, diplayPicture);
   }

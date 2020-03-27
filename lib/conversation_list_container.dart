@@ -4,6 +4,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 import 'package:mochi/model/own_profile.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:mochi/view/dialog_create_contact.dart';
@@ -17,22 +18,20 @@ import 'package:mochi/view/profile_display_picture.dart';
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
     this.itemSelectedCallback,
-    this.selectedItem,
   });
 
- final ValueChanged<Conversation> itemSelectedCallback;
-  final Conversation selectedItem;
+  final ValueChanged<Conversation> itemSelectedCallback;
 
   @override
   _ConversationListContainer createState() =>
-      _ConversationListContainer(itemSelectedCallback, selectedItem);
+      _ConversationListContainer(itemSelectedCallback);
 }
 
 class _ConversationListContainer extends State<ConversationListContainer> {
-  _ConversationListContainer(this.itemSelectedCallback, this.selectedItem);
+  _ConversationListContainer(this.itemSelectedCallback);
 
   ValueChanged<Conversation> itemSelectedCallback;
-  Conversation selectedItem;
+  String selectedConversationHash;
 
   Map<String, Conversation> _conversationItems = {};
   StreamSubscription _streamSubscriptionConversation;
@@ -271,9 +270,14 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 children: _conversationItems.keys.map((i) {
                   var conversation = _conversationItems[i];
                   return GestureDetector(
-                    onTap: () => itemSelectedCallback(conversation),
+                    onTap: () {
+                      setState(() {
+                        selectedConversationHash = conversation.hash;
+                      });
+                      itemSelectedCallback(conversation);
+                    },
                     child: Card(
-                      shape: widget.selectedItem == conversation
+                      shape: selectedConversationHash == conversation.hash
                           ? new RoundedRectangleBorder(
                               side: new BorderSide(
                                 color: colorScheme.background,
@@ -301,7 +305,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           // decoration: BoxDecoration(
                           //   border: Border(
                           //     left: BorderSide(
-                          //       color: widget.selectedItem == conversation
+                          //       color: widget.selectedConversationHash == conversation
                           //           ? colorScheme.primary
                           //           : colorScheme.surface,
                           //       width: 5,
@@ -334,27 +338,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                             ),
                                           ),
                                         ),
-                                        conversation.unreadMessagesCount == 0
-                                            ? Container()
-                                            : Badge(
-                                                badgeContent: Align(
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    conversation
-                                                        .unreadMessagesCount
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color:
-                                                          colorScheme.onPrimary,
-                                                      fontSize: textTheme
-                                                          .caption.fontSize,
-                                                    ),
-                                                  ),
-                                                ),
-                                                badgeColor: colorScheme.primary,
-                                                // shape: BadgeShape.square,
-                                                // borderRadius: 5,
-                                              ),
+                                        buildConversationUnreadCountBadge(
+                                          conversation,
+                                          colorScheme,
+                                          textTheme,
+                                        ),
                                       ],
                                     ),
                                     Divider(
@@ -387,33 +375,6 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             ],
                           ),
                         ),
-                        // child: ListTile(
-                        //   contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        //   title: Text(
-                        //     conversation.name,
-                        //     maxLines: 1,
-                        //     overflow: TextOverflow.ellipsis,
-                        //   ),
-                        //   leading: ConversationDisplayPicture(
-                        //     size: 50,
-                        //     conversation: conversation,
-                        //   ),
-                        //   // TODO add unread count once backend supports it
-                        //   // trailing: Text(
-                        //   //   (conversation
-                        //   //               .unreadMessagesLatest?.length ??
-                        //   //           0)
-                        //   //       .toString(),
-                        //   // ),
-                        //   subtitle: Text(
-                        //     conversation.topic,
-                        //     maxLines: 1,
-                        //     overflow: TextOverflow.ellipsis,
-                        //   ),
-                        //   onTap: () => itemSelectedCallback(conversation),
-                        //   selected: widget.selectedItem == conversation,
-                        //   dense: true,
-                        // ),
                       ),
                     ),
                   );
@@ -428,15 +389,43 @@ class _ConversationListContainer extends State<ConversationListContainer> {
               child: RaisedButton(
                 child: Text("Create or join conversation"),
                 onPressed: () {
-                  setState(() {
+                  // setState(() {
                     itemSelectedCallback(null);
-                  });
+                  // });
                 },
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildConversationUnreadCountBadge(
+    Conversation conversation,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    if (selectedConversationHash == conversation.hash) {
+      return Container();
+    }
+    if (conversation.unreadMessagesLatest.length == 0) {
+      return Container();
+    }
+    return Badge(
+      badgeContent: Align(
+        alignment: Alignment.topRight,
+        child: Text(
+          conversation.unreadMessagesLatest.length.toString(),
+          style: TextStyle(
+            color: colorScheme.onPrimary,
+            fontSize: textTheme.overline.fontSize,
+          ),
+        ),
+      ),
+      badgeColor: colorScheme.primary,
+      // shape: BadgeShape.square,
+      // borderRadius: 5,
     );
   }
 
@@ -455,7 +444,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       leading: ProfileDisplayPicture(
                         profile: contact.profile,
                         size: 40,
-                        ),
+                      ),
                       title: Text(
                         "@" + contact.alias,
                         maxLines: 1,
