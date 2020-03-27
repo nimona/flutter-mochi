@@ -25,7 +25,7 @@ type Conversation struct {
 	UnreadMessagesLatest []Message     `json:"unreadMessagesLatest," gorm:"PRELOAD:false"`
 	Participants         []Participant `json:"participants,"`
 	Messages             []Message     `json:"messages,"`
-	Updated              time.Time     `json:"updated,"`
+	Updated              time.Time     `json:"updated" gorm:"default:'1970-01-01 00:00:00.00000+00:00'"`
 }
 
 // Message -
@@ -86,7 +86,7 @@ type Profile struct {
 	NameLast       string    `json:"nameLast"`
 	DisplayPicture string    `json:"displayPicture"`
 	Contact        *Contact  `json:"contact" gorm:"foreignKey:key;PRELOAD:false"`
-	Updated        time.Time `json:"updated"`
+	Updated        time.Time `json:"updated" gorm:"default:'1970-01-01 00:00:00.00000+00:00'"`
 }
 
 // OwnProfile -
@@ -97,7 +97,7 @@ type OwnProfile struct {
 	NameLast       string    `json:"nameLast"`
 	LocalAlias     string    `json:"alias"`
 	DisplayPicture string    `json:"displayPicture"`
-	Updated        time.Time `json:"updated"`
+	Updated        time.Time `json:"updated" gorm:"default:'1970-01-01 00:00:00.00000+00:00'"`
 }
 
 // DisplayPicture -
