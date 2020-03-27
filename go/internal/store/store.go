@@ -52,9 +52,9 @@ func New(dbPath string) (*Store, error) {
 	db.AutoMigrate(&Profile{})
 	db.AutoMigrate(&DisplayPicture{})
 
-	db.Exec(`UPDATE profiles SET updated = '1970-01-01 00:00:00.00000+00:00' WHERE updated = '';`)
-	db.Exec(`UPDATE own_profiles SET updated = '1970-01-01 00:00:00.00000+00:00' WHERE updated = '';`)
-	db.Exec(`UPDATE conversations SET updated = '1970-01-01 00:00:00.00000+00:00' WHERE updated = '';`)
+	db.Exec(`UPDATE profiles SET updated = '1970-01-01 00:00:00.00000+00:00' WHERE updated = '' OR updated IS NULL;`)
+	db.Exec(`UPDATE own_profiles SET updated = '1970-01-01 00:00:00.00000+00:00' WHERE updated = '' OR updated IS NULL;`)
+	db.Exec(`UPDATE conversations SET updated = '1970-01-01 00:00:00.00000+00:00' WHERE updated = '' OR updated IS NULL;`)
 
 	return &Store{db: db}, nil
 }
