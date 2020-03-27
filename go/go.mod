@@ -8,6 +8,8 @@ require (
 	github.com/geoah/go-nimona-notifier v0.0.1
 	github.com/go-flutter-desktop/go-flutter v0.36.1
 	github.com/go-flutter-desktop/plugins/url_launcher v0.1.2
+	github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1
+	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.12
@@ -27,5 +29,4 @@ require (
 )
 
 // replace nimona.io => ../../../../nimona.io
-
 // replace github.com/go-flutter-desktop/go-flutter => ../../../geoah/go-flutter

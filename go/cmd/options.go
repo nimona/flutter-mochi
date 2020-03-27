@@ -9,6 +9,7 @@ import (
 )
 
 var options = []flutter.Option{
+	flutter.AddPlugin(&plugin.FocusCallback{}),
 	flutter.WindowInitialDimensions(800, 1280),
 	flutter.AddPlugin(&file_picker.FilePickerPlugin{}),
 	flutter.AddPlugin(&url_launcher.UrlLauncherPlugin{}),

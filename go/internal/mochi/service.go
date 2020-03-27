@@ -27,6 +27,24 @@ import (
 	"mochi.io/internal/store"
 )
 
+var (
+	windowFocusedLock sync.RWMutex
+	windowFocused     bool
+)
+
+func IsWindowFocused() bool {
+	windowFocusedLock.RLock()
+	defer windowFocusedLock.RUnlock()
+	return windowFocused
+}
+
+func MarkWindowFocused(b bool) {
+	fmt.Println("focus:", b)
+	windowFocusedLock.Lock()
+	defer windowFocusedLock.Unlock()
+	windowFocused = b
+}
+
 func init() {
 	net.UseUPNP = true
 	net.BindPrivate = true
@@ -233,6 +251,11 @@ func (m *Mochi) handleStreams() {
 				con, err := m.store.GetConversation(p.ConversationHash)
 				if err != nil {
 					fmt.Println("could not get conversation for notification")
+					continue
+				}
+				// skip notifications while window has focus
+				if IsWindowFocused() {
+					fmt.Println("window has focus, skipping notifications")
 					continue
 				}
 				note := notifier.NewNotification(msg.Body)
