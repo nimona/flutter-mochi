@@ -234,7 +234,7 @@ func (api *API) HandleWS(c *router.Context) {
 		case "messagesGet":
 			r := MessagesGetRequest{}
 			json.Unmarshal(msg, &r)
-			api.store.HandleMessages(func(m store.Message) {
+			api.store.HandleMessages(func(m store.MessageView) {
 				if m.ConversationHash != r.Conversation {
 					// fmt.Println("Handling msg, ignoring", m)
 					return

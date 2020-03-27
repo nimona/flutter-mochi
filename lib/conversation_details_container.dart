@@ -56,7 +56,7 @@ class _ConversationDetailsContainerState
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: Image.network(
-                "http://localhost:10100/displayPictures/" + participant.key,
+                "http://localhost:10100/displayPictures/${participant.key}",
                 height: 40,
               ),
             ),

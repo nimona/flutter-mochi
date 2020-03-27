@@ -262,8 +262,8 @@ func (m *Mochi) handleStreams() {
 				note.Title = "New message"
 				name := strings.Join(
 					[]string{
-						msg.Participant.Profile.NameFirst,
-						msg.Participant.Profile.NameLast,
+						msg.NameFirst,
+						msg.NameLast,
 					}, " ",
 				)
 				if name != "" {

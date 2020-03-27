@@ -85,10 +85,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     String getProfileName() {
-      if (_ownProfile.nameLast != "" || _ownProfile.nameLast != "") {
-        return _ownProfile.nameFirst + " " + _ownProfile.nameLast;
-      }
-      return "Anonymous";
+      var name = "${_ownProfile.nameFirst} ${_ownProfile.nameLast}".trim();
+      return name.isEmpty ? "anonymous" : name;
     }
 
     return Scaffold(
@@ -390,7 +388,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 child: Text("Create or join conversation"),
                 onPressed: () {
                   // setState(() {
-                    itemSelectedCallback(null);
+                  itemSelectedCallback(null);
                   // });
                 },
               ),
@@ -447,7 +445,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                         size: 40,
                       ),
                       title: Text(
-                        "@" + contact.alias,
+                        "@${contact.alias}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

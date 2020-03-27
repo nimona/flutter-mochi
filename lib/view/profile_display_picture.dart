@@ -18,13 +18,12 @@ class ProfileDisplayPicture extends StatelessWidget {
   Widget build(BuildContext context) {
     ImageProvider img = image;
     if (img == null) {
+      var cb = "0";
+      if (profileUpdated != null) {
+        cb = profileUpdated.millisecondsSinceEpoch.toString();
+      }
       img = NetworkImage(
-        "http://localhost:10100/displayPictures/" +
-            profileKey +
-            "?_cb=" +
-            profileUpdated.millisecondsSinceEpoch.toString() +
-            "&size=" +
-            size.toString(),
+        "http://localhost:10100/displayPictures/$profileKey?_cb=$cb&size=$size",
       );
     }
     return Container(

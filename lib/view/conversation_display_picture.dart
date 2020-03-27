@@ -17,13 +17,13 @@ class ConversationDisplayPicture extends StatelessWidget {
   Widget build(BuildContext context) {
     ImageProvider img = image;
     if (img == null) {
+      var cb = "0";
+      if (conversation.updated != null) {
+        cb = conversation.updated.millisecondsSinceEpoch.toString();
+      }
+      var hash = conversation.hash;
       img = NetworkImage(
-        "http://localhost:10100/displayPictures/" +
-            conversation.hash +
-            "?_cb=" +
-            conversation.updated.millisecondsSinceEpoch.toString() +
-            "&size=" +
-            size.toString(),
+        "http://localhost:10100/displayPictures/$hash?_cb=$cb&size=$size",
       );
     }
     return Container(

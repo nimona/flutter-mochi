@@ -27,16 +27,7 @@ class ParticipantName extends StatelessWidget {
     var displayName = "";
     var children = <TextSpan>[];
 
-    if (nameFirst != "") {
-      displayName = nameFirst;
-    }
-
-    if (nameLast != "") {
-      if (displayName != "") {
-        displayName = displayName + " ";
-      }
-      displayName = displayName + nameLast;
-    }
+    displayName = "$nameFirst $nameLast".trim();
 
     var updateContactAlias = "";
     var updateContact = false;
@@ -46,7 +37,7 @@ class ParticipantName extends StatelessWidget {
       updateContactAlias = alias;
       children.add(
         new TextSpan(
-          text: alias + " ",
+          text: "$alias ",
           style: TextStyle(
             color: Colors.blueAccent,
           ),
@@ -57,7 +48,7 @@ class ParticipantName extends StatelessWidget {
     if (displayName != "") {
       children.add(
         new TextSpan(
-          text: displayName + " ",
+          text: "$displayName ",
           style: textTheme.caption,
         ),
       );
@@ -104,9 +95,9 @@ class ParticipantName extends StatelessWidget {
         MenuItem(
           () {
             if (updateContact) {
-              return "update contact for " + updateContactAlias;
+              return "update contact for $updateContactAlias";
             }
-            return "add " + updateContactAlias + "as contact";
+            return "add $updateContactAlias as contact";
           }(),
           () {
             _showCreateContactDialog(

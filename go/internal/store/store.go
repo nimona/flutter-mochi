@@ -15,7 +15,7 @@ import (
 type ConversationHandler func(Conversation)
 
 // MessageHandler for registering for Messages
-type MessageHandler func(Message)
+type MessageHandler func(MessageView)
 
 // ContactHandler for registering for Contacts
 type ContactHandler func(Contact)
@@ -360,20 +360,6 @@ func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
 
 // GetMessages returns messages for conversation
 func (s *Store) GetMessages(conversationHash string) ([]MessageView, error) {
-	// ms := []Message{}
-	// if err := s.db.
-	// 	Set("gorm:auto_preload", true).
-	// 	Preload("Participant.Profile").
-	// 	Preload("Participant.Profile.Contact").
-	// 	Where(
-	// 		"conversation_hash = ?",
-	// 		conversationHash,
-	// 	).
-	// 	Order("sent ASC").
-	// 	Find(&ms).Error; err != nil {
-	// 	return nil, err
-	// }
-
 	ms := []MessageView{}
 	q := s.db.Raw(`
 		SELECT 
@@ -404,16 +390,34 @@ func (s *Store) GetMessages(conversationHash string) ([]MessageView, error) {
 }
 
 // GetMessage returns message by its hash
-func (s *Store) GetMessage(hash string) (Message, error) {
-	m := Message{}
-	if err := s.db.Set("gorm:auto_preload", true).Where(
-		"hash = ?",
-		hash,
-	).First(&m).Error; err != nil {
-		return m, err
-	}
+func (s *Store) GetMessage(hash string) (MessageView, error) {
+	m := MessageView{}
+	q := s.db.Raw(`
+		SELECT 
+			m.hash,
+			m.sent,
+			m.body,
+			m.conversation_hash,
+			m.participant_id,
+			m.profile_key,
+			m.is_edited,
+			m.is_read,
+			p.name_first,
+			p.name_last,
+			p.updated AS profile_updated,
+			c.alias
+		FROM
+			messages AS m
+			LEFT JOIN profiles AS p ON m.profile_key = p.key
+			LEFT JOIN contacts AS c ON m.profile_key = c.key
+		WHERE
+			m.hash = ?
+		ORDER BY
+			m.sent ASC
+	`, hash,
+	).First(&m)
 
-	return m, nil
+	return m, q.Error
 }
 
 // AddMessage to the store and publish it
@@ -436,14 +440,14 @@ func (s *Store) AddMessage(m Message) error {
 	}
 
 	// we need to fetch the message again to load its relationships
-	m, err = s.GetMessage(m.Hash)
+	mv, err := s.GetMessage(m.Hash)
 	if err != nil {
 		return err
 	}
 
 	s.lock.RLock()
 	for _, h := range s.messageHandlers {
-		h(m)
+		h(mv)
 	}
 	s.lock.RUnlock()
 

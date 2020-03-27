@@ -36,7 +36,7 @@ class WsDataStore implements DataStore {
   @override
   void createContact(String identityKey, String alias) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ContactAddRequest(
@@ -50,7 +50,7 @@ class WsDataStore implements DataStore {
   @override
   void updateContact(String identityKey, String alias) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ContactUpdateRequest(
@@ -64,7 +64,7 @@ class WsDataStore implements DataStore {
   @override
   Stream<Contact> getContacts() async* {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ContactsGetRequest()),
@@ -86,7 +86,7 @@ class WsDataStore implements DataStore {
   @override
   void createMessage(String conversationHash, String body) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(MessageCreateRequest(
@@ -102,7 +102,7 @@ class WsDataStore implements DataStore {
       String conversationId) async* {
     List<Message> list = [];
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(MessagesGetRequest(
@@ -169,7 +169,7 @@ class WsDataStore implements DataStore {
   @override
   void startConversation(String name, String topic) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ConversationStartRequest(
@@ -183,7 +183,7 @@ class WsDataStore implements DataStore {
   @override
   void joinConversation(String hash) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ConversationJoinRequest(
@@ -201,7 +201,7 @@ class WsDataStore implements DataStore {
   @override
   void updateConversation(String hash, name, topic) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ConversationUpdateRequest(
@@ -216,7 +216,7 @@ class WsDataStore implements DataStore {
   @override
   void updateConversationDisplayPicture(String hash, diplayPicture) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ConversationUpdateRequest(
@@ -230,7 +230,7 @@ class WsDataStore implements DataStore {
   @override
   Stream<Conversation> getConversations() async* {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(ConversationsGetRequest()),
@@ -243,7 +243,7 @@ class WsDataStore implements DataStore {
   @override
   void updateOwnProfile(String nameFirst, nameLast, displayPicture) {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(OwnProfileUpdateRequest(
@@ -258,7 +258,7 @@ class WsDataStore implements DataStore {
   @override
   Stream<OwnProfile> getOwnProfile() async* {
     final ws = IOWebSocketChannel.connect(
-      daemonApiWsUrl + daemonApiPort.toString(),
+      "$daemonApiWsUrl$daemonApiPort",
     );
     ws.sink.add(
       json.encode(OwnProfileGetRequest()),
