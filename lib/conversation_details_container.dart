@@ -62,7 +62,10 @@ class _ConversationDetailsContainerState
             ),
             title: ParticipantName(
               context: context,
-              participant: participant,
+              nameFirst: participant.profile.nameFirst,
+              nameLast: participant.profile.nameLast,
+              profileKey: participant.profile.key,
+              alias: participant.contact?.alias,
               textTheme: textTheme,
             ),
             subtitle: Text(

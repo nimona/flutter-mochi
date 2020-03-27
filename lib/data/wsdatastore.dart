@@ -130,14 +130,19 @@ class WsDataStore implements DataStore {
           }
         }
         var previousMsg = list[previousMsgIndex];
-        if (previousMsg.participant.key == msg.participant.key) {
+        if (previousMsg.profileKey == msg.profileKey) {
           if (previousMsg.sent.difference(msg.sent).inSeconds.abs() <
               6 * 60 * 60) {
             msg = Message(
               hash: msg.hash,
               body: msg.body,
               sent: msg.sent,
-              participant: msg.participant,
+              alias: msg.alias,
+              isEdited: msg.isEdited,
+              nameFirst: msg.nameFirst,
+              nameLast: msg.nameLast,
+              profileKey: msg.profileKey,
+              profileUpdated: msg.profileUpdated,
               isDense: true,
               isSameMinute: roundDown(
                 previousMsg.sent,

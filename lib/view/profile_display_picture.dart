@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:mochi/model/profile.dart';
 
 class ProfileDisplayPicture extends StatelessWidget {
   const ProfileDisplayPicture({
     Key key,
-    @required this.profile,
+    @required this.profileKey,
+    @required this.profileUpdated,
     this.image,
     @required this.size,
   }) : super(key: key);
 
-  final Profile profile;
+  final String profileKey;
+  final DateTime profileUpdated;
   final ImageProvider image;
   final int size;
 
@@ -19,9 +20,9 @@ class ProfileDisplayPicture extends StatelessWidget {
     if (img == null) {
       img = NetworkImage(
         "http://localhost:10100/displayPictures/" +
-            profile.key +
+            profileKey +
             "?_cb=" +
-            profile.updated.millisecondsSinceEpoch.toString() +
+            profileUpdated.millisecondsSinceEpoch.toString() +
             "&size=" +
             size.toString(),
       );

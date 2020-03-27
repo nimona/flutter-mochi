@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:menu/menu.dart';
 import 'package:mochi/data/repository.dart';
-import 'package:mochi/model/participant.dart';
 import 'package:mochi/view/dialog_create_contact.dart';
 
 class ParticipantName extends StatelessWidget {
   const ParticipantName({
     Key key,
     @required this.context,
-    @required this.participant,
+    @required this.profileKey,
+    @required this.nameFirst,
+    @required this.nameLast,
+    @required this.alias,
     @required this.textTheme,
   }) : super(key: key);
 
   final BuildContext context;
-  final Participant participant;
+  final String profileKey;
+  final String nameFirst;
+  final String nameLast;
+  final String alias;
   final TextTheme textTheme;
 
   @override
@@ -22,26 +27,26 @@ class ParticipantName extends StatelessWidget {
     var displayName = "";
     var children = <TextSpan>[];
 
-    if (participant?.profile?.nameFirst != "") {
-      displayName = participant.profile.nameFirst;
+    if (nameFirst != "") {
+      displayName = nameFirst;
     }
 
-    if (participant?.profile?.nameLast != "") {
+    if (nameLast != "") {
       if (displayName != "") {
         displayName = displayName + " ";
       }
-      displayName = displayName + participant.profile.nameLast;
+      displayName = displayName + nameLast;
     }
 
     var updateContactAlias = "";
     var updateContact = false;
 
-    if (participant?.contact?.alias != "") {
+    if (alias != "") {
       updateContact = true;
-      updateContactAlias = participant.contact.alias;
+      updateContactAlias = alias;
       children.add(
         new TextSpan(
-          text: participant.contact.alias + " ",
+          text: alias + " ",
           style: TextStyle(
             color: Colors.blueAccent,
           ),
@@ -105,7 +110,7 @@ class ParticipantName extends StatelessWidget {
           }(),
           () {
             _showCreateContactDialog(
-              participant.key,
+              profileKey,
               updateContactAlias,
             );
           },
@@ -113,7 +118,7 @@ class ParticipantName extends StatelessWidget {
         MenuItem("copy key", () {
           Clipboard.setData(
             ClipboardData(
-              text: participant.key,
+              text: profileKey,
             ),
           );
           Scaffold.of(context).showSnackBar(

@@ -50,7 +50,7 @@ func TestStore_GetConversations(t *testing.T) {
 		Key:   p.Key,
 		Alias: "local",
 	}
-	err = s.AddContact(cn)
+	err = s.PutContact(cn)
 	require.NoError(t, err)
 
 	// create participant
@@ -120,16 +120,20 @@ func TestStore_GetConversations(t *testing.T) {
 	// check relationships for message
 	require.Equal(t, "m1", ms[0].Hash)
 	require.Equal(t, "f00", ms[0].ProfileKey)
-	require.Equal(t, "f00/c1", ms[0].ParticipantID)
+	// require.Equal(t, "f00/c1", ms[0].ParticipantID)
 
 	// check relationships for message.participant
-	require.Equal(t, "f00/c1", ms[0].Participant.ID)
-	require.Equal(t, "c1", ms[0].Participant.ConversationHash)
-	require.Equal(t, "f00", ms[0].Participant.ProfileKey)
+	// require.Equal(t, "f00/c1", ms[0].Participant.ID)
+	// require.Equal(t, "c1", ms[0].Participant.ConversationHash)
+	// require.Equal(t, "f00", ms[0].Participant.ProfileKey)
 
 	// check relationships for message.participant.profile
-	require.Equal(t, "f00", ms[0].Participant.Profile.Key)
-	require.Equal(t, "John", ms[0].Participant.Profile.NameFirst)
+	// require.Equal(t, "f00", ms[0].Participant.Profile.Key)
+	// require.Equal(t, "John", ms[0].Participant.Profile.NameFirst)
+
+	// check relationships for message.participant.profile
+	require.Equal(t, "f00", ms[0].ProfileKey)
+	require.Equal(t, "John", ms[0].NameFirst)
 }
 
 func TestStore_OwnProfile(t *testing.T) {
@@ -196,7 +200,7 @@ func TestStore_Profile(t *testing.T) {
 		Key:   p.Key,
 		Alias: "local",
 	}
-	err = s.AddContact(c)
+	err = s.PutContact(c)
 	require.NoError(t, err)
 
 	// get contact

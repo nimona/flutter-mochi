@@ -359,22 +359,48 @@ func (s *Store) GetConversation(conversationHash string) (Conversation, error) {
 }
 
 // GetMessages returns messages for conversation
-func (s *Store) GetMessages(conversationHash string) ([]Message, error) {
-	ms := []Message{}
-	if err := s.db.
-		Set("gorm:auto_preload", true).
-		Preload("Participant.Profile").
-		Preload("Participant.Profile.Contact").
-		Where(
-			"conversation_hash = ?",
-			conversationHash,
-		).
-		Order("sent ASC").
-		Find(&ms).Error; err != nil {
-		return nil, err
-	}
+func (s *Store) GetMessages(conversationHash string) ([]MessageView, error) {
+	// ms := []Message{}
+	// if err := s.db.
+	// 	Set("gorm:auto_preload", true).
+	// 	Preload("Participant.Profile").
+	// 	Preload("Participant.Profile.Contact").
+	// 	Where(
+	// 		"conversation_hash = ?",
+	// 		conversationHash,
+	// 	).
+	// 	Order("sent ASC").
+	// 	Find(&ms).Error; err != nil {
+	// 	return nil, err
+	// }
 
-	return ms, nil
+	ms := []MessageView{}
+	q := s.db.Raw(`
+		SELECT 
+			m.hash,
+			m.sent,
+			m.body,
+			m.conversation_hash,
+			m.participant_id,
+			m.profile_key,
+			m.is_edited,
+			m.is_read,
+			p.name_first,
+			p.name_last,
+			p.updated AS profile_updated,
+			c.alias
+		FROM
+			messages AS m
+			LEFT JOIN profiles AS p ON m.profile_key = p.key
+			LEFT JOIN contacts AS c ON m.profile_key = c.key
+		WHERE
+			m.conversation_hash = ?
+		ORDER BY
+			m.sent ASC
+	`, conversationHash,
+	).Scan(&ms)
+
+	return ms, q.Error
 }
 
 // GetMessage returns message by its hash

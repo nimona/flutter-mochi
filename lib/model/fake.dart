@@ -12,7 +12,8 @@ import 'dart:math';
 
 import 'package:mochi/model/profile.dart';
 
-const String _bitcoinAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const String _bitcoinAlphabet =
+    "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 class Fake {
   static final Fake _faker = new Fake._internal();
@@ -68,10 +69,9 @@ class Fake {
     var profile = getProfile();
     return Message(
       body: faker.lorem.sentence(),
-      participant: Participant(
-        key: profile.key,
-        profile: profile,
-      ),
+      profileKey: profile.key,
+      nameFirst: profile.nameFirst,
+      nameLast: profile.nameLast,
       hash: hashString(faker.lorem.sentence()),
       sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))),
       isEdited: rng.nextBool(),
@@ -104,7 +104,8 @@ class Fake {
     return Conversation(
       hash: hashString(faker.guid.guid()),
       name: faker.lorem.sentence(),
-      lastMessage: DateTime.now().subtract(Duration(seconds: rng.nextInt(1000))),
+      lastMessage:
+          DateTime.now().subtract(Duration(seconds: rng.nextInt(1000))),
       topic: faker.lorem.sentence(),
       unreadMessagesLatest: messages,
       unreadMessagesCount: messages.length,

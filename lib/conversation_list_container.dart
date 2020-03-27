@@ -442,7 +442,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     var contact = _contacts[i];
                     return ListTile(
                       leading: ProfileDisplayPicture(
-                        profile: contact.profile,
+                        profileKey: contact.profile.key,
+                        profileUpdated: contact.profile.updated,
                         size: 40,
                       ),
                       title: Text(

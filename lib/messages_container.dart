@@ -145,7 +145,7 @@ class _MessagesContainer extends State<MessagesContainer> {
       initialData: List<Message>(),
       builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
         if (snapshot.hasError) {
-          return Text(snapshot.error);
+          return Text(snapshot.error.toString());
         }
 
         if (snapshot.hasData &&
@@ -366,7 +366,8 @@ class _MessagesContainer extends State<MessagesContainer> {
                     Container(
                       margin: EdgeInsets.only(right: 10.0),
                       child: ProfileDisplayPicture(
-                        profile: message.participant.profile,
+                        profileKey: message.profileKey,
+                        profileUpdated: message.profileUpdated,
                         size: 40,
                       ),
                     ),
@@ -378,7 +379,10 @@ class _MessagesContainer extends State<MessagesContainer> {
                             children: <Widget>[
                               ParticipantName(
                                 context: context,
-                                participant: message.participant,
+                                nameFirst: message.nameFirst,
+                                nameLast: message.nameLast,
+                                profileKey: message.profileKey,
+                                alias: message.alias,
                                 textTheme: textTheme,
                               ),
                               Text(

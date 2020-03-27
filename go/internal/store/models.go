@@ -16,16 +16,16 @@ import "time"
 
 // Conversation -
 type Conversation struct {
-	Hash                 string        `json:"hash" gorm:"primary_key"`
-	Name                 string        `json:"name"`
-	Topic                string        `json:"topic"`
-	DisplayPicture       string        `json:"displayPicture"`
-	LastMessageRead      time.Time     `json:"lastMessageRead"`
-	UnreadMessagesCount  int           `json:"unreadMessagesCount" gorm:"-"`
-	UnreadMessagesLatest []Message     `json:"unreadMessagesLatest" gorm:"PRELOAD:false"`
-	Participants         []Participant `json:"participants"`
-	Messages             []Message     `json:"messages"`
-	Updated              time.Time     `json:"updated"`
+	Hash                 string        `json:"hash," gorm:"primary_key"`
+	Name                 string        `json:"name,"`
+	Topic                string        `json:"topic,"`
+	DisplayPicture       string        `json:"displayPicture,"`
+	LastMessageRead      time.Time     `json:"lastMessageRead,"`
+	UnreadMessagesCount  int           `json:"unreadMessagesCount," gorm:"-"`
+	UnreadMessagesLatest []Message     `json:"unreadMessagesLatest," gorm:"PRELOAD:false"`
+	Participants         []Participant `json:"participants,"`
+	Messages             []Message     `json:"messages,"`
+	Updated              time.Time     `json:"updated,"`
 }
 
 // Message -
@@ -39,6 +39,21 @@ type Message struct {
 	Participant      Participant `json:"participant" gorm:"foreignKey:participantID"`
 	IsEdited         bool        `json:"isEdited"`
 	IsRead           bool        `json:"isRead"`
+}
+
+// MessageView is not a real model but rather a joined message+profile
+type MessageView struct {
+	Hash             string    `json:"hash"`
+	ConversationHash string    `json:"conversationHash"`
+	ProfileKey       string    `json:"profileKey"`
+	Body             string    `json:"body"`
+	Sent             time.Time `json:"sent"`
+	IsEdited         bool      `json:"isEdited"`
+	IsRead           bool      `json:"isRead"`
+	NameFirst        string    `json:"nameFirst"`
+	NameLast         string    `json:"nameLast"`
+	Alias            string    `json:"alias"`
+	ProfileUpdated   string    `json:"profileUpdated"`
 }
 
 // Contact -
