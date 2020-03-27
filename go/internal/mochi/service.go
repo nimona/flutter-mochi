@@ -29,7 +29,7 @@ import (
 
 var (
 	windowFocusedLock sync.RWMutex
-	windowFocused     bool
+	windowFocused     bool = true
 )
 
 func IsWindowFocused() bool {
