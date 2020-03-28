@@ -259,7 +259,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     final textTheme = Theme.of(context).textTheme;
     final dateFormatFull = new DateFormat("EEE, MMM d, hh:mm");
     return Container(
-      color: Color(0xFFF3F3FB),
+      color: colorScheme.background,
       child: Column(
         children: <Widget>[
           Expanded(

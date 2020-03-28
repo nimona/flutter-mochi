@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:faker/faker.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ import 'package:mochi/data/ws_model/own_profile_update_request.dart';
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/model/message_block.dart';
 import 'package:mochi/model/own_profile.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -97,10 +99,31 @@ class WsDataStore implements DataStore {
     ws.sink.close();
   }
 
+  MessageBlock _messageToBlock(Message msg) {
+    return MessageBlock(
+      alias: msg.alias,
+      initialMessage: _messageToBlockItem(msg),
+      nameFirst: msg.nameFirst,
+      nameLast: msg.nameLast,
+      profileKey: msg.profileKey,
+      profileUpdated: msg.profileUpdated,
+      extraMessages: [],
+    );
+  }
+
+  MessageItem _messageToBlockItem(Message msg) {
+    return MessageItem(
+      body: msg.body,
+      hash: msg.hash,
+      sent: msg.sent,
+      isEdited: msg.isEdited,
+    );
+  }
+
   @override
-  Stream<List<Message>> getMessagesForConversation(
+  Stream<List<MessageBlock>> getMessagesForConversation(
       String conversationId) async* {
-    List<Message> list = [];
+    List<MessageBlock> list = [];
     final ws = IOWebSocketChannel.connect(
       "$daemonApiWsUrl$daemonApiPort",
     );
@@ -112,54 +135,52 @@ class WsDataStore implements DataStore {
     await for (final dynamic message in ws.stream) {
       var msg = Message.fromJson(json.decode(message));
       if (list.length == 0) {
-        list.insert(0, msg);
+        list.insert(0, _messageToBlock(msg));
         yield list;
       } else if (list.length == 1) {
-        if (list[0].sent.isBefore(msg.sent)) {
-          list.insert(1, msg);
+        if (list[0].initialMessage.sent.isBefore(msg.sent)) {
+          list.insert(1, _messageToBlock(msg));
         } else {
-          list.insert(0, msg);
+          list.insert(0, _messageToBlock(msg));
         }
       } else {
         var previousMsgIndex = list.length - 1;
         for (var i = 1; i < list.length; i++) {
           var currentMsg = list[i];
-          if (currentMsg.sent.isAfter(msg.sent)) {
+          if (currentMsg.initialMessage.sent.isAfter(msg.sent)) {
             previousMsgIndex = i - 1;
             break;
           }
         }
         var previousMsg = list[previousMsgIndex];
         if (previousMsg.profileKey == msg.profileKey) {
-          if (previousMsg.sent.difference(msg.sent).inSeconds.abs() <
+          if (previousMsg.initialMessage.sent
+                  .difference(msg.sent)
+                  .inSeconds
+                  .abs() <
               6 * 60 * 60) {
-            msg = Message(
-              hash: msg.hash,
-              body: msg.body,
-              sent: msg.sent,
-              alias: msg.alias,
-              isEdited: msg.isEdited,
-              nameFirst: msg.nameFirst,
-              nameLast: msg.nameLast,
-              profileKey: msg.profileKey,
-              profileUpdated: msg.profileUpdated,
-              isDense: true,
-              isSameMinute: roundDown(
-                previousMsg.sent,
+            var newMsg = _messageToBlockItem(msg);
+            var lastItem = previousMsg.initialMessage;
+            if (previousMsg.extraMessages.length > 0) {
+              lastItem = previousMsg.extraMessages.last;
+            }
+            newMsg.isAtSameMinute = roundDown(
+              lastItem.sent,
+              Duration(seconds: 60),
+            ).isAtSameMomentAs(
+              roundDown(
+                msg.sent,
                 Duration(seconds: 60),
-              ).isAtSameMomentAs(
-                roundDown(
-                  msg.sent,
-                  Duration(seconds: 60),
-                ),
               ),
             );
-            list.insert(previousMsgIndex + 1, msg);
+            previousMsg.extraMessages.add(newMsg);
+            list.removeAt(previousMsgIndex);
+            list.insert(previousMsgIndex, previousMsg);
           } else {
-            list.insert(previousMsgIndex + 1, msg);
+            list.insert(previousMsgIndex + 1, _messageToBlock(msg));
           }
         } else {
-          list.insert(previousMsgIndex + 1, msg);
+          list.insert(previousMsgIndex + 1, _messageToBlock(msg));
         }
       }
       yield list;

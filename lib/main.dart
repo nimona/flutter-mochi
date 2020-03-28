@@ -88,6 +88,7 @@ class MyApp extends StatelessWidget {
             letterSpacing: 1.5,
           ),
         ),
+        backgroundColor: Color(0xFFF3F3FB),
         brightness: Brightness.light,
         primarySwatch: Colors.blue,
       ),

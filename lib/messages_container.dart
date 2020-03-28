@@ -6,6 +6,7 @@ import 'package:mochi/conversation_details_container.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/model/message_block.dart';
 import 'package:mochi/view/add_conversation.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +37,7 @@ class MessagesContainer extends StatefulWidget {
 
 class _MessagesContainer extends State<MessagesContainer> {
   Conversation currentConversation;
-  Stream<List<Message>> _streamMessages;
+  Stream<List<MessageBlock>> _streamMessages;
 
   bool showDetails = false;
   Widget w;
@@ -139,11 +140,11 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   Widget _buildMessagesListContainer() {
-    final TextTheme textTheme = Theme.of(context).textTheme;
     var sb = StreamBuilder(
       stream: _streamMessages,
-      initialData: List<Message>(),
-      builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
+      initialData: List<MessageBlock>(),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<MessageBlock>> snapshot) {
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
@@ -161,24 +162,25 @@ class _MessagesContainer extends State<MessagesContainer> {
 
         if (snapshot.hasData &&
             snapshot.connectionState == ConnectionState.active) {
-          return new Flexible(
+          return new Expanded(
             child: _buildMessagesList(snapshot),
           );
         }
 
-        return Container();
+        return Expanded(
+          child: Container(),
+        );
       },
     );
 
     return new Container(
-      child: new Column(
-        children: <Widget>[
-          _buildConversationHeader(),
-          new Divider(height: 1.0),
-          sb,
-          new Divider(height: 1.0),
-          _buildTextComposer(),
-        ],
+        color: Color(0xFFF3F3FB),
+        child: new Column(
+          children: <Widget>[
+            _buildConversationHeader(),
+            sb,
+            _buildTextComposer(),
+          ],
       ),
     );
   }
@@ -186,7 +188,7 @@ class _MessagesContainer extends State<MessagesContainer> {
   Container _buildConversationHeader() {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return new Container(
-      color: Theme.of(context).cardColor,
+      // color: Theme.of(context).cardColor,
       child: Row(
         children: <Widget>[
           Container(
@@ -279,134 +281,153 @@ class _MessagesContainer extends State<MessagesContainer> {
     );
   }
 
-  Widget _buildMessagesList(AsyncSnapshot<List<Message>> snapshot) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final dateFormatFull = new DateFormat('hh:mm');
-    final dateFormatSmall = new DateFormat('hh:mm');
-
-    return Scrollbar(
-      child: Container(
-        margin: EdgeInsets.only(bottom: 8),
-        child: ListView(
-          shrinkWrap: true,
-          reverse: true,
-          children: snapshot.data.reversed.map((message) {
-            return () {
-              var bodies = <Widget>[
-                MarkdownViewer(
-                  content: message.body,
-                  formatTypes: [
-                    MarkdownTokenTypes.bold,
-                    MarkdownTokenTypes.italic,
-                    MarkdownTokenTypes.strikeThrough,
-                    MarkdownTokenTypes.code,
-                    MarkdownTokenTypes.link,
-                    MarkdownTokenTypes.mention,
-                  ],
-                ),
-              ];
-              var exp = RegExp(r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)');
-              Iterable<RegExpMatch> matches = exp.allMatches(message.body);
-              matches.forEach((match) {
-                bodies.add(
-                  Container(
-                    width: 250,
-                    margin: EdgeInsets.only(
-                      top: 5,
-                    ),
-                    child: Image.network(
-                      message.body.substring(match.start, match.end),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                );
-              });
-              if (message.isDense == true) {
-                return Container(
-                  margin: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 50,
-                        height: 18,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            right: 10,
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: message.isSameMinute
-                                ? Text("")
-                                : Text(
-                                    dateFormatSmall.format(message.sent),
-                                    style: TextStyle(
-                                      color: textTheme.caption.color,
-                                      fontSize: textTheme.caption.fontSize - 2,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: bodies,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return Container(
-                margin: EdgeInsets.fromLTRB(10, 18, 10, 2),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 10.0),
-                      child: ProfileDisplayPicture(
-                        profileKey: message.profileKey,
-                        profileUpdated: message.profileUpdated,
-                        size: 40,
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              ParticipantName(
-                                context: context,
-                                nameFirst: message.nameFirst,
-                                nameLast: message.nameLast,
-                                profileKey: message.profileKey,
-                                alias: message.alias,
-                                textTheme: textTheme,
-                              ),
-                              Text(
-                                dateFormatFull.format(message.sent),
-                                style: textTheme.caption,
-                              ),
-                            ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 5.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: bodies,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }();
-          }).toList(),
+  List<Widget> _buildMessageBodies(BuildContext ctx, MessageItem msg) {
+    var bodies = <Widget>[
+      MarkdownViewer(
+        content: msg.body,
+        formatTypes: [
+          MarkdownTokenTypes.bold,
+          MarkdownTokenTypes.italic,
+          MarkdownTokenTypes.strikeThrough,
+          MarkdownTokenTypes.code,
+          MarkdownTokenTypes.link,
+          MarkdownTokenTypes.mention,
+        ],
+      ),
+    ];
+    var exp = RegExp(r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)');
+    Iterable<RegExpMatch> matches = exp.allMatches(msg.body);
+    matches.forEach((match) {
+      bodies.add(
+        Container(
+          width: 250,
+          margin: EdgeInsets.only(
+            top: 5,
+          ),
+          child: Image.network(
+            msg.body.substring(match.start, match.end),
+            fit: BoxFit.contain,
+          ),
         ),
+      );
+    });
+    return bodies;
+  }
+
+  Widget _buildMessageItem(BuildContext ctx, MessageItem msg) {
+    final TextTheme textTheme = Theme.of(ctx).textTheme;
+    final dateFormatSmall = new DateFormat('hh:mm');
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 2, 10, 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width: 50,
+            height: 18,
+            child: Container(
+              margin: EdgeInsets.only(
+                right: 10,
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: msg.isAtSameMinute
+                    ? Text("")
+                    : Text(
+                        dateFormatSmall.format(msg.sent),
+                        style: TextStyle(
+                          color: textTheme.caption.color,
+                          fontSize: textTheme.caption.fontSize - 2,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _buildMessageBodies(ctx, msg),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMessageBlock(BuildContext ctx, MessageBlock msg) {
+    final TextTheme textTheme = Theme.of(ctx).textTheme;
+    final dateFormatFull = new DateFormat('hh:mm');
+
+    var msgs = <Widget>[
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 10.0),
+            child: ProfileDisplayPicture(
+              profileKey: msg.profileKey,
+              profileUpdated: msg.profileUpdated,
+              size: 40,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    ParticipantName(
+                      context: context,
+                      nameFirst: msg.nameFirst,
+                      nameLast: msg.nameLast,
+                      profileKey: msg.profileKey,
+                      alias: msg.alias,
+                      textTheme: textTheme,
+                    ),
+                    Text(
+                      dateFormatFull.format(msg.initialMessage.sent),
+                      style: textTheme.caption,
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 5.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildMessageBodies(ctx, msg.initialMessage),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ];
+
+    for (var eMsg in msg.extraMessages) {
+      msgs.add(_buildMessageItem(ctx, eMsg));
+    }
+
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: msgs,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessagesList(AsyncSnapshot<List<MessageBlock>> snapshot) {
+    return Scrollbar(
+      child: ListView(
+        shrinkWrap: true,
+        reverse: true,
+        children: snapshot.data.reversed.map((msg) {
+          return _buildMessageBlock(context, msg);
+        }).toList(),
       ),
     );
   }
@@ -414,7 +435,6 @@ class _MessagesContainer extends State<MessagesContainer> {
   Widget _buildTextComposer() {
     final TextEditingController _textController = new TextEditingController();
     final messageFocusNode = FocusNode();
-
     void _handleSubmitted(String text) {
       if (text.isNotEmpty) {
         Repository.get().createMessage(currentConversation.hash, text);
@@ -422,11 +442,12 @@ class _MessagesContainer extends State<MessagesContainer> {
     }
 
     FocusScope.of(context).requestFocus(messageFocusNode);
-
-    return new Container(
-      color: Theme.of(context).cardColor,
+    return new Card(
+      elevation: 0,
       child: new Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 10.0,
+        ),
         child: new Row(
           children: <Widget>[
             new Flexible(
@@ -438,9 +459,6 @@ class _MessagesContainer extends State<MessagesContainer> {
                   var text = _textController.text;
                   _textController.text = "";
                   _handleSubmitted(text);
-                  // WidgetsBinding.instance.addPostFrameCallback(
-                  //   (_) => _textController.text="",
-                  // );
                 },
                 decoration: new InputDecoration.collapsed(
                   hintText: "Send a message...",
@@ -456,9 +474,6 @@ class _MessagesContainer extends State<MessagesContainer> {
                   var text = _textController.text;
                   _textController.text = "";
                   _handleSubmitted(text);
-                  // WidgetsBinding.instance.addPostFrameCallback(
-                  //   (_) => _textController.text="",
-                  // );
                 },
               ),
             ),
@@ -467,31 +482,4 @@ class _MessagesContainer extends State<MessagesContainer> {
       ),
     );
   }
-
-  // void _BuildConversationDetails(Conversation conversation) {
-  //   // final nameController = TextEditingController(
-  //   //   text: conversation.name,
-  //   // );
-  //   // final topicController = TextEditingController(
-  //   //   text: conversation.topic,
-  //   // );
-
-  //   showDialog<bool>(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return ConversationDetailsContainer(
-  //           conversation: conversation,
-  //           // nameController: nameController,
-  //           // topicController: topicController,
-  //         );
-  //       }).then<void>((bool userClickedCreate) {
-  //     if (userClickedCreate == true) {
-  //       // Repository.get().updateConversation(
-  //       //   hash,
-  //       //   nameController.text,
-  //       //   topicController.text,
-  //       // );
-  //     }
-  //   });
-  // }
 }

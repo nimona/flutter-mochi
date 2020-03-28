@@ -7,6 +7,7 @@ import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/local_peer.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/model/message_block.dart';
 import 'package:mochi/model/participant.dart';
 import 'dart:math';
 
@@ -62,6 +63,20 @@ class Fake {
       key: profile.key,
       alias: faker.internet.userName(),
       profile: profile,
+    );
+  }
+
+  MessageBlock getMessageBlock() {
+    var profile = getProfile();
+    return MessageBlock(
+      initialMessage: MessageItem(
+        hash: hashString(faker.lorem.sentence()),
+        body: faker.lorem.sentence(),
+        sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))),
+      ),
+      profileKey: profile.key,
+      nameFirst: profile.nameFirst,
+      nameLast: profile.nameLast,
     );
   }
 

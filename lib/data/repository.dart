@@ -5,6 +5,7 @@ import 'package:mochi/data/wsdatastore.dart';
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/model/message_block.dart';
 import 'package:mochi/model/own_profile.dart';
 
 class Repository {
@@ -38,9 +39,9 @@ class Repository {
     _dataStore.createMessage(conversationHash, body);
   }
 
-  StreamController<List<Message>> getMessagesForConversation(
+  StreamController<List<MessageBlock>> getMessagesForConversation(
       String conversationId) {
-    StreamController<List<Message>> sc = new StreamController();
+    StreamController<List<MessageBlock>> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;
   }

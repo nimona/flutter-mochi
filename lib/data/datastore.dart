@@ -1,6 +1,7 @@
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
+import 'package:mochi/model/message_block.dart';
 import 'package:mochi/model/own_profile.dart';
 
 abstract class DataStore {
@@ -12,7 +13,7 @@ abstract class DataStore {
 
   void createMessage(String conversationHash, String body);
 
-  Stream<List<Message>> getMessagesForConversation(String conversationId);
+  Stream<List<MessageBlock>> getMessagesForConversation(String conversationId);
 
   void startConversation(String name, String topic);
 
