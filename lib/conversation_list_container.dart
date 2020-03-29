@@ -278,7 +278,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       shape: selectedConversationHash == conversation.hash
                           ? new RoundedRectangleBorder(
                               side: new BorderSide(
-                                color: colorScheme.background,
+                                color: colorScheme.primary,
                                 width: 2.0,
                               ),
                               borderRadius: BorderRadius.circular(4.0),
