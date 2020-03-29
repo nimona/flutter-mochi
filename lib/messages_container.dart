@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:adhara_markdown/mdviewer.dart';
 import 'package:adhara_markdown/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mochi/conversation_details_container.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/model/conversation.dart';
-import 'package:mochi/model/message.dart';
 import 'package:mochi/model/message_block.dart';
 import 'package:mochi/view/add_conversation.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
@@ -38,26 +40,26 @@ class MessagesContainer extends StatefulWidget {
 class _MessagesContainer extends State<MessagesContainer> {
   Conversation currentConversation;
   Stream<List<MessageBlock>> _streamMessages;
+  StreamController<List<MessageBlock>> _streamMessagesController;
 
   bool showDetails = false;
   Widget w;
 
   @override
+  void dispose() {
+    _streamMessagesController.close();
+    super.dispose();
+  }
+
+  @override
   void initState() {
-    print("INIT");
     super.initState();
-    // setState(() {
-    //   // For the mobile-case where screen is initialised by the constructor
-    //   currentConversation = widget.conversation;
-    // });
-    _streamMessages = Repository.get()
-        .getMessagesForConversation(currentConversation?.hash)
-        .stream
-        .asBroadcastStream();
+    _streamMessagesController =
+        Repository.get().getMessagesForConversation(currentConversation?.hash);
+    _streamMessages = _streamMessagesController.stream.asBroadcastStream();
   }
 
   void updateConversation(Conversation conversation) {
-    print("UPDATE");
     setState(() {
       currentConversation = conversation;
       showDetails = false;
@@ -79,7 +81,6 @@ class _MessagesContainer extends State<MessagesContainer> {
       return _buildDetails();
     }
 
-    print("BUILD");
 
     // messages list
     if (w == null) {
@@ -168,19 +169,20 @@ class _MessagesContainer extends State<MessagesContainer> {
         }
 
         return Expanded(
+          flex: 99,
           child: Container(),
         );
       },
     );
 
     return new Container(
-        color: Color(0xFFF3F3FB),
-        child: new Column(
-          children: <Widget>[
-            _buildConversationHeader(),
-            sb,
-            _buildTextComposer(),
-          ],
+      color: Color(0xFFF3F3FB),
+      child: new Column(
+        children: <Widget>[
+          _buildConversationHeader(),
+          sb,
+          _buildTextComposer(),
+        ],
       ),
     );
   }
@@ -282,6 +284,8 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   List<Widget> _buildMessageBodies(BuildContext ctx, MessageItem msg) {
+    final  textTheme = Theme.of(ctx).textTheme;
+    final  colorScheme = Theme.of(ctx).colorScheme;
     var bodies = <Widget>[
       MarkdownViewer(
         content: msg.body,
@@ -290,8 +294,23 @@ class _MessagesContainer extends State<MessagesContainer> {
           MarkdownTokenTypes.italic,
           MarkdownTokenTypes.strikeThrough,
           MarkdownTokenTypes.code,
+          MarkdownTokenTypes.inlineCode,
           MarkdownTokenTypes.link,
           MarkdownTokenTypes.mention,
+        ],
+        tokenConfigs: [
+          MarkdownTokenConfig.code(
+            textStyle: textTheme.bodyText1.copyWith(
+              fontFamilyFallback: ["Courier"],
+              backgroundColor: colorScheme.background,
+            ),
+          ),
+          MarkdownTokenConfig.inlineCode(
+            textStyle: textTheme.bodyText1.copyWith(
+              fontFamilyFallback: ["Courier"],
+              backgroundColor: colorScheme.background,
+            ),
+          ),
         ],
       ),
     ];
@@ -445,39 +464,21 @@ class _MessagesContainer extends State<MessagesContainer> {
     return new Card(
       elevation: 0,
       child: new Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-        ),
-        child: new Row(
-          children: <Widget>[
-            new Flexible(
-              child: new TextField(
-                controller: _textController,
-                // autofocus: true,
-                focusNode: messageFocusNode,
-                onEditingComplete: () {
-                  var text = _textController.text;
-                  _textController.text = "";
-                  _handleSubmitted(text);
-                },
-                decoration: new InputDecoration.collapsed(
-                  hintText: "Send a message...",
-                ),
-              ),
-            ),
-            new Container(
-              margin: new EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
-                icon: new Icon(Icons.send),
-                color: Theme.of(context).accentColor,
-                onPressed: () {
-                  var text = _textController.text;
-                  _textController.text = "";
-                  _handleSubmitted(text);
-                },
-              ),
-            ),
-          ],
+        margin: const EdgeInsets.all(10),
+        child: new TextField(
+          controller: _textController,
+          keyboardType: TextInputType.multiline,
+          minLines: 1,
+          maxLines: 15,
+          focusNode: messageFocusNode,
+          onEditingComplete: () {
+            var text = _textController.text;
+            _textController.text = "";
+            _handleSubmitted(text);
+          },
+          decoration: new InputDecoration.collapsed(
+            hintText: "Send a message...",
+          ),
         ),
       ),
     );

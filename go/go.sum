@@ -12,6 +12,8 @@ github.com/gen2brain/dlgs v0.0.0-20190708095831-3854608588f7/go.mod h1:/eFcjDXaU
 github.com/gen2brain/dlgs v0.0.0-20200211102745-b9c2664df42f h1:Ub7Uppt+f4Gnu0zwy0sGetNFtkkDgwcirKNndYIMLM0=
 github.com/gen2brain/dlgs v0.0.0-20200211102745-b9c2664df42f/go.mod h1:/eFcjDXaU2THSOOqLxOPETIbHETnamk8FA/hMjhg/gU=
 github.com/geoah/genny v1.0.0/go.mod h1:U3SEc7AasfrKyZ8DSYxj72OtVemUINJo+0Nv+ccERaM=
+github.com/geoah/go-flutter v0.36.1-0.20200329185504-b6357ad7bb8d h1:o7wR5qBZgr+839/x1UEhJhvxRhw17aaUOBFD0ZVpRhw=
+github.com/geoah/go-flutter v0.36.1-0.20200329185504-b6357ad7bb8d/go.mod h1:8tjt3yZ3lTNLqgzWeH90f1uhCR9BL68LFoiy/n0aw/w=
 github.com/geoah/go-nimona-notifier v0.0.1 h1:TjFfmuLD5XTny6oVeUk4IVb/3wkNET0pRWNkJi9/bnw=
 github.com/geoah/go-nimona-notifier v0.0.1/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
 github.com/geoah/go-queue v2.0.0+incompatible h1:eLFmhPSYebanEi7t6D80vNBvPv0V6lLGyiMg6TFoEXY=

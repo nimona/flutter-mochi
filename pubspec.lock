@@ -11,9 +11,11 @@ packages:
   adhara_markdown:
     dependency: "direct main"
     description:
-      name: adhara_markdown
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "1d7ca31"
+      resolved-ref: "1d7ca3176ebead1646af340931032e6645cbfd88"
+      url: "https://github.com/geoah/flutter_markdown.git"
+    source: git
     version: "0.1.1"
   analyzer:
     dependency: transitive

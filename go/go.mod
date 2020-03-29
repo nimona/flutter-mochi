@@ -28,5 +28,7 @@ require (
 	nimona.io v0.6.0
 )
 
+replace github.com/go-flutter-desktop/go-flutter => github.com/geoah/go-flutter v0.36.1-0.20200329185504-b6357ad7bb8d
+
 // replace nimona.io => ../../../../nimona.io
 // replace github.com/go-flutter-desktop/go-flutter => ../../../geoah/go-flutter

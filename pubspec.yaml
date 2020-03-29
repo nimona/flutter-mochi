@@ -33,7 +33,10 @@ dependencies:
       url: https://github.com/geoah/flutter_long_tap_menu.git
   flutter_linkify: ^3.1.0
   url_launcher: ^5.4.2
-  adhara_markdown: ^0.1.1
+  adhara_markdown:
+    git:
+      url: https://github.com/geoah/flutter_markdown.git
+      ref: 1d7ca31
   file_picker: ^1.5.0+2
   image_cropper: ^1.1.2
   google_fonts: ^0.3.10
