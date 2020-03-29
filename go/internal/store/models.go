@@ -84,7 +84,7 @@ type Profile struct {
 	Key            string    `json:"key" gorm:"primary_key"`
 	NameFirst      string    `json:"nameFirst"`
 	NameLast       string    `json:"nameLast"`
-	DisplayPicture string    `json:"displayPicture"`
+	DisplayPicture string    `json:"displayPicture" gorm:"-"`
 	Contact        *Contact  `json:"contact" gorm:"foreignKey:key;PRELOAD:false"`
 	Updated        time.Time `json:"updated" gorm:"default:'1970-01-01 00:00:00.00000+00:00'"`
 }
@@ -96,7 +96,7 @@ type OwnProfile struct {
 	NameFirst      string    `json:"nameFirst"`
 	NameLast       string    `json:"nameLast"`
 	LocalAlias     string    `json:"alias"`
-	DisplayPicture string    `json:"displayPicture"`
+	DisplayPicture string    `json:"displayPicture" gorm:"-"`
 	Updated        time.Time `json:"updated" gorm:"default:'1970-01-01 00:00:00.00000+00:00'"`
 }
 
