@@ -81,7 +81,6 @@ class _MessagesContainer extends State<MessagesContainer> {
       return _buildDetails();
     }
 
-
     // messages list
     if (w == null) {
       w = _buildMessagesListContainer();
@@ -284,8 +283,8 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   List<Widget> _buildMessageBodies(BuildContext ctx, MessageItem msg) {
-    final  textTheme = Theme.of(ctx).textTheme;
-    final  colorScheme = Theme.of(ctx).colorScheme;
+    final textTheme = Theme.of(ctx).textTheme;
+    final colorScheme = Theme.of(ctx).colorScheme;
     var bodies = <Widget>[
       MarkdownViewer(
         content: msg.body,
@@ -335,7 +334,7 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildMessageItem(BuildContext ctx, MessageItem msg) {
     final TextTheme textTheme = Theme.of(ctx).textTheme;
-    final dateFormatSmall = new DateFormat('hh:mm');
+    final dateFormatSmall = new DateFormat('HH:mm');
     return Container(
       margin: EdgeInsets.fromLTRB(0, 2, 10, 2),
       child: Row(
@@ -375,7 +374,7 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildMessageBlock(BuildContext ctx, MessageBlock msg) {
     final TextTheme textTheme = Theme.of(ctx).textTheme;
-    final dateFormatFull = new DateFormat('hh:mm');
+    final dateFormatFull = new DateFormat('EEE MMM d, HH:mm');
 
     var msgs = <Widget>[
       Row(
@@ -403,9 +402,14 @@ class _MessagesContainer extends State<MessagesContainer> {
                       alias: msg.alias,
                       textTheme: textTheme,
                     ),
-                    Text(
-                      dateFormatFull.format(msg.initialMessage.sent),
-                      style: textTheme.caption,
+                    Expanded(
+                      child:Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        dateFormatFull.format(msg.initialMessage.sent),
+                        style: textTheme.caption,
+                      ),
+                      ),
                     ),
                   ],
                 ),
@@ -476,8 +480,11 @@ class _MessagesContainer extends State<MessagesContainer> {
             _textController.text = "";
             _handleSubmitted(text);
           },
-          decoration: new InputDecoration.collapsed(
+          decoration: new InputDecoration(
             hintText: "Send a message...",
+            contentPadding: EdgeInsets.all(10),
+            isDense: true,
+            border: InputBorder.none,
           ),
         ),
       ),

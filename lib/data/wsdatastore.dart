@@ -122,7 +122,8 @@ class WsDataStore implements DataStore {
 
   @override
   Stream<List<MessageBlock>> getMessagesForConversation(
-      String conversationId) async* {
+    String conversationId,
+  ) async* {
     List<MessageBlock> list = [];
     final ws = IOWebSocketChannel.connect(
       "$daemonApiWsUrl$daemonApiPort",

@@ -40,7 +40,8 @@ class Repository {
   }
 
   StreamController<List<MessageBlock>> getMessagesForConversation(
-      String conversationId) {
+    String conversationId,
+  ) {
     StreamController<List<MessageBlock>> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;

@@ -257,7 +257,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   Widget buildConversationsTab() {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final dateFormatFull = new DateFormat("EEE, MMM d, hh:mm");
+    final dateFormatFull = new DateFormat("EEE, MMM d, HH:mm");
     return Container(
       color: colorScheme.background,
       child: Column(
