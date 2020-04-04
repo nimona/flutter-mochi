@@ -10,12 +10,14 @@ import (
 
 	"github.com/go-flutter-desktop/go-flutter"
 	"github.com/pkg/errors"
+	"github.com/pkg/profile"
 )
 
 // vmArguments may be set by hover at compile-time
 var vmArguments string
 
 func main() {
+	defer profile.Start().Stop()
 	// DO NOT EDIT, add options in options.go
 	mainOptions := []flutter.Option{
 		flutter.OptionVMArguments(strings.Split(vmArguments, ";")),

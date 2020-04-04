@@ -1,7 +1,14 @@
 package api
 
 import (
+	"expvar"
 	"net/http"
+	"runtime"
+	"runtime/debug"
+	"runtime/pprof"
+	"time"
+
+	"github.com/zserge/metric"
 
 	"mochi.io/internal/mochi"
 	"mochi.io/internal/store"
@@ -55,6 +62,35 @@ func New(
 	}
 
 	r.Use(api.Cors())
+
+	// Some Go internal metrics
+	expvar.Publish("go:goroutine", metric.NewGauge("2m1s", "15m30s", "1h1m"))
+	expvar.Publish("go:cgocall", metric.NewGauge("2m1s", "15m30s", "1h1m"))
+	expvar.Publish("go:alloc", metric.NewGauge("2m1s", "15m30s", "1h1m"))
+	expvar.Publish("go:alloc.total", metric.NewGauge("2m1s", "15m30s", "1h1m"))
+
+	go func() {
+		for range time.Tick(100 * time.Millisecond) {
+			m := &runtime.MemStats{}
+			runtime.ReadMemStats(m)
+			expvar.Get("go:goroutine").(metric.Metric).Add(float64(runtime.NumGoroutine()))
+			expvar.Get("go:cgocall").(metric.Metric).Add(float64(runtime.NumCgoCall()))
+			expvar.Get("go:alloc").(metric.Metric).Add(float64(m.Alloc) / 1000000)
+			expvar.Get("go:alloc.total").(metric.Metric).Add(float64(m.TotalAlloc) / 1000000)
+		}
+	}()
+
+	metricsHandler := func(c *router.Context) {
+		metric.Handler(metric.Exposed).ServeHTTP(c.Writer, c.Request)
+	}
+	r.Handle("GET", "/debug/metrics", metricsHandler)
+
+	stackHandler := func(c *router.Context) {
+		stack := debug.Stack()
+		c.Writer.Write(stack)
+		pprof.Lookup("goroutine").WriteTo(c.Writer, 2)
+	}
+	r.Handle("GET", "/debug/stack", stackHandler)
 
 	r.Handle("GET", "/conversations/(?P<conversationHash>.+)/mark=read$", api.HandleConversationMarkRead)
 	r.Handle("GET", "/displayPictures/(?P<publicKey>.+)$", api.HandleDisplayPictures)
