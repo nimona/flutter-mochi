@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/fsnotify/fsnotify v1.4.8 // indirect
 	github.com/gen2brain/dlgs v0.0.0-20200211102745-b9c2664df42f // indirect
-	github.com/geoah/go-nimona-notifier v0.0.1
+	github.com/geoah/go-nimona-notifier v1.7.0
 	github.com/go-flutter-desktop/go-flutter v0.36.1
 	github.com/go-flutter-desktop/plugins/url_launcher v0.1.2
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4
@@ -35,4 +35,6 @@ replace github.com/go-flutter-desktop/go-flutter => github.com/geoah/go-flutter 
 
 // replace nimona.io => ../../../../nimona.io
 
-// replace github.com/go-flutter-desktop/go-flutter => ../../../geoah/go-flutter
+// replace github.com/go-flutter-desktop/go-flutter => ../../go-flutter
+
+// replace github.com/geoah/go-nimona-notifier => ../../go-nimona-notifier

@@ -16,6 +16,8 @@ github.com/geoah/go-flutter v0.36.1-0.20200329185504-b6357ad7bb8d h1:o7wR5qBZgr+
 github.com/geoah/go-flutter v0.36.1-0.20200329185504-b6357ad7bb8d/go.mod h1:8tjt3yZ3lTNLqgzWeH90f1uhCR9BL68LFoiy/n0aw/w=
 github.com/geoah/go-nimona-notifier v0.0.1 h1:TjFfmuLD5XTny6oVeUk4IVb/3wkNET0pRWNkJi9/bnw=
 github.com/geoah/go-nimona-notifier v0.0.1/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
+github.com/geoah/go-nimona-notifier v1.7.0 h1:GIeEFiG45HfXFUtQWIu84JEJto9y07u0WzPj9Qyn5VM=
+github.com/geoah/go-nimona-notifier v1.7.0/go.mod h1:MhVyG/DmSIoR5i7NLeJAw/zGkdSP8A19Da2mc4TxbIQ=
 github.com/geoah/go-queue v2.0.0+incompatible h1:eLFmhPSYebanEi7t6D80vNBvPv0V6lLGyiMg6TFoEXY=
 github.com/geoah/go-queue v2.0.0+incompatible/go.mod h1:NPL2o6Frb0vYP2U/WlgENrrYsd8kN0fdq946szaCbY4=
 github.com/go-flutter-desktop/plugins/url_launcher v0.1.2 h1:oFiIJjotMQvF8rfKWVJrf+1/JgTXShEIsibkiXrQnUw=

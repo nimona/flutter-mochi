@@ -12,6 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"mochi.io/internal/imgutil"
+
 	notifier "github.com/geoah/go-nimona-notifier"
 	"github.com/tsdtsdtsd/identicon"
 
@@ -37,7 +39,6 @@ func IsWindowFocused() bool {
 	defer windowFocusedLock.RUnlock()
 	return windowFocused
 }
-
 func MarkWindowFocused(b bool) {
 	fmt.Println("focus:", b)
 	windowFocusedLock.Lock()
@@ -70,7 +71,7 @@ var (
 	dpMap  = map[string]string{}
 )
 
-func getConversationDisplayPicture(h string) string {
+func getConversationDisplayPicture(h, dp string) string {
 	dpLock.RLock()
 	if v, ok := dpMap[h]; ok {
 		dpLock.RUnlock()
@@ -80,11 +81,12 @@ func getConversationDisplayPicture(h string) string {
 	dpLock.Lock()
 	defer dpLock.Unlock()
 
-	p := "/tmp/nimona-mochi-conversation-" + h + ".png"
+	p := "/tmp/io.nimona.mochi-" + h + ".png"
 	if _, err := os.Stat(p); err == nil {
 		return p
 	}
-	if err := ioutil.WriteFile(p, getIdenticon(h), 0644); err != nil {
+	dpBytes, _ := imgutil.ResizeBase64(dp, 250)
+	if err := ioutil.WriteFile(p, dpBytes, 0644); err != nil {
 		return ""
 	}
 	return p
@@ -271,14 +273,19 @@ func (m *Mochi) handleStreams() {
 				}
 				note.Subtitle = con.Name
 				note.Sound = notifier.Basso
-				note.Group = "io.nimona.mochi"
-				note.Sender = "io.nimona.mochi"
+				// note.Group = "io.nimona.mochi"
+				// note.Sender = "io.nimona.mochi"
 				note.Link = "io.nimona.mochi"
-				cdp := getConversationDisplayPicture(con.Hash)
-				if cdp != "" {
-					note.ContentImage = getConversationDisplayPicture(con.Hash)
+				cdp, err := m.store.GetDisplayPicture(con.Hash)
+				cdpPath := getConversationDisplayPicture(con.Hash, cdp)
+				if cdpPath != "" {
+					note.AppIcon = cdpPath
 				}
-				// note.AppIcon = getConversationDisplayPicture(con.Hash)
+				pdp, err := m.store.GetDisplayPicture(msg.ProfileKey)
+				pdpPath := getConversationDisplayPicture(msg.ProfileKey, pdp)
+				if pdpPath != "" {
+					note.ContentImage = pdpPath
+				}
 				if err := note.Push(); err != nil {
 					fmt.Println("could not send notification", err)
 				}

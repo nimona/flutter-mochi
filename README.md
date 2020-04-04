@@ -13,6 +13,7 @@ For this you'll need a couple of things.
 ```sh
 git clone git@github.com:nimona/flutter-mochi.git
 cd flutter-mochi
+flutter clean
 flutter channel beta
 flutter upgrade --force
 flutter doctor
