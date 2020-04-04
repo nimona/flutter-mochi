@@ -25,6 +25,9 @@ type API struct {
 	buildDate    string
 	gracefulStop chan bool
 	srv          *http.Server
+
+	// HACK until we figure out how to kill connections from the ui side
+	lastMessagesWsConn *wsConn
 }
 
 // New HTTP API

@@ -62,7 +62,9 @@ func New(dbPath string) (*Store, error) {
 // HandleMessages adds a message handler
 func (s *Store) HandleMessages(h MessageHandler) {
 	s.lock.Lock()
-	s.messageHandlers = append(s.messageHandlers, h)
+	// HACK only keep the last one
+	s.messageHandlers = []MessageHandler{h}
+	// s.messageHandlers = append(s.messageHandlers, h)
 	s.lock.Unlock()
 }
 

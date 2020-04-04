@@ -145,7 +145,7 @@ func (api *API) HandleWS(c *router.Context) {
 			}
 
 			logger.Warn("could not read from ws", log.Error(err))
-			continue
+			return
 		}
 
 		m := map[string]interface{}{}
@@ -166,7 +166,8 @@ func (api *API) HandleWS(c *router.Context) {
 			for _, p := range ps {
 				// fmt.Println("Handling old contact", p)
 				if err := write(conn, p); err != nil {
-					panic(err)
+					logger.Error("could not write to conn", log.Error(err))
+					return
 				}
 			}
 
@@ -187,7 +188,8 @@ func (api *API) HandleWS(c *router.Context) {
 			p, _ := api.store.GetOwnProfile()
 			// fmt.Println("Handling old own profile", p)
 			if err := write(conn, p); err != nil {
-				panic(err)
+				logger.Error("could not write to conn", log.Error(err))
+				return
 			}
 
 		case "contactAdd":
@@ -209,7 +211,8 @@ func (api *API) HandleWS(c *router.Context) {
 			for _, c := range cs {
 				// fmt.Println("Handling old conv", c)
 				if err := write(conn, c); err != nil {
-					panic(err)
+					logger.Error("could not write to conn", log.Error(err))
+					return
 				}
 			}
 
@@ -234,6 +237,15 @@ func (api *API) HandleWS(c *router.Context) {
 		case "messagesGet":
 			r := MessagesGetRequest{}
 			json.Unmarshal(msg, &r)
+
+			// HACK lock, kill previous ws, store new ws
+			conn.lock.Lock()
+			if api.lastMessagesWsConn != nil {
+				api.lastMessagesWsConn.conn.Close()
+			}
+			api.lastMessagesWsConn = conn
+			conn.lock.Unlock()
+
 			api.store.HandleMessages(func(m store.MessageView) {
 				if m.ConversationHash != r.Conversation {
 					// fmt.Println("Handling msg, ignoring", m)
@@ -246,7 +258,8 @@ func (api *API) HandleWS(c *router.Context) {
 			for _, m := range ms {
 				// fmt.Println("Handling old msg", m)
 				if err := write(conn, m); err != nil {
-					panic(err)
+					logger.Error("could not write to conn", log.Error(err))
+					return
 				}
 			}
 
@@ -255,6 +268,7 @@ func (api *API) HandleWS(c *router.Context) {
 			json.Unmarshal(msg, &r)
 			if err := api.mochi.CreateMessage(r.Conversation, r.Body); err != nil {
 				logger.Error("could create message", log.Error(err))
+				return
 			}
 		}
 
@@ -279,12 +293,12 @@ func getIdenticon(key string) []byte {
 		ImageSize:       500,
 	})
 	if err != nil {
-		panic(err)
+		log.DefaultLogger.Error("could not write to conn", log.Error(err))
 	}
 	buf := &bytes.Buffer{}
 	err = png.Encode(buf, ic)
 	if err != nil {
-		panic(err)
+		log.DefaultLogger.Error("could not write to conn", log.Error(err))
 	}
 	return buf.Bytes()
 	// return base64.StdEncoding.EncodeToString(b)
