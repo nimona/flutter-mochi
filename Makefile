@@ -4,6 +4,9 @@ CERT_NAME := Developer ID Application: George Antoniadis (LNCQ7FYZE7)
 APPLE_USERNAME := george@noodles.gr
 APPLE_PASSWORD := @keychain:AC_PASSWORD
 
+GOMOBILE_PKG := mochi.io
+APP_PATH := $(CURDIR)
+
 .PHONY: build
 build:
 	@echo "Building $(VERSION)..."
@@ -40,3 +43,9 @@ build-verify:
 		--username "$(APPLE_USERNAME)" \
 		--password "$(APPLE_PASSWORD)" \
 		--notarization-info $(REQ_ID)
+
+.PHONE: bind-ios
+bind-ios:
+	cd go; gomobile bind -v -target ios \
+		-o ${APP_PATH}/ios/Frameworks/Gomobile.framework \
+		mochi.io/mobile

@@ -7,6 +7,7 @@ require (
 	github.com/gen2brain/dlgs v0.0.0-20200211102745-b9c2664df42f // indirect
 	github.com/geoah/go-nimona-notifier v1.7.0
 	github.com/go-flutter-desktop/go-flutter v0.36.1
+	github.com/go-flutter-desktop/plugins/path_provider v0.3.3
 	github.com/go-flutter-desktop/plugins/url_launcher v0.1.2
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
@@ -24,6 +25,7 @@ require (
 	github.com/tsdtsdtsd/identicon v0.3.2
 	github.com/zserge/metric v0.1.0
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
+	golang.org/x/mobile v0.0.0-20200329125638-4c31acba0007 // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7
 	nimona.io v0.6.4
