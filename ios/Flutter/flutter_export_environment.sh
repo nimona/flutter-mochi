@@ -1,8 +1,8 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/geoah/src/github.com/flutter/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/geoah/src/github.com/nimona/flutter-mochi"
-export "FLUTTER_TARGET=/Users/geoah/src/github.com/nimona/flutter-mochi/lib/main.dart"
+export "FLUTTER_APPLICATION_PATH=/Users/geoah/src/github.com/nimona/flutter_mochi"
+export "FLUTTER_TARGET=/Users/geoah/src/github.com/nimona/flutter_mochi/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
 export "OTHER_LDFLAGS=$(inherited) -framework Flutter"

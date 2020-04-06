@@ -47,5 +47,5 @@ build-verify:
 .PHONE: bind-ios
 bind-ios:
 	cd go; gomobile bind -v -target ios \
-		-o ${APP_PATH}/ios/Frameworks/Gomobile.framework \
+		-o ${APP_PATH}/plugins/mochi_mobile/ios/Frameworks/Mobileapi.framework \
 		mochi.io/mobile
