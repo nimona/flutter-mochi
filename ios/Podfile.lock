@@ -7,6 +7,8 @@ PODS:
   - image_cropper (0.0.2):
     - Flutter
     - TOCropViewController (~> 2.5.2)
+  - mochi_mobile (0.0.1):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - path_provider_macos (0.0.1):
@@ -20,15 +22,16 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - file_picker (from `.symlinks/plugins/file_picker/ios`)
-  - Flutter (from `Flutter`)
-  - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
-  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
-  - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
+  - file_picker (from `Pods/.symlinks/plugins/file_picker/ios`)
+  - Flutter (from `Pods/.symlinks/flutter/ios`)
+  - flutter_plugin_android_lifecycle (from `Pods/.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
+  - image_cropper (from `Pods/.symlinks/plugins/image_cropper/ios`)
+  - mochi_mobile (from `Pods/.symlinks/plugins/mochi_mobile/ios`)
+  - path_provider (from `Pods/.symlinks/plugins/path_provider/ios`)
+  - path_provider_macos (from `Pods/.symlinks/plugins/path_provider_macos/ios`)
+  - url_launcher (from `Pods/.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_macos (from `Pods/.symlinks/plugins/url_launcher_macos/ios`)
+  - url_launcher_web (from `Pods/.symlinks/plugins/url_launcher_web/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -36,29 +39,32 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   file_picker:
-    :path: ".symlinks/plugins/file_picker/ios"
+    :path: Pods/.symlinks/plugins/file_picker/ios
   Flutter:
-    :path: Flutter
+    :path: Pods/.symlinks/flutter/ios
   flutter_plugin_android_lifecycle:
-    :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
+    :path: Pods/.symlinks/plugins/flutter_plugin_android_lifecycle/ios
   image_cropper:
-    :path: ".symlinks/plugins/image_cropper/ios"
+    :path: Pods/.symlinks/plugins/image_cropper/ios
+  mochi_mobile:
+    :path: Pods/.symlinks/plugins/mochi_mobile/ios
   path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+    :path: Pods/.symlinks/plugins/path_provider/ios
   path_provider_macos:
-    :path: ".symlinks/plugins/path_provider_macos/ios"
+    :path: Pods/.symlinks/plugins/path_provider_macos/ios
   url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
+    :path: Pods/.symlinks/plugins/url_launcher/ios
   url_launcher_macos:
-    :path: ".symlinks/plugins/url_launcher_macos/ios"
+    :path: Pods/.symlinks/plugins/url_launcher_macos/ios
   url_launcher_web:
-    :path: ".symlinks/plugins/url_launcher_web/ios"
+    :path: Pods/.symlinks/plugins/url_launcher_web/ios
 
 SPEC CHECKSUMS:
   file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
   image_cropper: 3c16d7651730ffe85897f5a1c4e2547e6b54989a
+  mochi_mobile: 8312144cc50dac8f007a5dabee9eab4c30b86695
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   TOCropViewController: e9da34f484aedd4e5d5a8ab230ba217cfe16c729
@@ -66,6 +72,6 @@ SPEC CHECKSUMS:
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
-PODFILE CHECKSUM: f32fb4e7c14f8b3ca19a369d7be425dd9241af27
+PODFILE CHECKSUM: ea0518673586564c605fb6593d385c0e3708ff8d
 
 COCOAPODS: 1.7.5
