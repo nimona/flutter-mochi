@@ -392,6 +392,13 @@ func (s *Store) GetMessages(conversationHash string) ([]MessageView, error) {
 	`, conversationHash,
 	).Scan(&ms)
 
+	for i := range ms {
+		if ms[i].ProfileUpdated == "" {
+			ms[i].ProfileUpdated = time.Unix(0, 0).Format(time.RFC3339)
+			ms[i].NameFirst = ms[i].ProfileKey
+		}
+	}
+
 	return ms, q.Error
 }
 

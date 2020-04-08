@@ -1,4 +1,4 @@
-package gomobile
+package mobileapi
 
 import (
 	"errors"
@@ -6,8 +6,8 @@ import (
 	"mochi.io/internal/daemon"
 )
 
-func init() {
-	daemon.StartDaemon(10101, 10801)
+func StartDaemon() string {
+	return daemon.StartDaemon()
 }
 
 type (
