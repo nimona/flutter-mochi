@@ -54,8 +54,10 @@ class _MessagesContainer extends State<MessagesContainer> {
   @override
   void initState() {
     super.initState();
-    _streamMessagesController =
-        Repository.get().getMessagesForConversation(currentConversation?.hash);
+    currentConversation = widget.conversation;
+    _streamMessagesController = Repository.get().getMessagesForConversation(
+      currentConversation?.hash,
+    );
     _streamMessages = _streamMessagesController.stream.asBroadcastStream();
   }
 
@@ -73,12 +75,31 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   @override
   Widget build(BuildContext context) {
+    // HACK I don't understand states enough :D
+    // IIRC this is for the mobile layout?
+    if (widget.isInTabletLayout == false) {
+      currentConversation = widget.conversation;
+    }
+
     if (currentConversation == null) {
-      return _buildLanding();
+      if (widget.isInTabletLayout == true) {
+        return _buildLanding();
+      }
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Start or join conversation"),
+        ),
+        body: _buildLanding(),
+      );
     }
 
     if (showDetails) {
-      return _buildDetails();
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(currentConversation?.name),
+        ),
+        body: _buildDetails(),
+      );
     }
 
     // messages list
@@ -403,12 +424,12 @@ class _MessagesContainer extends State<MessagesContainer> {
                       textTheme: textTheme,
                     ),
                     Expanded(
-                      child:Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        dateFormatFull.format(msg.initialMessage.sent),
-                        style: textTheme.caption,
-                      ),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          dateFormatFull.format(msg.initialMessage.sent),
+                          style: textTheme.caption,
+                        ),
                       ),
                     ),
                   ],

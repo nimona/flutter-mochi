@@ -31,23 +31,28 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   }
 
   Widget _buildMobileLayout() {
-    return ConversationListContainer(
-      itemSelectedCallback: (item) {
-        Repository.get().conversationMarkRead(item.hash);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return Material(
-                child: MessagesContainer(
-                  isInTabletLayout: false,
-                  conversation: item,
-                ),
-              );
-            },
-          ),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Mochi"),
+      ),
+      body: ConversationListContainer(
+        isInTabletLayout: false,
+        itemSelectedCallback: (item) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return Material(
+                  child: MessagesContainer(
+                    isInTabletLayout: false,
+                    conversation: item,
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -63,6 +68,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           child: Material(
             // elevation: 4.0,
             child: ConversationListContainer(
+              isInTabletLayout: true,
               itemSelectedCallback: (conversation) {
                 // mark both old and new conversation as read
                 // we do this as the backend is not clever enough to know

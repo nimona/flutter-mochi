@@ -18,8 +18,7 @@ class AddConversationWidget extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
       margin: EdgeInsets.all(50),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: <Widget>[
           new Text(
             "Start new conversation",

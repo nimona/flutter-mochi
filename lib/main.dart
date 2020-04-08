@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mochi_mobile/mochi_mobile.dart';
 
 import 'master_detail_layout.dart';
 
@@ -92,10 +94,10 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.blue,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-      ),
+      // darkTheme: ThemeData(
+      //   brightness: Brightness.dark,
+      //   primarySwatch: Colors.blue,
+      // ),
       home: MasterDetailLayout(),
     );
   }
