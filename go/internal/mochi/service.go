@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -53,6 +54,7 @@ func init() {
 
 // Mochi is the main service that contains business logic
 type Mochi struct {
+	path   string
 	store  *store.Store
 	daemon *daemon.Daemon
 }
@@ -71,7 +73,7 @@ var (
 	dpMap  = map[string]string{}
 )
 
-func getConversationDisplayPicture(h, dp string) string {
+func (m *Mochi) getConversationDisplayPicture(h, dp string) string {
 	dpLock.RLock()
 	if v, ok := dpMap[h]; ok {
 		dpLock.RUnlock()
@@ -81,7 +83,7 @@ func getConversationDisplayPicture(h, dp string) string {
 	dpLock.Lock()
 	defer dpLock.Unlock()
 
-	p := "/tmp/io.nimona.mochi-" + h + ".png"
+	p := filepath.Join(m.path, "tmp", "dp-"+h+".png")
 	if _, err := os.Stat(p); err == nil {
 		return p
 	}
@@ -93,11 +95,16 @@ func getConversationDisplayPicture(h, dp string) string {
 }
 
 // New returns a new mochi service given a store
-func New(store *store.Store, daemon *daemon.Daemon) (*Mochi, error) {
+func New(path string, store *store.Store, daemon *daemon.Daemon) (*Mochi, error) {
 	m := &Mochi{
+		path:   path,
 		store:  store,
 		daemon: daemon,
 	}
+
+	// tmp currently holds display pictures and other things we need as files
+	// TODO we should be cleaning this up on start
+	_ = os.MkdirAll(filepath.Join(m.path, "tmp"), os.ModePerm)
 
 	p, _ := m.store.GetOwnProfile()
 	if p.Key == "" {
@@ -277,12 +284,12 @@ func (m *Mochi) handleStreams() {
 				// note.Sender = "io.nimona.mochi"
 				note.Link = "io.nimona.mochi"
 				cdp, err := m.store.GetDisplayPicture(con.Hash)
-				cdpPath := getConversationDisplayPicture(con.Hash, cdp)
+				cdpPath := m.getConversationDisplayPicture(con.Hash, cdp)
 				if cdpPath != "" {
 					note.AppIcon = cdpPath
 				}
 				pdp, err := m.store.GetDisplayPicture(msg.ProfileKey)
-				pdpPath := getConversationDisplayPicture(msg.ProfileKey, pdp)
+				pdpPath := m.getConversationDisplayPicture(msg.ProfileKey, pdp)
 				if pdpPath != "" {
 					note.ContentImage = pdpPath
 				}

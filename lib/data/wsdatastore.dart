@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:faker/faker.dart';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart';
@@ -21,6 +21,7 @@ import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/model/message_block.dart';
 import 'package:mochi/model/own_profile.dart';
+import 'package:mochi_mobile/mochi_mobile.dart';
 import 'package:web_socket_channel/io.dart';
 
 const daemonChannel = const MethodChannel('mochi.io/daemon');
@@ -30,10 +31,7 @@ const daemonApiWsUrl = 'ws://localhost:';
 const daemonApiHttpUrl = 'http://localhost:';
 
 class WsDataStore implements DataStore {
-  WsDataStore() {
-    startDaemon();
-    // sleep(const Duration(seconds: 5));
-  }
+  WsDataStore();
 
   @override
   void createContact(String identityKey, String alias) {
@@ -65,6 +63,7 @@ class WsDataStore implements DataStore {
 
   @override
   Stream<Contact> getContacts() async* {
+    print("started daemon, resp=" + await MochiMobile.startDaemon());
     final ws = IOWebSocketChannel.connect(
       "$daemonApiWsUrl$daemonApiPort",
     );
@@ -124,6 +123,7 @@ class WsDataStore implements DataStore {
   Stream<List<MessageBlock>> getMessagesForConversation(
     String conversationId,
   ) async* {
+    print("started daemon, resp=" + await MochiMobile.startDaemon());
     List<MessageBlock> list = [];
     final ws = IOWebSocketChannel.connect(
       "$daemonApiWsUrl$daemonApiPort",
@@ -134,7 +134,13 @@ class WsDataStore implements DataStore {
       )),
     );
     await for (final dynamic message in ws.stream) {
-      var msg = Message.fromJson(json.decode(message));
+      Message msg;
+      try {
+        msg = Message.fromJson(json.decode(message));
+      } catch (e) {
+        print("error parsing json, msg=" + message.toString());
+        continue;
+      }
       if (list.length == 0) {
         list.insert(0, _messageToBlock(msg));
         yield list;
@@ -251,6 +257,7 @@ class WsDataStore implements DataStore {
 
   @override
   Stream<Conversation> getConversations() async* {
+    print("started daemon, resp=" + await MochiMobile.startDaemon());
     final ws = IOWebSocketChannel.connect(
       "$daemonApiWsUrl$daemonApiPort",
     );
