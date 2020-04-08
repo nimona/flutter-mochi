@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mochi/data/wsdatastore.dart';
 import 'package:mochi/model/conversation.dart';
 
 class ConversationDisplayPicture extends StatelessWidget {
@@ -23,7 +24,7 @@ class ConversationDisplayPicture extends StatelessWidget {
       }
       var hash = conversation.hash;
       img = NetworkImage(
-        "http://localhost:10100/displayPictures/$hash?_cb=$cb&size=$size",
+        "$daemonApiHttpUrl$daemonApiPort/displayPictures/$hash?_cb=$cb&size=$size",
       );
     }
     return Container(

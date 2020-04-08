@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mochi/data/wsdatastore.dart';
 
 class ProfileDisplayPicture extends StatelessWidget {
   const ProfileDisplayPicture({
@@ -23,7 +24,7 @@ class ProfileDisplayPicture extends StatelessWidget {
         cb = profileUpdated.millisecondsSinceEpoch.toString();
       }
       img = NetworkImage(
-        "http://localhost:10100/displayPictures/$profileKey?_cb=$cb&size=$size",
+        "$daemonApiHttpUrl$daemonApiPort/displayPictures/$profileKey?_cb=$cb&size=$size",
       );
     }
     return Container(

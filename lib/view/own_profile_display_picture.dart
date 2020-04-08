@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mochi/data/wsdatastore.dart';
 import 'package:mochi/model/own_profile.dart';
 
 class OwnProfileDisplayPicture extends StatelessWidget {
@@ -23,7 +24,7 @@ class OwnProfileDisplayPicture extends StatelessWidget {
       }
       var hash = profile.key;
       img = NetworkImage(
-        "http://localhost:10100/displayPictures/$hash?_cb=$cb&size=$size",
+        "$daemonApiHttpUrl$daemonApiPort/displayPictures/$hash?_cb=$cb&size=$size",
       );
     }
     return Container(

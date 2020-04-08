@@ -17,10 +17,12 @@ import 'package:mochi/view/profile_display_picture.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer({
-    this.itemSelectedCallback,
+    @required this.itemSelectedCallback,
+    @required this.isInTabletLayout,
   });
 
   final ValueChanged<Conversation> itemSelectedCallback;
+  final bool isInTabletLayout;
 
   @override
   _ConversationListContainer createState() =>
@@ -169,61 +171,46 @@ class _ConversationListContainer extends State<ConversationListContainer> {
               initialIndex: 1,
               length: 3,
               child: new Scaffold(
-                appBar: new PreferredSize(
-                  preferredSize: Size.fromHeight(kToolbarHeight),
-                  child: new Container(
-                    height: 40,
-                    child: new TabBar(
-                      labelColor: Colors.blue,
-                      tabs: [
-                        Container(
-                          height: 40,
-                          child: Center(
-                            child: Text(
-                              "contacts",
-                              style: textTheme.button,
-                              overflow: TextOverflow.ellipsis,
-                              semanticsLabel: "contacts",
-                            ),
-                          ),
-                          // child: Icon(
-                          //   Icons.people,
-                          // ),
+                appBar: new TabBar(
+                  labelColor: Colors.blue,
+                  tabs: [
+                    Container(
+                      height: 40,
+                      child: Center(
+                        child: Text(
+                          "contacts",
+                          style: textTheme.button,
+                          overflow: TextOverflow.ellipsis,
+                          semanticsLabel: "contacts",
                         ),
-                        Container(
-                          height: 40,
-                          child: Center(
-                            child: Text(
-                              "conversations",
-                              style: textTheme.button,
-                              overflow: TextOverflow.ellipsis,
-                              semanticsLabel: "conversations",
-                            ),
-                          ),
-                          // child: Icon(
-                          //   Icons.chat,
-                          // ),
-                        ),
-                        Container(
-                          height: 40,
-                          child: Center(
-                            child: Text(
-                              "settings",
-                              style: textTheme.button,
-                              overflow: TextOverflow.ellipsis,
-                              semanticsLabel: "settings",
-                            ),
-                          ),
-                          // child: Icon(
-                          //   Icons.settings,
-                          // ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Container(
+                      height: 40,
+                      child: Center(
+                        child: Text(
+                          "conversations",
+                          style: textTheme.button,
+                          overflow: TextOverflow.ellipsis,
+                          semanticsLabel: "conversations",
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 40,
+                      child: Center(
+                        child: Text(
+                          "settings",
+                          style: textTheme.button,
+                          overflow: TextOverflow.ellipsis,
+                          semanticsLabel: "settings",
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 body: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
+                  // physics: NeverScrollableScrollPhysics(),
                   children: [
                     buildContactsTab(),
                     buildConversationsTab(),
@@ -275,7 +262,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       itemSelectedCallback(conversation);
                     },
                     child: Card(
-                      shape: selectedConversationHash == conversation.hash
+                      shape: selectedConversationHash == conversation.hash &&
+                              widget.isInTabletLayout
                           ? new RoundedRectangleBorder(
                               side: new BorderSide(
                                 color: colorScheme.primary,
@@ -404,7 +392,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
     ColorScheme colorScheme,
     TextTheme textTheme,
   ) {
-    if (selectedConversationHash == conversation.hash) {
+    if (selectedConversationHash == conversation.hash &&
+        widget.isInTabletLayout) {
       return Container();
     }
     if (conversation.unreadMessagesLatest.length == 0) {

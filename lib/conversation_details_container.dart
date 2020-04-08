@@ -6,10 +6,12 @@ import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mochi/data/wsdatastore.dart';
 
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/view/conversation_display_picture.dart';
 import 'package:mochi/view/participant_name.dart';
+import 'package:mochi_mobile/mochi_mobile.dart';
 
 class ConversationDetailsContainer extends StatefulWidget {
   const ConversationDetailsContainer({
@@ -56,7 +58,7 @@ class _ConversationDetailsContainerState
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(2),
               child: Image.network(
-                "http://localhost:10100/displayPictures/${participant.key}",
+                "$daemonApiHttpUrl$daemonApiPort/displayPictures/${participant.key}",
                 height: 40,
               ),
             ),
@@ -151,65 +153,62 @@ class _ConversationDetailsContainerState
 
     // scaffold
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.all(50),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "Conversation details",
-              style: textTheme.headline4,
-              textAlign: TextAlign.left,
-            ),
-            SizedBox(height: 10),
-            Container(
-              child: d,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                RaisedButton(
-                  child: Text("Update"),
-                  onPressed: () {
-                    widget.callback(
-                      false,
-                      nameController.text,
-                      topicController.text,
-                      displayPicture,
-                    );
-                  },
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                RaisedButton(
-                  child: Text("Cancel"),
-                  onPressed: () {
-                    widget.callback(false, "", "", "");
-                  },
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 50.0,
-            ),
-            Text(
-              "Conversation participants",
-              style: textTheme.headline4,
-              textAlign: TextAlign.left,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: ps,
-            ),
-          ],
-        ),
+      body: ListView(
+        children: <Widget>[
+          Text(
+            "Conversation details",
+            style: textTheme.headline4,
+            textAlign: TextAlign.left,
+          ),
+          SizedBox(height: 10),
+          Container(
+            child: d,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              RaisedButton(
+                child: Text("Update"),
+                onPressed: () {
+                  widget.callback(
+                    false,
+                    nameController.text,
+                    topicController.text,
+                    displayPicture,
+                  );
+                },
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              RaisedButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  widget.callback(false, "", "", "");
+                },
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 50.0,
+          ),
+          Text(
+            "Conversation participants",
+            style: textTheme.headline4,
+            textAlign: TextAlign.left,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: ps,
+          ),
+        ],
       ),
+      // ),
     );
   }
 
