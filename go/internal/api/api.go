@@ -92,6 +92,9 @@ func New(
 	}
 	r.Handle("GET", "/debug/stack", stackHandler)
 
+	r.Handle("GET", "/daemon-info", api.HandleGetDaemonInfo)
+	r.Handle("POST", "/identities", api.HandlePostIdentities)
+	r.Handle("PUT", "/identities", api.HandlePutIdentities)
 	r.Handle("GET", "/conversations/(?P<conversationHash>.+)/mark=read$", api.HandleConversationMarkRead)
 	r.Handle("GET", "/displayPictures/(?P<publicKey>.+)$", api.HandleDisplayPictures)
 	r.Handle("GET", "/", api.HandleWS)

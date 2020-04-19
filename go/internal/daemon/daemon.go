@@ -129,23 +129,10 @@ func startDaemon(apiPort, tcpPort int) (<-chan bool, error) {
 		config.Peer.PeerKey = peerKey
 	}
 
-	// create identity key pair if it does not exist
-	// TODO this is temporary
-	if config.Peer.IdentityKey == "" {
-		logger.Info("creating new ident	ity key pair")
-		identityKey, err := crypto.GenerateEd25519PrivateKey()
-		if err != nil {
-			logger.Fatal("could not generate identity key", log.Error(err))
-		}
-		config.Peer.IdentityKey = identityKey
-	}
-
 	fmt.Println(">>> PEER PUB", config.Peer.PeerKey.PublicKey())
-	fmt.Println(">>> IDENTITY PUB", config.Peer.IdentityKey.PublicKey())
 
-	// update config
-	if err := config.Update(); err != nil {
-		logger.Fatal("could not update config", log.Error(err))
+	if err := os.MkdirAll(config.Path, os.ModePerm); err != nil {
+		logger.Fatal("could not create config dir", log.Error(err))
 	}
 
 	logger.Info("loaded config", log.Any("config", config))
@@ -175,9 +162,7 @@ func startDaemon(apiPort, tcpPort int) (<-chan bool, error) {
 	nlogger.Info("starting HTTP API")
 
 	store, _ := store.New(path.Join(config.Path, "mochi.db"))
-	mochi, _ := mochi.New(config.Path, store, d)
-
-	// mochi.CreateConversation("foo", "bar")
+	mochi, _ := mochi.New(config, store, d)
 
 	// construct api server
 	apiServer := api.New(
@@ -195,15 +180,6 @@ func startDaemon(apiPort, tcpPort int) (<-chan bool, error) {
 		"starting http server",
 		log.String("address", apiAddress),
 	)
-
-	// os, _ := d.Store.Filter(
-	// 	sqlobjectstore.FilterByStreamHash(
-	// 		object.Hash("hash:oh1.EPFTTgv9kgNm2smeJoxWzJjiixTV51ea21FjKbepXL8G"),
-	// 	),
-	// )
-
-	// ddd, _ := dot.Dot(os)
-	// fmt.Println(ddd)
 
 	done := make(chan bool)
 	go func() {
