@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/services.dart';
@@ -12,6 +11,9 @@ import 'package:mochi/data/ws_model/conversation_join_request.dart';
 import 'package:mochi/data/ws_model/conversation_start_request.dart';
 import 'package:mochi/data/ws_model/conversation_update_request.dart';
 import 'package:mochi/data/ws_model/conversations_get_request.dart';
+import 'package:mochi/data/ws_model/daemon_info_response.dart';
+import 'package:mochi/data/ws_model/identity_create_request.dart';
+import 'package:mochi/data/ws_model/identity_load_request.dart';
 import 'package:mochi/data/ws_model/message_create_request.dart';
 import 'package:mochi/data/ws_model/messages_get_request.dart';
 import 'package:mochi/data/ws_model/own_profile_get_request.dart';
@@ -295,6 +297,50 @@ class WsDataStore implements DataStore {
     await for (final dynamic message in ws.stream) {
       yield OwnProfile.fromJson(json.decode(message));
     }
+  }
+
+  @override
+  Future<DaemonInfoResponse> daemonInfoGet() async {
+     print("started daemon, resp=" + await MochiMobile.startDaemon());
+     var resp = await http.get(
+      "$daemonApiHttpUrl$daemonApiPort/daemon-info",
+    );
+    DaemonInfoResponse d;
+    try {
+      d = DaemonInfoResponse.fromJson(json.decode(resp.body));
+    } catch (e) {
+      print("error parsing daemon info, msg=" +
+          resp.body +
+          ", err=" +
+          e.toString());
+    }
+    return d;
+  }
+
+  @override
+  Future<void> identityCreate(String nameFirst, nameLast, displayPicture) async {
+    var req = IdentityCreateRequest(
+      displayPicture: displayPicture,
+      nameFirst: nameFirst,
+      nameLast: nameLast,
+    );
+    return await http.post(
+      "$daemonApiHttpUrl$daemonApiPort/identities",
+      body: json.encode(req),
+      headers: {"Content-Type": "application/json"},
+    );
+  }
+
+  @override
+  Future<void> identityLoad(String mnemonic) async {
+    var req = IdentityLoadRequest(
+      mnemonic: mnemonic,
+    );
+    return await http.put(
+      "$daemonApiHttpUrl$daemonApiPort/identities",
+      body: json.encode(req),
+      headers: {"Content-Type": "application/json"},
+    );
   }
 }
 

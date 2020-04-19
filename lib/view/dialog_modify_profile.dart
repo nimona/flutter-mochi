@@ -14,12 +14,17 @@ class UpdateOwnProfileDialog extends StatefulWidget {
     Key key,
     @required this.profile,
     @required this.callback,
+    this.saveButtonText = "Update",
   }) : super(key: key);
 
+  final String saveButtonText;
   final OwnProfile profile;
   final Function(
-          bool update, String nameFirst, String nameLast, String displayPicture)
-      callback;
+    bool update,
+    String nameFirst,
+    String nameLast,
+    String displayPicture,
+  ) callback;
 
   @override
   _UpdateOwnProfileDialogState createState() => _UpdateOwnProfileDialogState();
@@ -114,7 +119,7 @@ class _UpdateOwnProfileDialogState extends State<UpdateOwnProfileDialog> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 RaisedButton(
-                  child: Text("Update"),
+                  child: Text(widget.saveButtonText),
                   onPressed: () {
                     widget.callback(
                       true,

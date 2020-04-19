@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mochi/data/datastore.dart';
+import 'package:mochi/data/ws_model/daemon_info_response.dart';
 import 'package:mochi/data/wsdatastore.dart';
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
@@ -81,5 +82,17 @@ class Repository {
     StreamController<Conversation> sc = new StreamController();
     sc.addStream(_dataStore.getConversations());
     return sc;
+  }
+
+  Future<DaemonInfoResponse> daemonInfoGet() async {
+    return _dataStore.daemonInfoGet();
+  }
+
+  Future<void> identityCreate(String nameFirst, nameLast, displayPicture) async {
+    _dataStore.identityCreate(nameFirst, nameLast, displayPicture);
+  }
+
+  Future<void> identityLoad(String mnemonic) async {
+    _dataStore.identityLoad(mnemonic);
   }
 }
