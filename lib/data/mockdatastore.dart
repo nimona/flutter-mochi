@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:mochi/data/datastore.dart';
+import 'package:mochi/data/ws_model/daemon_info_response.dart';
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/model/fake.dart';
@@ -93,5 +94,20 @@ class MockDataStore implements DataStore {
       nameFirst: "John",
       nameLast: "Doe",
     );
+  }
+
+  @override
+  Future<DaemonInfoResponse> daemonInfoGet() async {
+    return DaemonInfoResponse();
+  }
+
+  @override
+  void identityCreate(String nameFirst, nameLast, displayPicture) async {
+    return;
+  }
+
+  @override
+  void identityLoad(String mnemonic) async {
+    return;
   }
 }

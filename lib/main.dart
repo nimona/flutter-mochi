@@ -4,9 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mochi_mobile/mochi_mobile.dart';
 
-import 'master_detail_layout.dart';
+import 'package:mochi/master_detail_layout.dart';
+import 'package:mochi/view/identity/identity_create.dart';
+import 'package:mochi/view/identity/identity_created.dart';
+import 'package:mochi/view/identity/identity_load.dart';
+import 'package:mochi/view/identity/welcome.dart';
 
 void main() {
   // See https://github.com/flutter/flutter/wiki/Desktop-shells#target-platform-override
@@ -24,6 +27,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Mochi',
       debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => WelcomeScreen(),
+        '/identity-load': (context) => IdentityLoadScreen(),
+        '/identity-create': (context) => IdentityCreateScreen(),
+        '/identity-created': (context) => IdentityCreatedScreen(),
+        '/main': (context) => MasterDetailLayout(),
+      },
       theme: ThemeData(
         textTheme: TextTheme(
           headline1: GoogleFonts.raleway(
@@ -98,7 +109,6 @@ class MyApp extends StatelessWidget {
       //   brightness: Brightness.dark,
       //   primarySwatch: Colors.blue,
       // ),
-      home: MasterDetailLayout(),
     );
   }
 }
