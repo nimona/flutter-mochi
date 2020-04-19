@@ -13,19 +13,20 @@ import (
 	"sync"
 	"time"
 
-	"mochi.io/internal/imgutil"
-
 	notifier "github.com/geoah/go-nimona-notifier"
 	"github.com/tsdtsdtsd/identicon"
+	"github.com/tyler-smith/go-bip39"
 
 	"nimona.io/pkg/context"
 	"nimona.io/pkg/crypto"
 	"nimona.io/pkg/daemon"
+	"nimona.io/pkg/daemon/config"
 	"nimona.io/pkg/net"
 	"nimona.io/pkg/object"
 	"nimona.io/pkg/peer"
 	"nimona.io/pkg/sqlobjectstore"
 
+	"mochi.io/internal/imgutil"
 	"mochi.io/internal/rand"
 	"mochi.io/internal/store"
 )
@@ -55,6 +56,7 @@ func init() {
 // Mochi is the main service that contains business logic
 type Mochi struct {
 	path   string
+	config *config.Config
 	store  *store.Store
 	daemon *daemon.Daemon
 }
@@ -95,9 +97,10 @@ func (m *Mochi) getConversationDisplayPicture(h, dp string) string {
 }
 
 // New returns a new mochi service given a store
-func New(path string, store *store.Store, daemon *daemon.Daemon) (*Mochi, error) {
+func New(cfg *config.Config, store *store.Store, daemon *daemon.Daemon) (*Mochi, error) {
 	m := &Mochi{
-		path:   path,
+		path:   cfg.Path,
+		config: cfg,
 		store:  store,
 		daemon: daemon,
 	}
@@ -535,6 +538,49 @@ func (m *Mochi) UpdateOwnProfile(nameFirst, nameLast, displayPicture string) err
 		}.ToObject())
 	}
 
+	return nil
+}
+
+type DaemonInfo struct {
+	Addresses            []string `json:"addresses"`
+	PeerPublicKey        string   `json:"peerPublicKey"`
+	PeerPrivateKey       string   `json:"peerPrivateKey"`
+	IdentityPublicKey    string   `json:"identityPublicKey"`
+	IdentityPrivateKey   string   `json:"identityPrivateKey"`
+	IdentitySecretPhrase []string `json:"identitySecretPhrase"`
+}
+
+func (m *Mochi) GetDaemonInfo() DaemonInfo {
+	phrase, _ := bip39.NewMnemonic(
+		m.daemon.LocalPeer.GetIdentityPrivateKey().Bytes(),
+	)
+	localPeer := m.daemon.LocalPeer.GetSignedPeer()
+	return DaemonInfo{
+		Addresses:            localPeer.Addresses,
+		PeerPublicKey:        m.daemon.LocalPeer.GetPeerPublicKey().String(),
+		PeerPrivateKey:       m.daemon.LocalPeer.GetPeerPrivateKey().String(),
+		IdentityPublicKey:    m.daemon.LocalPeer.GetIdentityPublicKey().String(),
+		IdentityPrivateKey:   m.daemon.LocalPeer.GetIdentityPrivateKey().String(),
+		IdentitySecretPhrase: strings.Split(phrase, " "),
+	}
+}
+
+func (m *Mochi) IdentityLoad(key crypto.PrivateKey) error {
+	if !m.daemon.LocalPeer.GetIdentityPublicKey().IsEmpty() {
+		return errors.New("an identity already exists")
+	}
+	if err := m.daemon.LocalPeer.AddIdentityKey(key); err != nil {
+		return err
+	}
+	if err := m.store.UpdateOwnProfile(store.OwnProfile{
+		Key: m.daemon.LocalPeer.GetIdentityPublicKey().String(),
+	}); err != nil {
+		return err
+	}
+	m.config.Peer.IdentityKey = key
+	if err := m.config.Update(); err != nil {
+		return err
+	}
 	return nil
 }
 
