@@ -156,6 +156,10 @@ class _MessagesContainer extends State<MessagesContainer> {
               child: new TextField(
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
+                onEditingComplete: () {
+                  var text = _textController.text;
+                  _handleSubmitted(text);
+                },
                 decoration: new InputDecoration.collapsed(
                     hintText: "Send a message..."),
               ),
