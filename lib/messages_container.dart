@@ -34,7 +34,7 @@ class _MessagesContainer extends State<MessagesContainer> {
   void initState() {
     super.initState();
     setState(() {
-//       For the mobile-case where screen is initialised by the constructor
+      // For the mobile-case where screen is initialised by the constructor
       currentConversation = widget.item;
     });
   }
@@ -47,18 +47,16 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isInTabletLayout) {
-      return Scaffold(
-        body: Center(child: _buildMessagesListContainer()),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(currentConversation?.name),
-        ),
-        body: Center(child: _buildMessagesListContainer()),
-      );
-    }
+    return Scaffold(
+      body: Container(
+        child: Column(children: <Widget>[
+          _buildConversationHeader(),
+          Flexible(child: _buildMessagesListContainer()),
+          Divider(height: 1.0),
+          _buildTextComposer(),
+        ]),
+      ),
+    );
   }
 
   Widget _buildMessagesListContainer() {
@@ -83,30 +81,17 @@ class _MessagesContainer extends State<MessagesContainer> {
 
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.waiting) {
-            return new Container(
-              child: new Column(children: <Widget>[
-                _buildConversationHeader(),
-                new Flexible(
-                  child: new Center(
-                      child: Text(
-                    "No messages yet",
-                    style: textTheme.headline6,
-                  )),
-                ),
-              ]),
+            return Center(
+              child: Text(
+                "No messages yet",
+                style: textTheme.headline6,
+              ),
             );
           }
 
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.active) {
-            return new Container(
-              child: new Column(children: <Widget>[
-                _buildConversationHeader(),
-                new Flexible(child: _buildMessagesList(snapshot)),
-                new Divider(height: 1.0),
-                _buildTextComposer(),
-              ]),
-            );
+            return _buildMessagesList(snapshot);
           }
 
           return Container();
