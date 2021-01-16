@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/message.dart';
@@ -52,7 +52,7 @@ class _MessagesContainer extends State<MessagesContainer> {
         child: Column(children: <Widget>[
           _buildConversationHeader(),
           Flexible(child: _buildMessagesListContainer()),
-          Divider(height: 1.0),
+          // Divider(height: 1.0),
           _buildTextComposer(),
         ]),
       ),
@@ -61,6 +61,7 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildMessagesListContainer() {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return StreamBuilder(
         stream: Repository.get()
             .getMessagesForConversation(currentConversation?.hash)
@@ -99,7 +100,10 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   Container _buildConversationHeader() {
-    return new Container(
+    if (currentConversation == null) {
+      return Container();
+    }
+    return Container(
       color: Theme.of(context).cardColor,
       child: ListTile(
         contentPadding: EdgeInsets.all(16.0),
@@ -114,21 +118,16 @@ class _MessagesContainer extends State<MessagesContainer> {
 
   Widget _buildMessagesList(AsyncSnapshot<List<Message>> snapshot) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scrollbar(
       child: ListView(
         reverse: true,
         children: snapshot.data.reversed.map((item) {
-          return ListTile(
-            title: Text(
-              item.sender.nameFirst + " (" + item.hash + ")",
-              maxLines: 1,
-              style: textTheme.caption,
-            ),
-            subtitle: Text(
-              item.body,
-              style: textTheme.bodyText2,
-            ),
+          return SingleMessage(
+            textTheme: textTheme,
+            colorScheme: colorScheme,
+            message: item,
           );
         }).toList(),
       ),
@@ -136,6 +135,10 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   Widget _buildTextComposer() {
+    if (currentConversation == null) {
+      return Container();
+    }
+
     final TextEditingController _textController = new TextEditingController();
 
     void _handleSubmitted(String text) {
@@ -145,33 +148,83 @@ class _MessagesContainer extends State<MessagesContainer> {
       }
     }
 
-    return new Container(
-      margin: EdgeInsets.only(left: 8.0),
-      color: Theme.of(context).cardColor,
-      child: new Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-        child: new Row(
-          children: <Widget>[
-            new Flexible(
-              child: new TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-                onEditingComplete: () {
-                  var text = _textController.text;
-                  _handleSubmitted(text);
-                },
-                decoration: new InputDecoration.collapsed(
-                    hintText: "Send a message..."),
-              ),
+    return Card(
+        elevation: 0,
+        child: new Container(
+          margin: const EdgeInsets.all(10),
+          child: TextField(
+            controller: _textController,
+            onSubmitted: _handleSubmitted,
+            onEditingComplete: () {
+              var text = _textController.text;
+              _handleSubmitted(text);
+            },
+            decoration: new InputDecoration(
+              hintText: "Send a message...",
+              contentPadding: EdgeInsets.all(10),
+              isDense: true,
+              border: InputBorder.none,
             ),
-            new Container(
-              margin: new EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
-                  icon: new Icon(Icons.send),
-                  color: Theme.of(context).accentColor,
-                  onPressed: () => _handleSubmitted(_textController.text)),
+          ),
+        ));
+  }
+}
+
+class SingleMessage extends StatelessWidget {
+  const SingleMessage({
+    Key key,
+    @required this.textTheme,
+    @required this.colorScheme,
+    @required this.message,
+  }) : super(key: key);
+
+  final TextTheme textTheme;
+  final ColorScheme colorScheme;
+  final Message message;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Row(
+        children: [
+          Text(
+            message.sender.nameFirst,
+            style: textTheme.bodyText1,
+            maxLines: 1,
+          ),
+          Text(
+            " · ",
+            style: textTheme.bodyText1,
+            maxLines: 1,
+          ),
+          Text(
+            message.sender.key,
+            style: TextStyle(
+              fontFamily: textTheme.caption.fontFamily,
+              fontSize: textTheme.caption.fontSize,
+              color: colorScheme.primaryVariant,
             ),
-          ],
+            maxLines: 1,
+          ),
+          Text(
+            " · ",
+            style: textTheme.bodyText1,
+            maxLines: 1,
+          ),
+          Text(
+            timeago.format(message.sent),
+            style: textTheme.caption,
+            maxLines: 1,
+          ),
+        ],
+      ),
+      subtitle: Padding(
+        padding: EdgeInsets.only(
+          top: 5,
+        ),
+        child: Text(
+          message.body,
+          style: textTheme.bodyText2,
         ),
       ),
     );
