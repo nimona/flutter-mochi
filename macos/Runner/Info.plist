@@ -30,5 +30,13 @@
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
 	<string>https://mochi.im/artifacts/changelog.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>eoKegOVbucGEFiML2tVchtDa4mmdkofROOAwmWhsp4s=</string>
+	<key>SUScheduledCheckInterval</key>
+	<integer>60</integer>
+	<key>_SUAutomaticallyUpdate</key>
+	<false/>
+	<key>_SUEnableAutomaticChecks</key>
+	<true/>
 </dict>
 </plist>
