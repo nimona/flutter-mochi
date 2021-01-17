@@ -19,5 +19,5 @@ samples, guidance on mobile development, and a full API reference.
 
 ```sh
 ./macos/Pods/Sparkle/bin/generate_appcast ./artifacts \
-    --download-url-prefix https://mochi.im/artifacts/
+    --download-url-prefix https://github.com/nimona/flutter-mochi/releases/download/#{s.version}
 ```
