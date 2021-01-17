@@ -28,15 +28,15 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SUAutomaticallyUpdate</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
 	<key>SUFeedURL</key>
 	<string>https://mochi.im/artifacts/changelog.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>eoKegOVbucGEFiML2tVchtDa4mmdkofROOAwmWhsp4s=</string>
 	<key>SUScheduledCheckInterval</key>
-	<integer>60</integer>
-	<key>_SUAutomaticallyUpdate</key>
-	<false/>
-	<key>_SUEnableAutomaticChecks</key>
-	<true/>
+	<integer>3600</integer>
 </dict>
 </plist>

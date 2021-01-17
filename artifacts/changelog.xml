@@ -20,5 +20,14 @@
             <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.2.2/mochi-v0.2.2.zip" sparkle:version="0.2.2" sparkle:shortVersionString="0.2.2" length="14517113" type="application/octet-stream" sparkle:edSignature="+z/arGKUxmtR4u7fQpslRQhSakFESUYDcsdyyOdObHVH0hUL7JPn86twf+WWPDErQJ0tbLdiDKBMHGm89QA+DQ=="/>
         </item>
+        <item>
+            <title>0.2.3</title>
+            <pubDate>Sun, 17 Jan 2021 16:10:29 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.2.3/mochi-v0.2.3.zip" sparkle:version="0.2.3" sparkle:shortVersionString="0.2.3" length="14194006" type="application/octet-stream" sparkle:edSignature="gHuh9uFGyN9a0xpelHIjUoaND2QkTFPWP/wDZd4Hv7WETq7Wn52uCfEKhTUqmUsbZ05MN/+njEdjbJQ5tRsTBA=="/>
+            <sparkle:deltas>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.2.3/mochi-v0.2.30.2.3-0.2.2.delta" sparkle:version="0.2.3" sparkle:shortVersionString="0.2.3" sparkle:deltaFrom="0.2.2" length="43476" type="application/octet-stream" sparkle:edSignature="IxDyl4edErLYH1HATYOMdR1mYxtlTIT4JpzVLNCH6dU9kMTZRwbBkrEtrE4t6JzJT/L50GJazI9Ie2GjOuZ8CA=="/>
+            </sparkle:deltas>
+        </item>
     </channel>
 </rss>
