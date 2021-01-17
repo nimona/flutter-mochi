@@ -8,5 +8,11 @@
             <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.2.0/mochi-v0.2.0.zip" sparkle:version="0.2.0" sparkle:shortVersionString="0.2.0" length="14193317" type="application/octet-stream"/>
         </item>
+        <item>
+            <title>0.2.1</title>
+            <pubDate>Sun, 17 Jan 2021 12:35:33 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.2.1/mochi-v0.2.1.zip" sparkle:version="0.2.1" sparkle:shortVersionString="0.2.1" length="14193261" type="application/octet-stream"/>
+        </item>
     </channel>
 </rss>
