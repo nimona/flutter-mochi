@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>mochi-v0.0.1</title>
+        <item>
+            <title>0.0.1</title>
+            <pubDate>Sun, 17 Jan 2021 11:41:05 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
+            <enclosure url="https://mochi.im/artifacts/mochi-v0.0.1.zip" sparkle:version="0.0.1" sparkle:shortVersionString="0.0.1" length="14193226" type="application/octet-stream"/>
+        </item>
+        <item>
+            <title>0.0.2</title>
+            <pubDate>Sun, 17 Jan 2021 11:57:29 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
+            <enclosure url="https://mochi.im/artifacts/mochi-v0.0.2.zip" sparkle:version="0.0.2" sparkle:shortVersionString="0.0.2" length="14193315" type="application/octet-stream"/>
+        </item>
+    </channel>
+</rss>

@@ -108,7 +108,7 @@ class _MessagesContainer extends State<MessagesContainer> {
       child: ListTile(
         contentPadding: EdgeInsets.all(16.0),
         title: Text(
-          currentConversation?.name,
+          "# " + currentConversation?.name,
           style: Theme.of(context).textTheme.headline6,
         ),
         subtitle: Text(currentConversation?.topic),
