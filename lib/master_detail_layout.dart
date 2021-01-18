@@ -31,7 +31,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
 
   Widget _buildMobileLayout() {
     return ConversationListContainer(
-      itemSelectedCallback: (item) {
+      conversationSelectedCallback: (item) {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -59,7 +59,7 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           child: Material(
             elevation: 4.0,
             child: ConversationListContainer(
-              itemSelectedCallback: (item) {
+              conversationSelectedCallback: (item) {
                 setState(() {
                   _selectedItem = item;
                   messagesContainer.updateConversation(item);

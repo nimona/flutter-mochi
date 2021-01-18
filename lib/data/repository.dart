@@ -14,11 +14,10 @@ class Repository {
 
   DataStore _dataStore = new MockDataStore();
 
-  Repository._internal() {
-    // init
-  }
+  Repository._internal() {}
 
-  StreamController<List<Message>> getMessagesForConversation(String conversationId) {
+  StreamController<List<Message>> getMessagesForConversation(
+      String conversationId) {
     StreamController<List<Message>> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;

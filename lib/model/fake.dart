@@ -102,11 +102,7 @@ class Fake {
     return Conversation(
       hash: hashString(faker.guid.guid()),
       name: faker.lorem.sentence(),
-      lastMessage: DateTime.now().subtract(Duration(seconds: rng.nextInt(1000))),
       topic: faker.lorem.sentence(),
-      unreadMessagesLatest: messages,
-      unreadMessagesCount: messages.length,
-      displayPicture: "https://picsum.photos/500",
     );
   }
 }

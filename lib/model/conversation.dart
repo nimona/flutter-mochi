@@ -1,22 +1,33 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterapp/model/message.dart';
 
-class Conversation {
+@immutable
+class Conversation extends Equatable {
   final String hash;
   final String name;
   final String topic;
   final String displayPicture;
-  final DateTime lastMessage;
-  final int unreadMessagesCount;
-  final List<Message> unreadMessagesLatest;
+
+  @override
+  List<Object> get props => [hash, name, topic, displayPicture];
 
   Conversation({
     @required this.hash,
     @required this.name,
     this.topic = "",
     this.displayPicture,
-    this.lastMessage,
-    this.unreadMessagesCount = 0,
-    this.unreadMessagesLatest,
   });
+
+  // TodoEntity toEntity() {
+  //   return TodoEntity(task, id, note, complete);
+  // }
+
+  // static Todo fromEntity(TodoEntity entity) {
+  //   return Todo(
+  //     entity.task,
+  //     complete: entity.complete ?? false,
+  //     note: entity.note,
+  //     id: entity.id ?? Uuid().generateV4(),
+  //   );
+  // }
 }
