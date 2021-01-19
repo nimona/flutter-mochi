@@ -1,15 +1,11 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-
 import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/blocs/conversations/conversations_event.dart';
 import 'package:flutterapp/blocs/conversations/conversations_state.dart';
 
 class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
-  final Repository _repository = Repository.get();
-
   ConversationsBloc() : super(ConversationsLoading());
 
   StreamSubscription _conversationsSubscription;
@@ -20,8 +16,12 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   ) async* {
     if (event is LoadConversations) {
       yield* _mapLoadConversationsToState();
-    } else if (event is AddConversation) {
+    }
+    if (event is AddConversation) {
       yield* _mapAddConversationToState(event);
+    }
+    if (event is SelectConversation) {
+      yield* _mapLoadMessagesForConversationToState(event);
     }
   }
 
@@ -41,11 +41,26 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   Stream<ConversationsState> _mapAddConversationToState(
     AddConversation event,
   ) async* {
+    ConversationsLoaded currentState = state;
     final List<Conversation> updatedConversations =
-        List.from((state as ConversationsLoaded).conversations)
-          ..add(event.conversation);
-    yield ConversationsLoaded(updatedConversations);
+        List.from(currentState.conversations)..add(event.conversation);
+    yield ConversationsLoaded(
+      selected: currentState.selected,
+      conversations: updatedConversations,
+    );
     _saveConversations(updatedConversations);
+  }
+
+  Stream<ConversationsState> _mapLoadMessagesForConversationToState(
+    SelectConversation event,
+  ) async* {
+    if (state is ConversationsLoaded) {
+      ConversationsLoaded currentState = state;
+      yield ConversationsLoaded(
+        selected: event.conversation,
+        conversations: currentState.conversations,
+      );
+    }
   }
 
   Future _saveConversations(List<Conversation> conversations) {

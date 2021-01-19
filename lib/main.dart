@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterapp/blocs/conversations/conversations_bloc.dart';
 import 'package:flutterapp/blocs/conversations/conversations_event.dart';
+import 'package:flutterapp/blocs/messages/messages_bloc.dart';
 
 import 'package:flutterapp/blocs/simple_bloc_observer.dart';
 
@@ -19,17 +20,25 @@ void main() {
   }
 
   runApp(
-    BlocProvider(
-      create: (context) {
-        return ConversationsBloc()..add(LoadConversations());
-      },
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<ConversationsBloc>(
+          create: (BuildContext context) {
+            return ConversationsBloc()..add(LoadConversations());
+          },
+        ),
+        BlocProvider<MessagesBloc>(
+          create: (BuildContext context) {
+            return MessagesBloc();
+          },
+        ),
+      ],
       child: MyApp(),
-    )
+    ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     Bloc.observer = SimpleBlocObserver();

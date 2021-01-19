@@ -7,25 +7,20 @@ import 'package:flutterapp/model/fake.dart';
 import 'package:flutterapp/model/message.dart';
 
 class MockDataStore implements DataStore {
-  static List<Message> messageList = [];
-
   @override
-  Stream<List<Message>> getMessagesForConversation(
+  Stream<Message> getMessagesForConversation(
     String conversationId,
   ) async* {
-    var oldMessages = Random().nextInt(500);
-    for (var i = 0; i < oldMessages; i++) {
-      messageList.add(Fake.get().getMessage());
+    for (var i = 0; i < 5; i++) {
+      yield Fake.get().getMessage();
     }
-
     while (true) {
       await Future.delayed(
         Duration(
           milliseconds: Random().nextInt(5000) + 1000,
         ),
       );
-      messageList.add(Fake.get().getMessage());
-      yield messageList;
+      yield Fake.get().getMessage();
     }
   }
 
@@ -39,7 +34,6 @@ class MockDataStore implements DataStore {
       sent: fakeMessage.sent,
       isEdited: fakeMessage.isEdited,
     );
-    messageList.add(message);
     return;
   }
 

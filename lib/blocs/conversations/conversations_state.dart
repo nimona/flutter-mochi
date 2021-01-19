@@ -14,8 +14,9 @@ class ConversationsLoading extends ConversationsState {
 
 class ConversationsLoaded extends ConversationsState {
   final List<Conversation> conversations;
+  final Conversation selected;
 
-  ConversationsLoaded([this.conversations = const []]) : super([conversations]);
+  ConversationsLoaded({this.selected, this.conversations = const []}) : super([selected, conversations]);
 
   @override
   String toString() => 'ConversationsLoaded { conversations: $conversations }';

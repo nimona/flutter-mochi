@@ -1,32 +1,21 @@
-import 'package:flutterapp/blocs/conversations/conversations_bloc.dart';
-import 'package:flutterapp/flutter_todos_keys.dart';
+import 'package:flutterapp/blocs/messages/messages_bloc.dart';
+import 'package:flutterapp/blocs/messages/messages_state.dart';
+import 'package:flutterapp/flutter_messages_keys.dart';
+import 'package:flutterapp/widgets/convesation_landing.dart';
 import 'package:flutterapp/widgets/loading_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:flutterapp/blocs/conversations/conversations_event.dart';
-import 'package:flutterapp/blocs/conversations/conversations_state.dart';
-
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/model/message.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({
     this.isInTabletLayout,
-    this.item,
   });
 
   final bool isInTabletLayout;
-  Conversation item;
 
   final _MessagesContainer state = new _MessagesContainer();
-
-  void updateConversation(Conversation item) {
-    this.item = item;
-    state.updateConversation(item);
-  }
 
   @override
   State<StatefulWidget> createState() {
@@ -35,90 +24,97 @@ class MessagesContainer extends StatefulWidget {
 }
 
 class _MessagesContainer extends State<MessagesContainer> {
-  Conversation currentConversation;
+  MessagesBloc _messagesBloc;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      // For the mobile-case where screen is initialised by the constructor
-      currentConversation = widget.item;
-    });
-  }
-
-  void updateConversation(Conversation conversation) {
-    setState(() {
-      currentConversation = conversation;
-    });
+    _messagesBloc = BlocProvider.of(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Column(children: <Widget>[
-          _buildConversationHeader(),
-          Flexible(child: _buildMessagesListContainer()),
-          // Divider(height: 1.0),
-          _buildTextComposer(),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildMessagesListContainer() {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return StreamBuilder(
-        stream: Repository.get()
-            .getMessagesForConversation(currentConversation?.hash)
-            .stream,
-        initialData: List<Message>(),
-        builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
-          if (currentConversation == null) {
-            return Center(
-                child: Text(
-              'Select conversation',
-              style: textTheme.headline6,
-            ));
-          }
-
-          if (snapshot.hasError) {
-            return Text(snapshot.error);
-          }
-
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Text(
-                "No messages yet",
-                style: textTheme.headline6,
-              ),
-            );
-          }
-
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.active) {
-            return _buildMessagesList(snapshot);
-          }
-
-          return Container();
-        });
-  }
-
-  Container _buildConversationHeader() {
-    if (currentConversation == null) {
-      return Container();
-    }
     return Container(
-      color: Theme.of(context).cardColor,
-      child: ListTile(
-        contentPadding: EdgeInsets.all(16.0),
-        title: Text(
-          currentConversation?.name,
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        subtitle: Text(currentConversation?.topic),
+      child: Column(
+        children: <Widget>[
+          BlocBuilder<MessagesBloc, MessagesState>(
+            builder: (context, state) {
+              if (state is MessagesLoaded) {
+                return Container(
+                  color: Theme.of(context).cardColor,
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16.0),
+                    title: Text(
+                      state.conversation?.name,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(state.conversation?.topic),
+                  ),
+                );
+              }
+              return Container();
+            },
+          ),
+          BlocBuilder<MessagesBloc, MessagesState>(
+            builder: (context, state) {
+              if (state is MessagesInitial) {
+                return ConversationLanding(
+                  "Select a conversation",
+                  "",
+                );
+              }
+              if (state is MessagesNotLoaded) {
+                return ConversationLanding(
+                  "There was an error loading the selected conversation",
+                  "",
+                );
+              }
+              if (state is MessagesLoading) {
+                return LoadingIndicator(
+                  key: FlutterMessagesKeys.progressIndicator,
+                );
+              }
+              if (state is MessagesLoaded) {
+                return Flexible(
+                  child: Scrollbar(
+                    child: ListView.builder(
+                      reverse: true,
+                      itemCount: state.messages.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final pos = state.messages.length - 1 - index;
+                        final message = state.messages[pos];
+                        return SingleMessage(
+                          textTheme: textTheme,
+                          colorScheme: colorScheme,
+                          message: message,
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }
+              return Text("ha, unknown state");
+            },
+          ),
+          BlocBuilder<MessagesBloc, MessagesState>(
+            buildWhen: (MessagesState previous, MessagesState current) {
+              if (previous is MessagesLoaded) {
+                if (current is MessagesLoaded) {
+                  return previous.conversation != current.conversation;
+                }
+              }
+              return true;
+            },
+            builder: (context, state) {
+              if (state is MessagesLoaded) {
+                return _buildTextComposer();
+              }
+              return Container();
+            },
+          ),
+        ],
       ),
     );
   }
@@ -142,16 +138,12 @@ class _MessagesContainer extends State<MessagesContainer> {
   }
 
   Widget _buildTextComposer() {
-    if (currentConversation == null) {
-      return Container();
-    }
-
     final TextEditingController _textController = new TextEditingController();
 
     void _handleSubmitted(String text) {
       _textController.clear();
       if (text.isNotEmpty) {
-        Repository.get().createMessage(currentConversation.hash, text);
+        // Repository.get().createMessage(currentConversation.hash, text);
       }
     }
 

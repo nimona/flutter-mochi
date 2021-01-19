@@ -1,34 +1,32 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterapp/blocs/conversations/conversations_bloc.dart';
+import 'package:flutterapp/blocs/conversations/conversations_event.dart';
 import 'package:flutterapp/blocs/conversations/conversations_state.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/flutter_todos_keys.dart';
-import 'package:flutterapp/model/conversation.dart';
+import 'package:flutterapp/blocs/messages/messages_bloc.dart';
+import 'package:flutterapp/blocs/messages/messages_event.dart';
+import 'package:flutterapp/flutter_conversations_keys.dart';
 import 'package:flutterapp/widgets/loading_indicator.dart';
 
 class ConversationListContainer extends StatefulWidget {
-  ConversationListContainer({
-    this.conversationSelectedCallback,
-    this.selectedItem,
-  });
-
-  ValueChanged<Conversation> conversationSelectedCallback;
-  Conversation selectedItem;
+  ConversationListContainer();
 
   @override
-  _ConversationListContainer createState() =>
-      _ConversationListContainer(conversationSelectedCallback, selectedItem);
+  _ConversationListContainer createState() => _ConversationListContainer();
 }
 
 class _ConversationListContainer extends State<ConversationListContainer> {
-  _ConversationListContainer(
-      this.conversationSelectedCallback, this.selectedItem);
+  _ConversationListContainer();
 
-  ValueChanged<Conversation> conversationSelectedCallback;
-  Conversation selectedItem;
+  MessagesBloc _messagesBloc;
+  ConversationsBloc _conversationsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _messagesBloc = BlocProvider.of(context);
+    _conversationsBloc = BlocProvider.of(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +40,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
           }
           if (state is ConversationsLoaded) {
             return ListView.builder(
-               itemCount: state.conversations.length,
+              itemCount: state.conversations.length,
               itemBuilder: (BuildContext context, int index) {
                 final conversation = state.conversations[index];
                 return ListTile(
@@ -56,8 +54,17 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  onTap: () => conversationSelectedCallback(conversation),
-                  selected: widget.selectedItem == conversation,
+                  onTap: () {
+                    _conversationsBloc.add(SelectConversation(conversation));
+                    _messagesBloc
+                        .add(LoadMessagesForConversation(conversation));
+                  },
+                  selected: () {
+                    if (state.selected == null) {
+                      return false;
+                    }
+                    return state.selected.hash == conversation.hash;
+                  }(),
                   dense: true,
                 );
               },

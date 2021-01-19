@@ -16,9 +16,10 @@ class Repository {
 
   Repository._internal() {}
 
-  StreamController<List<Message>> getMessagesForConversation(
-      String conversationId) {
-    StreamController<List<Message>> sc = new StreamController();
+  StreamController<Message> getMessagesForConversation(
+    String conversationId,
+  ) {
+    StreamController<Message> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;
   }

@@ -26,6 +26,18 @@ class AddConversation extends ConversationsEvent {
   String toString() => 'AddConversation { conversation: $conversation }';
 }
 
+class SelectConversation extends ConversationsEvent {
+  final Conversation conversation;
+
+  SelectConversation(this.conversation) : super([conversation]);
+
+  @override
+  List<Object> get props => [conversation];
+
+  @override
+  String toString() => 'SelectConversation { conversation: $conversation }';
+}
+
 class UpdateConversation extends ConversationsEvent {
   final Conversation updatedConversation;
 

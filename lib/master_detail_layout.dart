@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterapp/blocs/messages/messages_bloc.dart';
+import 'package:flutterapp/blocs/messages/messages_event.dart';
 import 'package:flutterapp/model/conversation.dart';
 
 import 'conversation_list_container.dart';
@@ -10,8 +13,8 @@ class MasterDetailLayout extends StatefulWidget {
 }
 
 class _MasterDetailLayoutState extends State<MasterDetailLayout> {
-  static const int kTabletBreakpoint = 600;
-  Conversation _selectedItem;
+  // TODO bump breakpoint to 600 and fix mobile layout
+  static const int kTabletBreakpoint = 0; 
 
   @override
   Widget build(BuildContext context) {
@@ -30,27 +33,12 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   }
 
   Widget _buildMobileLayout() {
-    return ConversationListContainer(
-      conversationSelectedCallback: (item) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return MessagesContainer(
-                isInTabletLayout: false,
-                item: item,
-              );
-            },
-          ),
-        );
-      },
-    );
+    return ConversationListContainer();
   }
 
   Widget _buildTabletLayout() {
     var messagesContainer = MessagesContainer(
       isInTabletLayout: true,
-      item: _selectedItem,
     );
     return Row(
       children: <Widget>[
@@ -58,20 +46,14 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
           flex: 3,
           child: Material(
             elevation: 4.0,
-            child: ConversationListContainer(
-              conversationSelectedCallback: (item) {
-                setState(() {
-                  _selectedItem = item;
-                  messagesContainer.updateConversation(item);
-                });
-              },
-              selectedItem: _selectedItem,
-            ),
+            child: ConversationListContainer(),
           ),
         ),
         Flexible(
           flex: 7,
-          child: messagesContainer,
+          child: Scaffold(
+            body: messagesContainer,
+          ),
         ),
       ],
     );
