@@ -70,13 +70,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   ) async* {
     if (state is MessagesLoaded) {
       MessagesLoaded currentState = state;
-      final message = Message(
-        body: event.message.body,
-        hash: event.message.hash,
-        senderHash: event.message.senderHash,
+      final message = event.message.copyWith(
         senderNickname: currentState.nicknames[event.message.senderHash],
-        sent: event.message.sent,
-        isEdited: event.message.isEdited,
       );
       final List<Message> updatedMessages = List.from(currentState.messages)
         ..add(message);
@@ -106,13 +101,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         if (message.senderNickname == event.nickname) {
           continue;
         }
-        messages[i] = Message(
-          body: message.body,
-          hash: message.hash,
-          senderHash: message.senderHash,
+        messages[i] = message.copyWith(
           senderNickname: event.nickname,
-          sent: message.sent,
-          isEdited: message.isEdited,
         );
       }
 
