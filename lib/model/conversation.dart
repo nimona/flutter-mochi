@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -7,27 +9,54 @@ class Conversation extends Equatable {
   final String name;
   final String topic;
   final String displayPicture;
-
-  @override
-  List<Object> get props => [hash, name, topic, displayPicture];
-
   Conversation({
-    @required this.hash,
-    @required this.name,
-    this.topic = "",
+    this.hash,
+    this.name,
+    this.topic,
     this.displayPicture,
   });
 
-  // TodoEntity toEntity() {
-  //   return TodoEntity(task, id, note, complete);
-  // }
+  Conversation copyWith({
+    String hash,
+    String name,
+    String topic,
+    String displayPicture,
+  }) {
+    return Conversation(
+      hash: hash ?? this.hash,
+      name: name ?? this.name,
+      topic: topic ?? this.topic,
+      displayPicture: displayPicture ?? this.displayPicture,
+    );
+  }
 
-  // static Todo fromEntity(TodoEntity entity) {
-  //   return Todo(
-  //     entity.task,
-  //     complete: entity.complete ?? false,
-  //     note: entity.note,
-  //     id: entity.id ?? Uuid().generateV4(),
-  //   );
-  // }
+  Map<String, dynamic> toMap() {
+    return {
+      'hash': hash,
+      'name': name,
+      'topic': topic,
+      'displayPicture': displayPicture,
+    };
+  }
+
+  factory Conversation.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+  
+    return Conversation(
+      hash: map['hash'],
+      name: map['name'],
+      topic: map['topic'],
+      displayPicture: map['displayPicture'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Conversation.fromJson(String source) => Conversation.fromMap(json.decode(source));
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object> get props => [hash, name, topic, displayPicture];
 }
