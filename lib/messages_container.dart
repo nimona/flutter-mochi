@@ -61,14 +61,14 @@ class _MessagesContainer extends State<MessagesContainer> {
             builder: (context, state) {
               if (state is MessagesInitial) {
                 return ConversationLanding(
-                  "Select a conversation",
-                  "",
+                  'Select a conversation',
+                  '',
                 );
               }
               if (state is MessagesNotLoaded) {
                 return ConversationLanding(
-                  "There was an error loading the selected conversation",
-                  "",
+                  'There was an error loading the selected conversation',
+                  '',
                 );
               }
               if (state is MessagesLoading) {
@@ -95,7 +95,7 @@ class _MessagesContainer extends State<MessagesContainer> {
                   ),
                 );
               }
-              return Text("ha, unknown state");
+              return Text('ha, unknown state');
             },
           ),
           BlocBuilder<MessagesBloc, MessagesState>(
@@ -159,7 +159,7 @@ class _MessagesContainer extends State<MessagesContainer> {
               _handleSubmitted(text);
             },
             decoration: new InputDecoration(
-              hintText: "Send a message...",
+              hintText: 'Send a message...',
               contentPadding: EdgeInsets.all(10),
               isDense: true,
               border: InputBorder.none,
@@ -184,39 +184,63 @@ class SingleMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Row(
-        children: [
-          Text(
-            message.senderNickname ?? '',
-            style: textTheme.bodyText1,
-            maxLines: 1,
-          ),
-          Text(
-            " · ",
-            style: textTheme.bodyText1,
-            maxLines: 1,
-          ),
-          Text(
-            message.senderHash,
-            style: TextStyle(
-              fontFamily: textTheme.caption.fontFamily,
-              fontSize: textTheme.caption.fontSize,
-              color: colorScheme.primaryVariant,
+      title: () {
+        if (message.senderNickname.isEmpty) {
+          return Row(
+            children: [
+              Text(
+                '[',
+                style: textTheme.caption,
+                maxLines: 1,
+              ),
+              ParticipantPublicKey(
+                message: message,
+                textTheme: textTheme,
+                colorScheme: colorScheme,
+              ),
+              Text(
+                '] · ',
+                style: textTheme.caption,
+                maxLines: 1,
+              ),
+              Text(
+                timeago.format(message.sent),
+                style: textTheme.caption,
+                maxLines: 1,
+              ),
+            ],
+          );
+        }
+        return Row(
+          children: [
+            Text(
+              message.senderNickname ?? '',
+              style: textTheme.bodyText1,
+              maxLines: 1,
             ),
-            maxLines: 1,
-          ),
-          Text(
-            " · ",
-            style: textTheme.bodyText1,
-            maxLines: 1,
-          ),
-          Text(
-            timeago.format(message.sent),
-            style: textTheme.caption,
-            maxLines: 1,
-          ),
-        ],
-      ),
+            Text(
+              ' · [',
+              style: textTheme.caption,
+              maxLines: 1,
+            ),
+            ParticipantPublicKey(
+              message: message,
+              textTheme: textTheme,
+              colorScheme: colorScheme,
+            ),
+            Text(
+              '] · ',
+              style: textTheme.caption,
+              maxLines: 1,
+            ),
+            Text(
+              timeago.format(message.sent),
+              style: textTheme.caption,
+              maxLines: 1,
+            ),
+          ],
+        );
+      }(),
       subtitle: Padding(
         padding: EdgeInsets.only(
           top: 5,
@@ -226,6 +250,32 @@ class SingleMessage extends StatelessWidget {
           style: textTheme.bodyText2,
         ),
       ),
+    );
+  }
+}
+
+class ParticipantPublicKey extends StatelessWidget {
+  const ParticipantPublicKey({
+    Key key,
+    @required this.message,
+    @required this.textTheme,
+    @required this.colorScheme,
+  }) : super(key: key);
+
+  final Message message;
+  final TextTheme textTheme;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    final publicKey =
+        message.senderHash.substring(message.senderHash.length - 8);
+    return Text(
+      publicKey,
+      style: textTheme.caption.copyWith(
+        color: colorScheme.primaryVariant,
+      ),
+      maxLines: 1,
     );
   }
 }
