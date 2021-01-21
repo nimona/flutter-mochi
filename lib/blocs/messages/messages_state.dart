@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/model/conversation.dart';
-
 import 'package:flutterapp/model/message.dart';
 
 @immutable
@@ -31,8 +30,17 @@ class MessagesLoaded extends MessagesState {
 
   Conversation conversation;
   List<Message> messages;
+  Map<String, String> nicknames;
 
-  MessagesLoaded(this.conversation, this.messages) : super([conversation, messages]);
+  MessagesLoaded(
+    this.conversation,
+    this.messages,
+    this.nicknames,
+  ) : super([
+          conversation,
+          messages,
+          nicknames,
+        ]);
 
   @override
   String toString() => 'MessagesLoaded { messages: $messages }';

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutterapp/data/datastore.dart';
 import 'package:flutterapp/data/mockdatastore.dart';
+import 'package:flutterapp/event/nimona_typed.dart';
 import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/message.dart';
 
 class Repository {
   static final Repository _repo = new Repository._internal();
@@ -16,10 +16,10 @@ class Repository {
 
   Repository._internal() {}
 
-  StreamController<Message> getMessagesForConversation(
+  StreamController<NimonaTyped> getMessagesForConversation(
     String conversationId,
   ) {
-    StreamController<Message> sc = new StreamController();
+    StreamController<NimonaTyped> sc = new StreamController();
     sc.addStream(_dataStore.getMessagesForConversation(conversationId));
     return sc;
   }

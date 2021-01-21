@@ -69,10 +69,9 @@ class Fake {
   Message getMessage() {
     return Message(
       body: faker.lorem.sentence(),
-      sender: getProfile(),
+      senderHash: getProfile().key,
       hash: hashString(faker.lorem.sentence()),
       sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))),
-      isEdited: rng.nextBool(),
     );
   }
 

@@ -31,6 +31,29 @@ class AddMessage extends MessagesEvent {
   String toString() => 'AddMessage { message: $message }';
 }
 
+class NicknameChanged extends MessagesEvent {
+  final String senderHash;
+  final String nickname;
+
+  NicknameChanged(
+    this.senderHash,
+    this.nickname,
+  ) : super([
+          senderHash,
+          nickname,
+        ]);
+
+  @override
+  List<Object> get props => [
+        senderHash,
+        nickname,
+      ];
+
+  @override
+  String toString() =>
+      'NicknameChanged { senderHash: $senderHash, nickname: $nickname }';
+}
+
 class UpdateMessage extends MessagesEvent {
   final Message updatedMessage;
 
@@ -40,8 +63,7 @@ class UpdateMessage extends MessagesEvent {
   List<Object> get props => [updatedMessage];
 
   @override
-  String toString() =>
-      'UpdateMessage { updatedMessage: $updatedMessage }';
+  String toString() => 'UpdateMessage { updatedMessage: $updatedMessage }';
 }
 
 class DeleteMessage extends MessagesEvent {

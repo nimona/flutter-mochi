@@ -187,7 +187,7 @@ class SingleMessage extends StatelessWidget {
       title: Row(
         children: [
           Text(
-            message.sender.nameFirst,
+            message.senderNickname ?? '',
             style: textTheme.bodyText1,
             maxLines: 1,
           ),
@@ -197,7 +197,7 @@ class SingleMessage extends StatelessWidget {
             maxLines: 1,
           ),
           Text(
-            message.sender.key,
+            message.senderHash,
             style: TextStyle(
               fontFamily: textTheme.caption.fontFamily,
               fontSize: textTheme.caption.fontSize,

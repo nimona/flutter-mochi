@@ -1,8 +1,8 @@
+import 'package:flutterapp/event/nimona_typed.dart';
 import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/message.dart';
 
 abstract class DataStore {
-  Stream<Message> getMessagesForConversation(String conversationId);
+  Stream<NimonaTyped> getMessagesForConversation(String conversationId);
 
   Stream<Conversation> getConversations();
 
