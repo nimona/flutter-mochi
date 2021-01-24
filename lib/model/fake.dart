@@ -71,7 +71,7 @@ class Fake {
       body: faker.lorem.sentence(),
       senderHash: getProfile().key,
       hash: hashString(faker.lorem.sentence()),
-      sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))),
+      sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))).toIso8601String(),
     );
   }
 

@@ -3,20 +3,20 @@ import 'dart:convert';
 import 'package:flutterapp/event/nimona_medatada.dart';
 import 'package:flutterapp/event/nimona_typed.dart';
 
+final String objectType = 'poc.nimona.io/conversation.MessageAdded';
+
 class ConversationMessageAdded implements NimonaTyped {
   DataM dataM;
   MetadataM metadataM;
-  String typeS;
   String hashS;
   ConversationMessageAdded({
     this.dataM,
     this.metadataM,
-    this.typeS,
     this.hashS,
   });
 
   String type() {
-    return this.typeS;
+    return objectType;
   }
 
   ConversationMessageAdded copyWith({
@@ -28,7 +28,6 @@ class ConversationMessageAdded implements NimonaTyped {
     return ConversationMessageAdded(
       dataM: dataM ?? this.dataM,
       metadataM: metadataM ?? this.metadataM,
-      typeS: typeS ?? this.typeS,
       hashS: hashS ?? this.hashS,
     );
   }
@@ -37,48 +36,44 @@ class ConversationMessageAdded implements NimonaTyped {
     return {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
-      'type:s': typeS,
+      'type:s': objectType,
       'hash:s': hashS,
     };
   }
 
   factory ConversationMessageAdded.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
+
     return ConversationMessageAdded(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      typeS: map['type:s'],
       hashS: map['hash:s'],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ConversationMessageAdded.fromJson(String source) => ConversationMessageAdded.fromMap(json.decode(source));
+  factory ConversationMessageAdded.fromJson(String source) =>
+      ConversationMessageAdded.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'ConversationMessageAdded(dataM: $dataM, metadataM: $metadataM, typeS: $typeS, hashS: $hashS)';
+    return 'ConversationMessageAdded(dataM: $dataM, metadataM: $metadataM, hashS: $hashS)';
   }
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
+
     return o is ConversationMessageAdded &&
-      o.dataM == dataM &&
-      o.metadataM == metadataM &&
-      o.typeS == typeS &&
-      o.hashS == hashS;
+        o.dataM == dataM &&
+        o.metadataM == metadataM &&
+        o.hashS == hashS;
   }
 
   @override
   int get hashCode {
-    return dataM.hashCode ^
-      metadataM.hashCode ^
-      typeS.hashCode ^
-      hashS.hashCode;
+    return dataM.hashCode ^ metadataM.hashCode ^ hashS.hashCode;
   }
 }
 
@@ -109,7 +104,7 @@ class DataM {
 
   factory DataM.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
+
     return DataM(
       bodyS: map['body:s'],
       datetimeS: map['datetime:s'],
@@ -126,10 +121,8 @@ class DataM {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
-    return o is DataM &&
-      o.bodyS == bodyS &&
-      o.datetimeS == datetimeS;
+
+    return o is DataM && o.bodyS == bodyS && o.datetimeS == datetimeS;
   }
 
   @override

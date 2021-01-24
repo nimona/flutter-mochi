@@ -434,6 +434,10 @@
 					"$(PROJECT_DIR)/Flutter/ephemeral",
 					"$(PROJECT_DIR)/Pods/Sparkle",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nimona/nimona.framework/Headers\"",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -576,6 +580,10 @@
 					"$(PROJECT_DIR)/Flutter/ephemeral",
 					"$(PROJECT_DIR)/Pods/Sparkle",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nimona/nimona.framework/Headers\"",
+				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -609,6 +617,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter/ephemeral",
 					"$(PROJECT_DIR)/Pods/Sparkle",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/nimona/nimona.framework/Headers\"",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

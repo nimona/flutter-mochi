@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 class Message extends Equatable {
   final String hash;
   final String body;
-  final DateTime sent;
+  final String sent;
   final String senderHash;
   final String senderNickname;
   final bool isEdited;
@@ -40,7 +40,7 @@ class Message extends Equatable {
     return {
       'hash': hash,
       'body': body,
-      'sent': sent?.millisecondsSinceEpoch,
+      'sent': sent,
       'senderHash': senderHash,
       'senderNickname': senderNickname,
       'isEdited': isEdited,
@@ -53,7 +53,7 @@ class Message extends Equatable {
     return Message(
       hash: map['hash'],
       body: map['body'],
-      sent: DateTime.fromMillisecondsSinceEpoch(map['sent']),
+      sent: map['sent'],
       senderHash: map['senderHash'],
       senderNickname: map['senderNickname'],
       isEdited: map['isEdited'],

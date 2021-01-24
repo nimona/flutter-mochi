@@ -1,5 +1,6 @@
 import 'package:flutterapp/blocs/messages/messages_bloc.dart';
 import 'package:flutterapp/blocs/messages/messages_state.dart';
+import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/flutter_messages_keys.dart';
 import 'package:flutterapp/widgets/convesation_landing.dart';
 import 'package:flutterapp/widgets/loading_indicator.dart';
@@ -50,7 +51,7 @@ class _MessagesContainer extends State<MessagesContainer> {
                       state.conversation?.name,
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                    subtitle: Text(state.conversation?.topic),
+                    subtitle: Text(state.conversation?.name ?? ''),
                   ),
                 );
               }
@@ -109,7 +110,7 @@ class _MessagesContainer extends State<MessagesContainer> {
             },
             builder: (context, state) {
               if (state is MessagesLoaded) {
-                return _buildTextComposer();
+                return _buildTextComposer(state.conversation.hash);
               }
               return Container();
             },
@@ -137,13 +138,13 @@ class _MessagesContainer extends State<MessagesContainer> {
     );
   }
 
-  Widget _buildTextComposer() {
+  Widget _buildTextComposer(String conversationHash) {
     final TextEditingController _textController = new TextEditingController();
 
     void _handleSubmitted(String text) {
       _textController.clear();
       if (text.isNotEmpty) {
-        // Repository.get().createMessage(currentConversation.hash, text);
+        Repository.get().createMessage(conversationHash, text);
       }
     }
 
@@ -204,7 +205,7 @@ class SingleMessage extends StatelessWidget {
                 maxLines: 1,
               ),
               Text(
-                timeago.format(message.sent),
+                message.sent ?? '',
                 style: textTheme.caption,
                 maxLines: 1,
               ),
@@ -234,7 +235,7 @@ class SingleMessage extends StatelessWidget {
               maxLines: 1,
             ),
             Text(
-              timeago.format(message.sent),
+              message.sent ?? '',
               style: textTheme.caption,
               maxLines: 1,
             ),

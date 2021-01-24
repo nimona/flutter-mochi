@@ -5,6 +5,7 @@ import 'package:flutterapp/blocs/conversations/conversations_event.dart';
 import 'package:flutterapp/blocs/conversations/conversations_state.dart';
 import 'package:flutterapp/blocs/messages/messages_bloc.dart';
 import 'package:flutterapp/blocs/messages/messages_event.dart';
+import 'package:flutterapp/data/repository.dart';
 import 'package:flutterapp/flutter_conversations_keys.dart';
 import 'package:flutterapp/widgets/loading_indicator.dart';
 
@@ -31,6 +32,13 @@ class _ConversationListContainer extends State<ConversationListContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Repository.get().createConversation("name", "topic");
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
+      ),
       body: BlocBuilder<ConversationsBloc, ConversationsState>(
         builder: (context, state) {
           if (state is ConversationsLoading) {
@@ -45,12 +53,12 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 final conversation = state.conversations[index];
                 return ListTile(
                   title: Text(
-                    conversation.name,
+                    conversation.name ?? conversation.hash.substring(0, 8),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   subtitle: Text(
-                    conversation.topic,
+                    conversation.hash?.substring(0, 8) ?? '',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -63,7 +71,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     if (state.selected == null) {
                       return false;
                     }
-                    return state.selected.hash == conversation.hash;
+                    // FIX: better to check th .hash
+                    return state.selected.hashCode == conversation.hashCode;
                   }(),
                   dense: true,
                 );

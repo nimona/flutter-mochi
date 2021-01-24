@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutterapp/data/repository.dart';
+import 'package:flutterapp/event/conversation_created.dart';
 import 'package:flutterapp/model/conversation.dart';
 import 'package:flutterapp/blocs/conversations/conversations_event.dart';
 import 'package:flutterapp/blocs/conversations/conversations_state.dart';
@@ -8,7 +9,7 @@ import 'package:flutterapp/blocs/conversations/conversations_state.dart';
 class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   ConversationsBloc() : super(ConversationsLoading());
 
-  StreamSubscription _conversationsSubscription;
+  StreamSubscription<ConversationCreated> _conversationsSubscription;
 
   @override
   Stream<ConversationsState> mapEventToState(
@@ -31,7 +32,13 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       _conversationsSubscription = Repository.get()
           .getConversations()
           .stream
-          .listen((conversation) => add(AddConversation(conversation)));
+          .listen((ConversationCreated event) {
+        final Conversation conversation = Conversation(
+          hash: event.hashS,
+          name: event.dataM.nonceS,
+        );
+        this.add(AddConversation(conversation));
+      });
       yield ConversationsLoaded();
     } catch (_) {
       yield ConversationsNotLoaded();

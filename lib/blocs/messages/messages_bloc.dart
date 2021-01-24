@@ -37,15 +37,14 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
           .getMessagesForConversation(event.conversation.hash)
           .stream
           .listen((event) {
-        print(event.toString());
         if (event is ConversationMessageAdded) {
           add(
             AddMessage(
               Message(
                 body: event.dataM.bodyS,
-                hash: event.hashCode.toString(), // TODO use proper hash
+                hash: event.hashS ?? event.hashCode.toString(),
                 senderHash: event.metadataM.ownerS,
-                sent: DateTime.parse(event.dataM.datetimeS),
+                sent: event.dataM.datetimeS,
                 senderNickname: "",
               ),
             ),

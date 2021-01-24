@@ -1,5 +1,6 @@
 name: flutterapp
 description: A new Flutter application.
+publish_to: none
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -27,6 +28,9 @@ dependencies:
   equatable: ^1.2.5
   bloc: ^6.1.1
   flutter_bloc: ^6.1.1
+  uuid: ^2.2.2
+  nimona:
+    path: ../flutter-nimona
 
 dev_dependencies:
   flutter_test:

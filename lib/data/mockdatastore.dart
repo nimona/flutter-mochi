@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutterapp/data/datastore.dart';
+import 'package:flutterapp/event/conversation_created.dart';
 import 'package:flutterapp/event/nimona_typed.dart';
 import 'package:flutterapp/event/utils.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/fake.dart';
 
 final List<String> mockEvents = [
-  // '{"data:m":{"nonce:s":"hello-world!!1"},"metadata:m":{},"type:s":"stream:poc.nimona.io/conversation"}',
+  '{"data:m":{"nonce:s":"hello-world!!1"},"metadata:m":{},"type:s":"stream:poc.nimona.io/conversation","_hash:s":"oh1.2rA8iDpuVpTS3WDeG7LLQWGUtzrgw9xHgGAVHPafnCTo"}',
+];
+
+final List<String> mockConversationEvents = [
   // '{"data:m":{"expiry:s":"","rootHashes:ar":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"]},"metadata:m":{"owner:s":"ed25519.DrKSCKD8HXXiDkGjhYYz54ihtGco4EHHUfzQ5Fp5r6Qv","parents:as":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"],"stream:s":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"nimona.io/stream.Subscription"}',
   '{"data:m":{"body:s":"a. hello world","datetime:s":"2021-01-20T22:36:56Z"},"metadata:m":{"_signature:m":{"alg:s":"OH_ES256","signer:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","x:d":"LD3O1BVnf3qv3ZwbajlpTcOQMwXbYx2oLoN/Gb+7jVane3NvylJcCOM1Yo6WiAJ7NuLViUUDVhK8VKD/p/uhCg=="},"owner:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","parents:as":["oh1.Hc87Lz67wW9qL391hjAPaSQmxDQdb5Ug8ki6hg1XJ5VQ"],"stream:s":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"poc.nimona.io/conversation.MessageAdded"}',
   // '{"data:m":{"expiry:s":"","rootHashes:ar":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"]},"metadata:m":{"_signature:m":{"alg:s":"OH_ES256","signer:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","x:d":"mkb/iRn5B+H/vulye8kC3J/lr5TwOPPDnkCwr0DzpjNa8/ppvbLtZmdQwcakC65UOd+x//hyD31+Fw/KNxZjCw=="},"owner:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","parents:as":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"],"stream:s":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"nimona.io/stream.Subscription"}',
@@ -24,10 +26,37 @@ final List<String> mockEvents = [
 
 class MockDataStore implements DataStore {
   @override
+  Stream<ConversationCreated> getConversations() async* {
+    for (var eventBody in mockEvents) {
+      try {
+        await Future.delayed(
+          Duration(
+            milliseconds: Random().nextInt(5000) + 1000,
+          ),
+        );
+        // print("GOT STRING "+eventBody);
+        final ConversationCreated event = ConversationCreated.fromJson(eventBody);
+        // print("GOT EVENT "+event.toString());
+        // if (event is ConversationCreated) {
+          yield event;
+        // }
+      } catch (e) {
+        // TODO log error
+        print("ERROR unmarshaling conversationCreated object, err=" + e.toString());
+      }
+    }
+  }
+
+  @override
+  Future<void> createConversation(String name, String topic) async {
+    return;
+  }
+
+  @override
   Stream<NimonaTyped> getMessagesForConversation(
     String conversationId,
   ) async* {
-    for (var eventBody in mockEvents) {
+    for (var eventBody in mockConversationEvents) {
       try {
         await Future.delayed(
           Duration(
@@ -44,15 +73,7 @@ class MockDataStore implements DataStore {
   }
 
   @override
-  void createMessage(String conversationHash, String body) {
+  Future<void> createMessage(String conversationHash, String body) async {
     return;
-  }
-
-  @override
-  Stream<Conversation> getConversations() async* {
-    for (var i = 0; i < 5; i++) {
-      await Future.delayed(Duration(milliseconds: Random().nextInt(2500)));
-      yield Fake.get().getConversation();
-    }
   }
 }

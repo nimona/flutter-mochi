@@ -27,7 +27,7 @@ class MetadataM {
   Map<String, dynamic> toMap() {
     return {
       'owner:s': ownerS,
-      'parents:as': parentsAs,
+      // 'parents:as': parentsAs,
       'stream:s': streamS,
     };
   }
@@ -37,7 +37,7 @@ class MetadataM {
   
     return MetadataM(
       ownerS: map['owner:s'],
-      parentsAs: List<String>.from(map['parents:as']),
+      // parentsAs: List<String>.from(map['parents:as']),
       streamS: map['stream:s'],
     );
   }
