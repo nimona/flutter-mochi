@@ -77,13 +77,3 @@ class DeleteMessage extends MessagesEvent {
   @override
   String toString() => 'DeleteMessage { message: $message }';
 }
-
-class ClearMessages extends MessagesEvent {
-  ClearMessages() : super([]);
-
-  @override
-  List<Object> get props => [];
-
-  @override
-  String toString() => 'ClearMessages';
-}

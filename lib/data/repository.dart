@@ -39,26 +39,22 @@ class Repository {
     return _dataStore.createConversation(name, topic);
   }
 
-  StreamController<NimonaTyped> subscribeToMessagesForConversation(
+  Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(
     String conversationId,
-  ) {
-    StreamController<NimonaTyped> sc = new StreamController();
-    sc.addStream(_dataStore.subscribeToMessagesForConversation(conversationId));
-    return sc;
+  ) async {
+    return await _dataStore.subscribeToMessagesForConversation(conversationId);
   }
 
-  StreamController<NimonaTyped> getMessagesForConversation(
+  Future<StreamController<NimonaTyped>> getMessagesForConversation(
     String conversationId,
     int limit,
     int offset,
-  ) {
-    StreamController<NimonaTyped> sc = new StreamController();
-    sc.addStream(_dataStore.getMessagesForConversation(
+  ) async {
+    return await _dataStore.getMessagesForConversation(
       conversationId,
       limit,
       offset,
-    ));
-    return sc;
+    );
   }
 
   Future<void> createMessage(String conversationHash, String body) {

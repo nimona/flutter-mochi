@@ -79,11 +79,11 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
-  Stream<NimonaTyped> getMessagesForConversation(
+  Future<StreamController<NimonaTyped>> getMessagesForConversation(
     String conversationId,
     int limit,
     int offset,
-  ) async* {
+  ) async {
     GetRequest req = GetRequest(
       limit: limit,
       offset: offset,
@@ -92,35 +92,45 @@ class NimonaDataStore implements DataStore {
       orderDir: 'ASC',
     );
     final subKey = await Nimona.get(req);
+    var ctrl = StreamController<NimonaTyped>(
+      onCancel: () async {
+        print("___calling cancel"+subKey);
+        await Nimona.cancel(subKey);
+      },
+    );
     Stream<String> sub = Nimona.pop(subKey);
-    await for (final objectBody in sub) {
+    sub.listen((objectBody) {
       try {
-        // print('GOT ConversationCreated ' + objectBody);
         final NimonaTyped object = unmarshal(objectBody);
-        yield object;
+        ctrl.add(object);
       } catch (e) {
-        // TODO log error
         print('ERROR unmarshaling typed message object, err=' + e.toString());
       }
-    }
+    });
+    return ctrl;
   }
 
   @override
-  Stream<NimonaTyped> subscribeToMessagesForConversation(
+  Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(
     String conversationId,
-  ) async* {
+  ) async {
     final subKey = await Nimona.subscribe('stream:' + conversationId);
+    var ctrl = StreamController<NimonaTyped>(
+      onCancel: () async {
+        print("___calling cancel"+subKey);
+        await Nimona.cancel(subKey);
+      },
+    );
     Stream<String> sub = Nimona.pop(subKey);
-    await for (final objectBody in sub) {
+    sub.listen((objectBody) {
       try {
-        // print('GOT ConversationCreated ' + objectBody);
         final NimonaTyped object = unmarshal(objectBody);
-        yield object;
+        ctrl.add(object);
       } catch (e) {
-        // TODO log error
         print('ERROR unmarshaling typed message object, err=' + e.toString());
       }
-    }
+    });
+    return ctrl;
   }
 
   @override

@@ -10,8 +10,8 @@ import 'package:flutterapp/blocs/messages/messages_state.dart';
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   MessagesBloc() : super(MessagesInitial());
 
-  StreamSubscription _streamSubscription;
-  StreamSubscription _streamGet;
+  StreamController _subCtrl;
+  StreamController _getCtrl;
 
   @override
   Stream<MessagesState> mapEventToState(
@@ -23,8 +23,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       yield* _mapAddMessageToState(event);
     } else if (event is NicknameChanged) {
       yield* _mapNicknameChangesToState(event);
-    } else if (event is ClearMessages) {
-      yield* _mapClearMessageFromState();
     }
   }
 
@@ -34,6 +32,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     try {
       yield MessagesLoaded(event.conversation, [], {});
       var handler = (event) {
+        print("+++++" + event.toString());
         if (event is ConversationMessageAdded) {
           add(
             AddMessage(
@@ -56,16 +55,17 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
           );
         }
       };
-      _streamSubscription?.cancel();
-      _streamGet?.cancel();
-      _streamSubscription = Repository.get()
-          .subscribeToMessagesForConversation(event.conversation.hash)
-          .stream
-          .listen(handler);
-      _streamGet = Repository.get()
-          .getMessagesForConversation(event.conversation.hash, 100, 0)
-          .stream
-          .listen(handler);
+      // close old controllers
+      _subCtrl?.close();
+      _getCtrl?.close();
+      // start listening for new events
+      _subCtrl = await Repository.get()
+          .subscribeToMessagesForConversation(event.conversation.hash);
+      _subCtrl.stream.listen(handler);
+      // get old events
+      _getCtrl = await Repository.get()
+          .getMessagesForConversation(event.conversation.hash, 100, 0);
+      _getCtrl.stream.listen(handler);
     } catch (err) {
       yield MessagesNotLoaded();
     }
@@ -117,14 +117,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         messages,
         nicknames,
       );
-    }
-  }
-
-  Stream<MessagesState> _mapClearMessageFromState() async* {
-    if (state is MessagesLoaded) {
-      _streamSubscription?.cancel();
-      _streamGet?.cancel();
-      List.from((state as MessagesLoaded).messages)..clear();
     }
   }
 }

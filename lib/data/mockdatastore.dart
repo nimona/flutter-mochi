@@ -61,30 +61,30 @@ class MockDataStore implements DataStore {
   }
 
   @override
-  Stream<NimonaTyped> getMessagesForConversation(
+  Future<StreamController<NimonaTyped>> getMessagesForConversation(
     String conversationId,
     int limit,
     int offset,
   ) {}
 
   @override
-  Stream<NimonaTyped> subscribeToMessagesForConversation(
+  Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(
     String conversationId,
-  ) async* {
-    for (var eventBody in mockConversationEvents) {
-      try {
-        await Future.delayed(
-          Duration(
-            milliseconds: Random().nextInt(5000) + 1000,
-          ),
-        );
-        final event = unmarshal(eventBody);
-        yield event;
-      } catch (e) {
-        // TODO log error
-        print("ERROR unmarshaling typed object, err=" + e.toString());
-      }
-    }
+  ) {
+    // for (var eventBody in mockConversationEvents) {
+    //   try {
+    //     await Future.delayed(
+    //       Duration(
+    //         milliseconds: Random().nextInt(5000) + 1000,
+    //       ),
+    //     );
+    //     final event = unmarshal(eventBody);
+    //     yield event;
+    //   } catch (e) {
+    //     // TODO log error
+    //     print("ERROR unmarshaling typed object, err=" + e.toString());
+    //   }
+    // }
   }
 
   @override
