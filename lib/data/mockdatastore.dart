@@ -26,7 +26,13 @@ final List<String> mockConversationEvents = [
 
 class MockDataStore implements DataStore {
   @override
-  Stream<ConversationCreated> getConversations() async* {
+  Stream<ConversationCreated> getConversations(
+    int limit,
+    int offset,
+  ) {}
+
+  @override
+  Stream<ConversationCreated> subscribeToConversations() async* {
     for (var eventBody in mockEvents) {
       try {
         await Future.delayed(
@@ -35,14 +41,16 @@ class MockDataStore implements DataStore {
           ),
         );
         // print("GOT STRING "+eventBody);
-        final ConversationCreated event = ConversationCreated.fromJson(eventBody);
+        final ConversationCreated event =
+            ConversationCreated.fromJson(eventBody);
         // print("GOT EVENT "+event.toString());
         // if (event is ConversationCreated) {
-          yield event;
+        yield event;
         // }
       } catch (e) {
         // TODO log error
-        print("ERROR unmarshaling conversationCreated object, err=" + e.toString());
+        print("ERROR unmarshaling conversationCreated object, err=" +
+            e.toString());
       }
     }
   }
@@ -54,6 +62,13 @@ class MockDataStore implements DataStore {
 
   @override
   Stream<NimonaTyped> getMessagesForConversation(
+    String conversationId,
+    int limit,
+    int offset,
+  ) {}
+
+  @override
+  Stream<NimonaTyped> subscribeToMessagesForConversation(
     String conversationId,
   ) async* {
     for (var eventBody in mockConversationEvents) {

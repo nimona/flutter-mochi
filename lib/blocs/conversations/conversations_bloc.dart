@@ -10,6 +10,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   ConversationsBloc() : super(ConversationsLoading());
 
   StreamSubscription<ConversationCreated> _conversationsSubscription;
+  StreamSubscription<ConversationCreated> _conversationsGet;
 
   @override
   Stream<ConversationsState> mapEventToState(
@@ -29,16 +30,22 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   Stream<ConversationsState> _mapLoadConversationsToState() async* {
     try {
       await _conversationsSubscription?.cancel();
-      _conversationsSubscription = Repository.get()
-          .getConversations()
-          .stream
-          .listen((ConversationCreated event) {
+      await _conversationsGet?.cancel();
+      var handler = (ConversationCreated event) {
         final Conversation conversation = Conversation(
           hash: event.hashS,
           name: event.dataM.nonceS,
         );
         this.add(AddConversation(conversation));
-      });
+      };
+      _conversationsSubscription = Repository.get()
+          .subscribeToConversations()
+          .stream
+          .listen(handler);
+      _conversationsGet = Repository.get()
+          .getConversations(100, 0)
+          .stream
+          .listen(handler);
       yield ConversationsLoaded();
     } catch (_) {
       yield ConversationsNotLoaded();

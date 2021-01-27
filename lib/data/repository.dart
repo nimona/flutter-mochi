@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutterapp/data/datastore.dart';
-import 'package:flutterapp/data/mockdatastore.dart';
 import 'package:flutterapp/data/nimonadatastore.dart';
 import 'package:flutterapp/event/conversation_created.dart';
 import 'package:flutterapp/event/nimona_typed.dart';
@@ -18,9 +17,21 @@ class Repository {
 
   Repository._internal() {}
 
-  StreamController<ConversationCreated> getConversations() {
+  StreamController<ConversationCreated> getConversations(
+    int limit,
+    int offset,
+  ) {
     StreamController<ConversationCreated> sc = new StreamController();
-    sc.addStream(_dataStore.getConversations());
+    sc.addStream(_dataStore.getConversations(
+      limit,
+      offset,
+    ));
+    return sc;
+  }
+
+  StreamController<ConversationCreated> subscribeToConversations() {
+    StreamController<ConversationCreated> sc = new StreamController();
+    sc.addStream(_dataStore.subscribeToConversations());
     return sc;
   }
 
@@ -28,11 +39,25 @@ class Repository {
     return _dataStore.createConversation(name, topic);
   }
 
-  StreamController<NimonaTyped> getMessagesForConversation(
+  StreamController<NimonaTyped> subscribeToMessagesForConversation(
     String conversationId,
   ) {
     StreamController<NimonaTyped> sc = new StreamController();
-    sc.addStream(_dataStore.getMessagesForConversation(conversationId));
+    sc.addStream(_dataStore.subscribeToMessagesForConversation(conversationId));
+    return sc;
+  }
+
+  StreamController<NimonaTyped> getMessagesForConversation(
+    String conversationId,
+    int limit,
+    int offset,
+  ) {
+    StreamController<NimonaTyped> sc = new StreamController();
+    sc.addStream(_dataStore.getMessagesForConversation(
+      conversationId,
+      limit,
+      offset,
+    ));
     return sc;
   }
 

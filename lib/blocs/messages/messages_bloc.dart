@@ -10,7 +10,8 @@ import 'package:flutterapp/blocs/messages/messages_state.dart';
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   MessagesBloc() : super(MessagesInitial());
 
-  StreamSubscription _eventSubscription;
+  StreamSubscription _streamSubscription;
+  StreamSubscription _streamGet;
 
   @override
   Stream<MessagesState> mapEventToState(
@@ -32,11 +33,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   ) async* {
     try {
       yield MessagesLoaded(event.conversation, [], {});
-      _eventSubscription?.cancel();
-      _eventSubscription = Repository.get()
-          .getMessagesForConversation(event.conversation.hash)
-          .stream
-          .listen((event) {
+      var handler = (event) {
         if (event is ConversationMessageAdded) {
           add(
             AddMessage(
@@ -44,7 +41,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
                 body: event.dataM.bodyS,
                 hash: event.hashS ?? event.hashCode.toString(),
                 senderHash: event.metadataM.ownerS,
-                sent: event.dataM.datetimeS,
+                sent: event.metadataM.datetimeS,
                 senderNickname: "",
               ),
             ),
@@ -58,7 +55,17 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
             ),
           );
         }
-      });
+      };
+      _streamSubscription?.cancel();
+      _streamGet?.cancel();
+      _streamSubscription = Repository.get()
+          .subscribeToMessagesForConversation(event.conversation.hash)
+          .stream
+          .listen(handler);
+      _streamGet = Repository.get()
+          .getMessagesForConversation(event.conversation.hash, 100, 0)
+          .stream
+          .listen(handler);
     } catch (err) {
       yield MessagesNotLoaded();
     }
@@ -115,7 +122,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
 
   Stream<MessagesState> _mapClearMessageFromState() async* {
     if (state is MessagesLoaded) {
-      _eventSubscription?.cancel();
+      _streamSubscription?.cancel();
+      _streamGet?.cancel();
       List.from((state as MessagesLoaded).messages)..clear();
     }
   }
