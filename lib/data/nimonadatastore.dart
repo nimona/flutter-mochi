@@ -25,17 +25,14 @@ class NimonaDataStore implements DataStore {
       orderBy: 'MetadataDatetime',
       orderDir: 'ASC',
     );
-    final subKey = await Nimona.get(req);
-    Stream<String> sub = Nimona.pop(subKey);
-    await for (final objectBody in sub) {
+    final objectBodies = await Nimona.get(req);
+    for (final objectBody in objectBodies) {
       try {
-        // print('GOT ConversationCreated ' + objectBody);
         final NimonaTyped object = unmarshal(objectBody);
         if (object is conversation_created.ConversationCreated) {
           yield object;
         }
       } catch (e) {
-        // TODO log error
         print('ERROR unmarshaling typed message object, err=' + e.toString());
       }
     }
@@ -49,9 +46,7 @@ class NimonaDataStore implements DataStore {
     Stream<String> sub = Nimona.pop(subKey);
     await for (final objectBody in sub) {
       try {
-        // print('GOT ConversationCreated ' + objectBody);
         final NimonaTyped object = unmarshal(objectBody);
-        // print('UNMARSHALED ConversationCreated ' + object.toString());
         if (object is conversation_created.ConversationCreated) {
           yield object;
         }
@@ -91,22 +86,16 @@ class NimonaDataStore implements DataStore {
       orderBy: 'MetadataDatetime',
       orderDir: 'ASC',
     );
-    final subKey = await Nimona.get(req);
-    var ctrl = StreamController<NimonaTyped>(
-      onCancel: () async {
-        print("___calling cancel"+subKey);
-        await Nimona.cancel(subKey);
-      },
-    );
-    Stream<String> sub = Nimona.pop(subKey);
-    sub.listen((objectBody) {
+    final objectBodies = await Nimona.get(req);
+    var ctrl = StreamController<NimonaTyped>();
+    for (final objectBody in objectBodies) {
       try {
         final NimonaTyped object = unmarshal(objectBody);
         ctrl.add(object);
       } catch (e) {
         print('ERROR unmarshaling typed message object, err=' + e.toString());
       }
-    });
+    };
     return ctrl;
   }
 
@@ -117,7 +106,6 @@ class NimonaDataStore implements DataStore {
     final subKey = await Nimona.subscribe('stream:' + conversationId);
     var ctrl = StreamController<NimonaTyped>(
       onCancel: () async {
-        print("___calling cancel"+subKey);
         await Nimona.cancel(subKey);
       },
     );

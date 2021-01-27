@@ -40,13 +40,9 @@ class MockDataStore implements DataStore {
             milliseconds: Random().nextInt(5000) + 1000,
           ),
         );
-        // print("GOT STRING "+eventBody);
         final ConversationCreated event =
             ConversationCreated.fromJson(eventBody);
-        // print("GOT EVENT "+event.toString());
-        // if (event is ConversationCreated) {
         yield event;
-        // }
       } catch (e) {
         // TODO log error
         print("ERROR unmarshaling conversationCreated object, err=" +

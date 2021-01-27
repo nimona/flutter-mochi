@@ -32,7 +32,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     try {
       yield MessagesLoaded(event.conversation, [], {});
       var handler = (event) {
-        print("+++++" + event.toString());
         if (event is ConversationMessageAdded) {
           add(
             AddMessage(
