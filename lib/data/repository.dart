@@ -15,7 +15,9 @@ class Repository {
   // DataStore _dataStore = new MockDataStore();
   DataStore _dataStore = new NimonaDataStore();
 
-  Repository._internal() {}
+  Repository._internal() {
+    _dataStore.init();
+  }
 
   StreamController<ConversationCreated> getConversations(
     int limit,

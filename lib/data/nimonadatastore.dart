@@ -14,6 +14,15 @@ import 'package:uuid/uuid.dart';
 
 class NimonaDataStore implements DataStore {
   @override
+  Future<void> init() async {
+    try {
+      await Nimona.init();
+    } catch (e) {
+      print('ERROR initializing, err=' + e.toString());
+    }
+  }
+
+  @override
   Stream<conversation_created.ConversationCreated> getConversations(
     int limit,
     int offset,
