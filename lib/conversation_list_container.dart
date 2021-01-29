@@ -31,10 +31,19 @@ class _ConversationListContainer extends State<ConversationListContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _textController = new TextEditingController();
+
+    void _handleSubmitted(String text) {
+      _textController.clear();
+      if (text.isNotEmpty) {
+        Repository.get().joinConversation(text);
+      }
+    }
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Repository.get().createConversation("name", "topic");
+          Repository.get().createConversation('name', 'topic');
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.green,
@@ -47,36 +56,65 @@ class _ConversationListContainer extends State<ConversationListContainer> {
             );
           }
           if (state is ConversationsLoaded) {
-            return ListView.builder(
-              itemCount: state.conversations.length,
-              itemBuilder: (BuildContext context, int index) {
-                final conversation = state.conversations[index];
-                return ListTile(
-                  title: Text(
-                    conversation.name ?? conversation.hash.substring(0, 8),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Card(
+                    elevation: 0,
+                    child: new Container(
+                      margin: const EdgeInsets.all(10),
+                      child: TextField(
+                        controller: _textController,
+                        onSubmitted: _handleSubmitted,
+                        onEditingComplete: () {
+                          var text = _textController.text;
+                          _handleSubmitted(text);
+                        },
+                        decoration: new InputDecoration(
+                          hintText: 'Join conversation...',
+                          contentPadding: EdgeInsets.all(10),
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
                   ),
-                  subtitle: Text(
-                    conversation.hash?.substring(0, 8) ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: state.conversations.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final conversation = state.conversations[index];
+                      return ListTile(
+                        title: Text(
+                          conversation.name ?? conversation.hash.substring(0, 8),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          conversation.hash?.substring(0, 8) ?? '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () {
+                          _conversationsBloc
+                              .add(SelectConversation(conversation));
+                          _messagesBloc
+                              .add(LoadMessagesForConversation(conversation));
+                        },
+                        selected: () {
+                          if (state.selected == null) {
+                            return false;
+                          }
+                          // FIX: better to check th .hash
+                          return state.selected.hashCode == conversation.hashCode;
+                        }(),
+                        dense: true,
+                      );
+                    },
                   ),
-                  onTap: () {
-                    _conversationsBloc.add(SelectConversation(conversation));
-                    _messagesBloc
-                        .add(LoadMessagesForConversation(conversation));
-                  },
-                  selected: () {
-                    if (state.selected == null) {
-                      return false;
-                    }
-                    // FIX: better to check th .hash
-                    return state.selected.hashCode == conversation.hashCode;
-                  }(),
-                  dense: true,
-                );
-              },
+                ],
+              ),
             );
           }
         },

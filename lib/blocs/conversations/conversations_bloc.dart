@@ -62,7 +62,6 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       selected: currentState.selected,
       conversations: updatedConversations,
     );
-    _saveConversations(updatedConversations);
   }
 
   Stream<ConversationsState> _mapLoadMessagesForConversationToState(
@@ -75,9 +74,5 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
         conversations: currentState.conversations,
       );
     }
-  }
-
-  Future _saveConversations(List<Conversation> conversations) {
-    // TODO put conversation to repository
   }
 }

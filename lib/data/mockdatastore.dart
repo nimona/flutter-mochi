@@ -27,7 +27,12 @@ final List<String> mockConversationEvents = [
 class MockDataStore implements DataStore {
   @override
   Future<void> init() async {}
-  
+
+  @override
+  Future<void> joinConversation(
+    String conversationRootHash,
+  ) async {}
+
   @override
   Stream<ConversationCreated> getConversations(
     int limit,

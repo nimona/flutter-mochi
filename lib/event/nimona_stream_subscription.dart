@@ -5,32 +5,29 @@ import 'package:flutter/foundation.dart';
 import 'package:flutterapp/event/nimona_medatada.dart';
 import 'package:flutterapp/event/nimona_typed.dart';
 
-class ConversationSubscription implements NimonaTyped {
+class StreamSubscription implements NimonaTyped {
   DataM dataM;
   MetadataM metadataM;
-  String typeS;
   String hashS;
-  ConversationSubscription({
+  StreamSubscription({
     this.dataM,
     this.metadataM,
-    this.typeS,
     this.hashS,
   });
 
   String type() {
-    return this.typeS;
+    return 'nimona.io/stream.Subscription';
   }
 
-  ConversationSubscription copyWith({
+  StreamSubscription copyWith({
     DataM dataM,
     MetadataM metadataM,
     String typeS,
     String hashS,
   }) {
-    return ConversationSubscription(
+    return StreamSubscription(
       dataM: dataM ?? this.dataM,
       metadataM: metadataM ?? this.metadataM,
-      typeS: typeS ?? this.typeS,
       hashS: hashS ?? this.hashS,
     );
   }
@@ -39,39 +36,37 @@ class ConversationSubscription implements NimonaTyped {
     return {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
-      'type:s': typeS,
+      'type:s': type(),
       'hash:s': hashS,
     };
   }
 
-  factory ConversationSubscription.fromMap(Map<String, dynamic> map) {
+  factory StreamSubscription.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
   
-    return ConversationSubscription(
+    return StreamSubscription(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      typeS: map['type:s'],
       hashS: map['hash:s'],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ConversationSubscription.fromJson(String source) => ConversationSubscription.fromMap(json.decode(source));
+  factory StreamSubscription.fromJson(String source) => StreamSubscription.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'ConversationSubscription(dataM: $dataM, metadataM: $metadataM, typeS: $typeS, hashS: $hashS)';
+    return 'StreamSubscription(dataM: $dataM, metadataM: $metadataM, hashS: $hashS)';
   }
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
   
-    return o is ConversationSubscription &&
+    return o is StreamSubscription &&
       o.dataM == dataM &&
       o.metadataM == metadataM &&
-      o.typeS == typeS &&
       o.hashS == hashS;
   }
 
@@ -79,7 +74,6 @@ class ConversationSubscription implements NimonaTyped {
   int get hashCode {
     return dataM.hashCode ^
       metadataM.hashCode ^
-      typeS.hashCode ^
       hashS.hashCode;
   }
 }

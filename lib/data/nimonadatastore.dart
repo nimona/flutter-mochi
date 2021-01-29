@@ -6,6 +6,7 @@ import 'package:flutterapp/event/conversation_created.dart'
 import 'package:flutterapp/event/conversation_message_added.dart'
     as conversation_message_added;
 import 'package:flutterapp/event/nimona_medatada.dart';
+import 'package:flutterapp/event/nimona_stream_subscription.dart' as nss;
 import 'package:flutterapp/event/nimona_typed.dart';
 import 'package:flutterapp/event/utils.dart';
 import 'package:nimona/models/get_request.dart';
@@ -16,9 +17,31 @@ class NimonaDataStore implements DataStore {
   @override
   Future<void> init() async {
     try {
-      await Nimona.init();
+      Nimona.init();
     } catch (e) {
       print('ERROR initializing, err=' + e.toString());
+    }
+  }
+
+  @override
+  Future<void> joinConversation(
+    String conversationRootHash,
+  ) async {
+    try {
+      await Nimona.requestStream(conversationRootHash);
+      final sub = nss.StreamSubscription(
+        dataM: nss.DataM(
+          expiryS: DateTime.now().add(Duration(days: 30)).toIso8601String(),
+        ),
+        metadataM: MetadataM(
+          datetimeS: DateTime.now().toIso8601String(),
+          ownerS: '@peer',
+          streamS: conversationRootHash,
+        ),
+      );
+      await Nimona.put(sub.toJson());
+    } catch (e) {
+      print('ERROR requesting stream, err=' + e.toString());
     }
   }
 
@@ -60,7 +83,6 @@ class NimonaDataStore implements DataStore {
           yield object;
         }
       } catch (e) {
-        // TODO log error
         print('ERROR unmarshaling conversation created object, err=' +
             e.toString());
       }
@@ -74,10 +96,13 @@ class NimonaDataStore implements DataStore {
         dataM: conversation_created.DataM(
           nonceS: Uuid().v4().toString(),
         ),
+        metadataM: MetadataM(
+          datetimeS: DateTime.now().toIso8601String(),
+          ownerS: '@peer',
+        ),
       );
       await Nimona.put(c.toJson());
     } catch (e) {
-      // TODO log error
       print('ERROR putting conversationCreated, err=' + e.toString());
     }
   }
@@ -104,7 +129,7 @@ class NimonaDataStore implements DataStore {
       } catch (e) {
         print('ERROR unmarshaling typed message object, err=' + e.toString());
       }
-    };
+    }
     return ctrl;
   }
 
@@ -145,7 +170,6 @@ class NimonaDataStore implements DataStore {
       );
       await Nimona.put(c.toJson());
     } catch (e) {
-      // TODO log error
       print('ERROR putting conversationCreated, err=' + e.toString());
     }
   }

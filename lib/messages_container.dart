@@ -51,7 +51,13 @@ class _MessagesContainer extends State<MessagesContainer> {
                       state.conversation?.name,
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                    subtitle: Text(state.conversation?.name ?? ''),
+                    subtitle: SelectableText(
+                      state.conversation?.hash ?? '',
+                      toolbarOptions: ToolbarOptions(
+                        copy: true,
+                        selectAll: true,
+                      ),
+                    ),
                   ),
                 );
               }
@@ -149,24 +155,25 @@ class _MessagesContainer extends State<MessagesContainer> {
     }
 
     return Card(
-        elevation: 0,
-        child: new Container(
-          margin: const EdgeInsets.all(10),
-          child: TextField(
-            controller: _textController,
-            onSubmitted: _handleSubmitted,
-            onEditingComplete: () {
-              var text = _textController.text;
-              _handleSubmitted(text);
-            },
-            decoration: new InputDecoration(
-              hintText: 'Send a message...',
-              contentPadding: EdgeInsets.all(10),
-              isDense: true,
-              border: InputBorder.none,
-            ),
+      elevation: 0,
+      child: new Container(
+        margin: const EdgeInsets.all(10),
+        child: TextField(
+          controller: _textController,
+          onSubmitted: _handleSubmitted,
+          onEditingComplete: () {
+            var text = _textController.text;
+            _handleSubmitted(text);
+          },
+          decoration: new InputDecoration(
+            hintText: 'Send a message...',
+            contentPadding: EdgeInsets.all(10),
+            isDense: true,
+            border: InputBorder.none,
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 

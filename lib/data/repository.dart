@@ -19,6 +19,12 @@ class Repository {
     _dataStore.init();
   }
 
+  Future<void> joinConversation(
+    String conversationRootHash,
+  ) async {
+    return _dataStore.joinConversation(conversationRootHash);
+  }
+
   StreamController<ConversationCreated> getConversations(
     int limit,
     int offset,
