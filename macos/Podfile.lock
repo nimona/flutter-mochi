@@ -1,6 +1,6 @@
 PODS:
   - FlutterMacOS (1.0.0)
-  - nimona (0.0.1):
+  - nimona (0.0.6):
     - FlutterMacOS
   - Sparkle (1.24.0)
 
@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
-  nimona: 0fda2447a3293e758f2fd4f797a9ad863ee3109e
+  nimona: 77707a011a7feee0721a4b2eccb78a9ceff7b8c9
   Sparkle: 270cd27377bf04e9c128af06e3a22d0f572d6ee3
 
 PODFILE CHECKSUM: 1cf777505071119d79dc6649e6359144e549aa7a

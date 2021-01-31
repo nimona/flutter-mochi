@@ -39,5 +39,16 @@
                 <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.3.0/Mochi0.3.0-0.2.2.delta" sparkle:version="0.3.0" sparkle:shortVersionString="0.3.0" sparkle:deltaFrom="0.2.2" length="14562093" type="application/octet-stream" sparkle:edSignature="4aHOyMXZmUjYA/uCiKVOV7X5oag60InT4er8y0vihCd6zf5E+vvn4QIAR2da11Yn9tGVtC9PKA/O19f44uK+CA=="/>
             </sparkle:deltas>
         </item>
+        <item>
+            <title>0.3.1</title>
+            <pubDate>Sun, 31 Jan 2021 16:17:20 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.3.1/mochi-v0.3.1.zip" sparkle:version="0.3.1" sparkle:shortVersionString="0.3.1" length="26142937" type="application/octet-stream" sparkle:edSignature="3njezIU4jz8tZ0pcd3PFkANfttQSV47l4ixnQTLJYikDxxYTOhKx6dT0g4E3V4GdH+e7DmAB8ys6EEV9qJ+HBg=="/>
+            <sparkle:deltas>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.3.1/Mochi0.3.1-0.3.0.delta" sparkle:version="0.3.1" sparkle:shortVersionString="0.3.1" sparkle:deltaFrom="0.3.0" length="5132933" type="application/octet-stream" sparkle:edSignature="cYV3ZM9kDWeenbx+PDkXFn8jLCPAVXaQsQRbuLNN4pv5T4qwCX9w2OYQLU3zmexSxBN0S0vC7bvH/IqdhOlgAA=="/>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.3.1/Mochi0.3.1-0.2.3.delta" sparkle:version="0.3.1" sparkle:shortVersionString="0.3.1" sparkle:deltaFrom="0.2.3" length="16020797" type="application/octet-stream" sparkle:edSignature="hYAIv0sE5kjTF2biWoGSFwxHJ4sw786m2edWBLNjBhA1Ab/ddrO7BC1lzhNbpz2fo+TTeLPy3bFEdk/e/OxmAA=="/>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.3.1/Mochi0.3.1-0.2.2.delta" sparkle:version="0.3.1" sparkle:shortVersionString="0.3.1" sparkle:deltaFrom="0.2.2" length="16019764" type="application/octet-stream" sparkle:edSignature="7QGPiXBrg17saklVk32jJXisjiUuoc4oBbcEuSO0bfn56qawnM5b/o200QdllsiyxrVtXX5qjfN0OeVmvhkJAg=="/>
+            </sparkle:deltas>
+        </item>
     </channel>
 </rss>

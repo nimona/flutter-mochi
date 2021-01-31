@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutterapp/data/datastore.dart';
-import 'package:flutterapp/event/conversation_created.dart';
-import 'package:flutterapp/event/nimona_typed.dart';
-import 'package:flutterapp/event/utils.dart';
+import 'package:mochi/data/datastore.dart';
+import 'package:mochi/event/conversation_created.dart';
+import 'package:mochi/event/nimona_typed.dart';
+import 'package:mochi/event/utils.dart';
 
 final List<String> mockEvents = [
   '{"data:m":{"nonce:s":"hello-world!!1"},"metadata:m":{},"type:s":"stream:poc.nimona.io/conversation","_hash:s":"oh1.2rA8iDpuVpTS3WDeG7LLQWGUtzrgw9xHgGAVHPafnCTo"}',
@@ -30,6 +30,11 @@ class MockDataStore implements DataStore {
 
   @override
   Future<void> joinConversation(
+    String conversationRootHash,
+  ) async {}
+
+  @override
+  Future<void> refreshConversation(
     String conversationRootHash,
   ) async {}
 

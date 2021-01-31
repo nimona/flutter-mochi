@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/event/conversation_message_added.dart';
-import 'package:flutterapp/event/conversation_nickname_updated.dart';
-import 'package:flutterapp/model/message.dart';
-import 'package:flutterapp/blocs/messages/messages_event.dart';
-import 'package:flutterapp/blocs/messages/messages_state.dart';
+import 'package:mochi/data/repository.dart';
+import 'package:mochi/event/conversation_message_added.dart';
+import 'package:mochi/event/conversation_nickname_updated.dart';
+import 'package:mochi/model/message.dart';
+import 'package:mochi/blocs/messages/messages_event.dart';
+import 'package:mochi/blocs/messages/messages_state.dart';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   MessagesBloc() : super(MessagesInitial());
@@ -31,7 +31,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   ) async* {
     try {
       yield MessagesLoaded(event.conversation, [], {});
-      var handler = (event) {
+      var handler = (bool old, event) {
         if (event is ConversationMessageAdded) {
           add(
             AddMessage(
@@ -54,17 +54,23 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
           );
         }
       };
+      var oldHandler = (event) {
+        return handler(true, event);
+      };
+      var newHandler = (event) {
+        return handler(false, event);
+      };
       // close old controllers
       _subCtrl?.close();
       _getCtrl?.close();
       // start listening for new events
       _subCtrl = await Repository.get()
           .subscribeToMessagesForConversation(event.conversation.hash);
-      _subCtrl.stream.listen(handler);
+      _subCtrl.stream.listen(newHandler);
       // get old events
       _getCtrl = await Repository.get()
           .getMessagesForConversation(event.conversation.hash, 100, 0);
-      _getCtrl.stream.listen(handler);
+      _getCtrl.stream.listen(oldHandler);
     } catch (err) {
       yield MessagesNotLoaded();
     }

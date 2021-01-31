@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/event/conversation_created.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/blocs/conversations/conversations_event.dart';
-import 'package:flutterapp/blocs/conversations/conversations_state.dart';
+import 'package:mochi/data/repository.dart';
+import 'package:mochi/event/conversation_created.dart';
+import 'package:mochi/model/conversation.dart';
+import 'package:mochi/blocs/conversations/conversations_event.dart';
+import 'package:mochi/blocs/conversations/conversations_state.dart';
 
 class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   ConversationsBloc() : super(ConversationsLoading());
@@ -31,7 +31,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
     try {
       await _conversationsSubscription?.cancel();
       await _conversationsGet?.cancel();
-      var handler = (ConversationCreated event) {
+      var handleConversationCreated = (ConversationCreated event) {
         final Conversation conversation = Conversation(
           hash: event.hashS,
           name: event.dataM.nonceS,
@@ -41,11 +41,16 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       _conversationsSubscription = Repository.get()
           .subscribeToConversations()
           .stream
-          .listen(handler);
-      _conversationsGet = Repository.get()
-          .getConversations(100, 0)
-          .stream
-          .listen(handler);
+          .listen(handleConversationCreated);
+      _conversationsGet =
+          Repository.get().getConversations(100, 0).stream.listen((event) {
+        try {
+          Repository.get().refreshConversation(event.hashS);
+        } catch (e) {}
+        try {
+          handleConversationCreated(event);
+        } catch (e) {}
+      });
       yield ConversationsLoaded();
     } catch (_) {
       yield ConversationsNotLoaded();

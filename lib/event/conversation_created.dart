@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutterapp/event/nimona_medatada.dart';
-import 'package:flutterapp/event/nimona_typed.dart';
+import 'package:mochi/event/nimona_medatada.dart';
+import 'package:mochi/event/nimona_typed.dart';
 
 class ConversationCreated implements NimonaTyped {
   DataM dataM;

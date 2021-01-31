@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutterapp/model/conversation.dart';
+import 'package:mochi/model/conversation.dart';
 
-import 'package:flutterapp/model/message.dart';
+import 'package:mochi/model/message.dart';
 
 abstract class MessagesEvent extends Equatable {
   MessagesEvent([List props = const []]) : super();

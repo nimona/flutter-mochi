@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterapp/blocs/conversations/conversations_bloc.dart';
-import 'package:flutterapp/blocs/conversations/conversations_event.dart';
-import 'package:flutterapp/blocs/conversations/conversations_state.dart';
-import 'package:flutterapp/blocs/messages/messages_bloc.dart';
-import 'package:flutterapp/blocs/messages/messages_event.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/flutter_conversations_keys.dart';
-import 'package:flutterapp/widgets/loading_indicator.dart';
+import 'package:mochi/blocs/conversations/conversations_bloc.dart';
+import 'package:mochi/blocs/conversations/conversations_event.dart';
+import 'package:mochi/blocs/conversations/conversations_state.dart';
+import 'package:mochi/blocs/messages/messages_bloc.dart';
+import 'package:mochi/blocs/messages/messages_event.dart';
+import 'package:mochi/data/repository.dart';
+import 'package:mochi/flutter_conversations_keys.dart';
+import 'package:mochi/widgets/loading_indicator.dart';
 
 class ConversationListContainer extends StatefulWidget {
   ConversationListContainer();

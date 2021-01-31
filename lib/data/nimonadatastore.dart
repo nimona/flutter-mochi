@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:flutterapp/data/datastore.dart';
-import 'package:flutterapp/event/conversation_created.dart'
+import 'package:mochi/data/datastore.dart';
+import 'package:mochi/event/conversation_created.dart'
     as conversation_created;
-import 'package:flutterapp/event/conversation_message_added.dart'
+import 'package:mochi/event/conversation_message_added.dart'
     as conversation_message_added;
-import 'package:flutterapp/event/nimona_medatada.dart';
-import 'package:flutterapp/event/nimona_stream_subscription.dart' as nss;
-import 'package:flutterapp/event/nimona_typed.dart';
-import 'package:flutterapp/event/utils.dart';
+import 'package:mochi/event/nimona_medatada.dart';
+import 'package:mochi/event/nimona_stream_subscription.dart' as nss;
+import 'package:mochi/event/nimona_typed.dart';
+import 'package:mochi/event/utils.dart';
 import 'package:nimona/models/get_request.dart';
 import 'package:nimona/nimona.dart';
 import 'package:uuid/uuid.dart';
@@ -20,6 +20,17 @@ class NimonaDataStore implements DataStore {
       Nimona.init();
     } catch (e) {
       print('ERROR initializing, err=' + e.toString());
+    }
+  }
+
+  @override
+  Future<void> refreshConversation(
+    String conversationRootHash,
+  ) async {
+    try {
+      await Nimona.requestStream(conversationRootHash);
+    } catch (e) {
+      print('ERROR refreshing stream, err=' + e.toString());
     }
   }
 

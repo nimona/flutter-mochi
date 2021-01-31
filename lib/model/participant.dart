@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutterapp/model/profile.dart';
+import 'package:mochi/model/profile.dart';
 
 enum ParticipantType {
   OWNER,

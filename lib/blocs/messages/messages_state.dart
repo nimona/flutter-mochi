@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterapp/model/conversation.dart';
-import 'package:flutterapp/model/message.dart';
+import 'package:mochi/model/conversation.dart';
+import 'package:mochi/model/message.dart';
 
 @immutable
 abstract class MessagesState extends Equatable {

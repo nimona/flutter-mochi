@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterapp/blocs/messages/messages_bloc.dart';
-import 'package:flutterapp/blocs/messages/messages_event.dart';
-import 'package:flutterapp/model/conversation.dart';
+import 'package:mochi/blocs/messages/messages_bloc.dart';
+import 'package:mochi/blocs/messages/messages_event.dart';
+import 'package:mochi/model/conversation.dart';
 
 import 'conversation_list_container.dart';
 import 'messages_container.dart';

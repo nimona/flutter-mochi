@@ -5,11 +5,11 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterapp/blocs/conversations/conversations_bloc.dart';
-import 'package:flutterapp/blocs/conversations/conversations_event.dart';
-import 'package:flutterapp/blocs/messages/messages_bloc.dart';
+import 'package:mochi/blocs/conversations/conversations_bloc.dart';
+import 'package:mochi/blocs/conversations/conversations_event.dart';
+import 'package:mochi/blocs/messages/messages_bloc.dart';
 
-import 'package:flutterapp/blocs/simple_bloc_observer.dart';
+import 'package:mochi/blocs/simple_bloc_observer.dart';
 
 import 'master_detail_layout.dart';
 

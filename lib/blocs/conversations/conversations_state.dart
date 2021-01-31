@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutterapp/model/conversation.dart';
+import 'package:mochi/model/conversation.dart';
 
 @immutable
 abstract class ConversationsState {

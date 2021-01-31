@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:flutterapp/event/nimona_medatada.dart';
-import 'package:flutterapp/event/nimona_typed.dart';
+import 'package:mochi/event/nimona_medatada.dart';
+import 'package:mochi/event/nimona_typed.dart';
 
 class StreamSubscription implements NimonaTyped {
   DataM dataM;

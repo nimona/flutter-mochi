@@ -1,13 +1,13 @@
-import 'package:flutterapp/blocs/messages/messages_bloc.dart';
-import 'package:flutterapp/blocs/messages/messages_state.dart';
-import 'package:flutterapp/data/repository.dart';
-import 'package:flutterapp/flutter_messages_keys.dart';
-import 'package:flutterapp/widgets/convesation_landing.dart';
-import 'package:flutterapp/widgets/loading_indicator.dart';
+import 'package:mochi/blocs/messages/messages_bloc.dart';
+import 'package:mochi/blocs/messages/messages_state.dart';
+import 'package:mochi/data/repository.dart';
+import 'package:mochi/flutter_messages_keys.dart';
+import 'package:mochi/widgets/convesation_landing.dart';
+import 'package:mochi/widgets/loading_indicator.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterapp/model/message.dart';
+import 'package:mochi/model/message.dart';
 
 class MessagesContainer extends StatefulWidget {
   MessagesContainer({

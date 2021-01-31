@@ -1,4 +1,4 @@
-# flutterapp
+# mochi
 
 A new Flutter application.
 

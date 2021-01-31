@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutterapp/data/datastore.dart';
-import 'package:flutterapp/data/nimonadatastore.dart';
-import 'package:flutterapp/event/conversation_created.dart';
-import 'package:flutterapp/event/nimona_typed.dart';
+import 'package:mochi/data/datastore.dart';
+import 'package:mochi/data/nimonadatastore.dart';
+import 'package:mochi/event/conversation_created.dart';
+import 'package:mochi/event/nimona_typed.dart';
 
 class Repository {
   static final Repository _repo = new Repository._internal();
@@ -17,6 +17,12 @@ class Repository {
 
   Repository._internal() {
     _dataStore.init();
+  }
+
+  Future<void> refreshConversation(
+    String conversationRootHash,
+  ) async {
+    return _dataStore.refreshConversation(conversationRootHash);
   }
 
   Future<void> joinConversation(
