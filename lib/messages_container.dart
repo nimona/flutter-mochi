@@ -44,7 +44,7 @@ class _MessagesContainer extends State<MessagesContainer> {
             builder: (context, state) {
               if (state is MessagesLoaded) {
                 return Container(
-                  color: Theme.of(context).cardColor,
+                  // color: Theme.of(context).cardColor,
                   child: ListTile(
                     contentPadding: EdgeInsets.all(16.0),
                     title: Text(
@@ -154,9 +154,7 @@ class _MessagesContainer extends State<MessagesContainer> {
       }
     }
 
-    return Card(
-      elevation: 0,
-      child: new Container(
+    return  Container(
         margin: const EdgeInsets.all(10),
         child: TextField(
           controller: _textController,
@@ -165,14 +163,44 @@ class _MessagesContainer extends State<MessagesContainer> {
             var text = _textController.text;
             _handleSubmitted(text);
           },
-          decoration: new InputDecoration(
-            hintText: 'Send a message...',
-            contentPadding: EdgeInsets.all(10),
+          style: TextStyle(
+            fontSize: 14,
+          ),
+          decoration: InputDecoration(
+            hoverColor: Colors.grey.shade200,
+            labelStyle: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 14,
+            ),
             isDense: true,
-            border: InputBorder.none,
+            hintText: 'Send message...',
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: Colors.grey.shade400,
+            ),
+            prefixIcon: Icon(
+              Icons.send,
+              color: Colors.grey.shade400,
+              size: 14,
+            ),
+            filled: false,
+            contentPadding: EdgeInsets.all(4),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                width: 1,
+                style: BorderStyle.none,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                width: 1,
+                color: Colors.grey.shade400,
+              ),
+            ),
           ),
         ),
-      ),
     );
   }
 }

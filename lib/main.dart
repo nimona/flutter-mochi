@@ -52,7 +52,15 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light, // HACK
         primarySwatch: Colors.blue,
       ),
-      home: MasterDetailLayout(),
+      home: new GestureDetector(
+        onTap: () {
+          // this allows the TextFields to lose focus when the user clicks
+          // anywhere else.
+          // from: https://stackoverflow.com/a/54454654
+          FocusScope.of(context).requestFocus(new FocusNode());
+        },
+        child: MasterDetailLayout(),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
