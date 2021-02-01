@@ -37,7 +37,7 @@ class StreamSubscription implements NimonaTyped {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
       'type:s': type(),
-      'hash:s': hashS,
+      '_hash:s': hashS,
     };
   }
 
@@ -47,7 +47,7 @@ class StreamSubscription implements NimonaTyped {
     return StreamSubscription(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      hashS: map['hash:s'],
+      hashS: map['_hash:s'],
     );
   }
 
@@ -80,26 +80,21 @@ class StreamSubscription implements NimonaTyped {
 
 class DataM {
   String expiryS;
-  List<String> rootHashesAr;
   DataM({
     this.expiryS,
-    this.rootHashesAr,
   });
 
   DataM copyWith({
     String expiryS,
-    List<String> rootHashesAr,
   }) {
     return DataM(
       expiryS: expiryS ?? this.expiryS,
-      rootHashesAr: rootHashesAr ?? this.rootHashesAr,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'expiry:s': expiryS,
-      'rootHashesAr': rootHashesAr,
     };
   }
 
@@ -108,7 +103,6 @@ class DataM {
   
     return DataM(
       expiryS: map['expiry:s'],
-      rootHashesAr: List<String>.from(map['rootHashesAr']),
     );
   }
 
@@ -117,17 +111,16 @@ class DataM {
   factory DataM.fromJson(String source) => DataM.fromMap(json.decode(source));
 
   @override
-  String toString() => 'DataM(expiryS: $expiryS, rootHashesAr: $rootHashesAr)';
+  String toString() => 'DataM(expiryS: $expiryS)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
   
     return o is DataM &&
-      o.expiryS == expiryS &&
-      listEquals(o.rootHashesAr, rootHashesAr);
+      o.expiryS == expiryS;
   }
 
   @override
-  int get hashCode => expiryS.hashCode ^ rootHashesAr.hashCode;
+  int get hashCode => expiryS.hashCode;
 }

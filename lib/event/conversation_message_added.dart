@@ -37,7 +37,7 @@ class ConversationMessageAdded implements NimonaTyped {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
       'type:s': objectType,
-      'hash:s': hashS,
+      '_hash:s': hashS,
     };
   }
 
@@ -47,7 +47,7 @@ class ConversationMessageAdded implements NimonaTyped {
     return ConversationMessageAdded(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      hashS: map['hash:s'],
+      hashS: map['_hash:s'],
     );
   }
 

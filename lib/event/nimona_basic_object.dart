@@ -33,7 +33,7 @@ class BasicObject implements NimonaTyped {
     return {
       'metadata:m': metadataM?.toMap(),
       'type:s': typeS,
-      'hash:s': hashS,
+      '_hash:s': hashS,
     };
   }
 
@@ -43,7 +43,7 @@ class BasicObject implements NimonaTyped {
     return BasicObject(
       metadataM: MetadataM.fromMap(map['metadata:m']),
       typeS: map['type:s'],
-      hashS: map['hash:s'],
+      hashS: map['_hash:s'],
     );
   }
 
