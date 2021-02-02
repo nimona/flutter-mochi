@@ -85,6 +85,9 @@ class MockDataStore implements DataStore {
   Future<StreamController<ConversationMessageAdded>> subscribeToMessages() async {}
 
   @override
+  Future<void> updateNickname(String conversationHash, String nickname) {}
+
+  @override
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(
     String conversationId,
   ) {

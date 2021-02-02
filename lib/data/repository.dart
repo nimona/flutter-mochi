@@ -81,6 +81,10 @@ class Repository {
     return _dataStore.createMessage(conversationHash, body);
   }
 
+  Future<void> updateNickname(String conversationHash, String nickname) {
+    return _dataStore.updateNickname(conversationHash, nickname);
+  }
+
   Future<ConnectionInfo> getConnectionInfo() {
     return _dataStore.getConnectionInfo();
   }

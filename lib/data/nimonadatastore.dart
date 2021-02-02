@@ -4,6 +4,7 @@ import 'package:mochi/data/datastore.dart';
 import 'package:mochi/event/conversation_created.dart' as conversation_created;
 import 'package:mochi/event/conversation_message_added.dart'
     as conversation_message_added;
+import 'package:mochi/event/conversation_nickname_updated.dart';
 import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/event/nimona_stream_subscription.dart' as nss;
@@ -222,6 +223,26 @@ class NimonaDataStore implements DataStore {
         ),
       );
       await Nimona.put(c.toJson());
+    } catch (e) {
+      print('ERROR putting conversationCreated, err=' + e.toString());
+      throw e;
+    }
+  }
+
+  @override
+  Future<void> updateNickname(String conversationHash, String nickname) async {
+    try {
+      final event = ConversationNicknameUpdated(
+        metadataM: MetadataM(
+          datetimeS: DateTime.now().toUtc().toIso8601String(),
+          ownerS: '@peer',
+          streamS: conversationHash,
+        ),
+        dataM: DataM(
+          nicknameS: nickname,
+        ),
+      );
+      await Nimona.put(event.toJson());
     } catch (e) {
       print('ERROR putting conversationCreated, err=' + e.toString());
       throw e;

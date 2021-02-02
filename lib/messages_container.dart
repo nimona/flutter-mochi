@@ -1,6 +1,9 @@
 import 'package:mochi/blocs/messages/messages_bloc.dart';
 import 'package:mochi/blocs/messages/messages_state.dart';
 import 'package:mochi/data/repository.dart';
+import 'package:mochi/event/conversation_nickname_updated.dart';
+import 'package:mochi/event/nimona_connection_info.dart';
+import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/flutter_messages_keys.dart';
 import 'package:mochi/widgets/convesation_landing.dart';
 import 'package:mochi/widgets/loading_indicator.dart';
@@ -150,57 +153,65 @@ class _MessagesContainer extends State<MessagesContainer> {
     void _handleSubmitted(String text) {
       _textController.clear();
       if (text.isNotEmpty) {
+        if (text.startsWith('/nick ')) {
+          final nickname = text.replaceFirst('/nick ', '').trim();
+          if (nickname.length == 0) {
+            return;
+          }
+          Repository.get().updateNickname(conversationHash, nickname);
+          return;
+        }
         Repository.get().createMessage(conversationHash, text);
       }
     }
 
-    return  Container(
-        margin: const EdgeInsets.all(10),
-        child: TextField(
-          controller: _textController,
-          onSubmitted: _handleSubmitted,
-          onEditingComplete: () {
-            var text = _textController.text;
-            _handleSubmitted(text);
-          },
-          style: TextStyle(
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: TextField(
+        controller: _textController,
+        onSubmitted: _handleSubmitted,
+        onEditingComplete: () {
+          var text = _textController.text;
+          _handleSubmitted(text);
+        },
+        style: TextStyle(
+          fontSize: 14,
+        ),
+        decoration: InputDecoration(
+          hoverColor: Colors.grey.shade200,
+          labelStyle: TextStyle(
+            color: Colors.grey.shade500,
             fontSize: 14,
           ),
-          decoration: InputDecoration(
-            hoverColor: Colors.grey.shade200,
-            labelStyle: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: 14,
+          isDense: true,
+          hintText: 'Send message...',
+          hintStyle: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade400,
+          ),
+          prefixIcon: Icon(
+            Icons.send,
+            color: Colors.grey.shade400,
+            size: 14,
+          ),
+          filled: false,
+          contentPadding: EdgeInsets.all(4),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              width: 1,
+              style: BorderStyle.none,
             ),
-            isDense: true,
-            hintText: 'Send message...',
-            hintStyle: TextStyle(
-              fontSize: 14,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              width: 1,
               color: Colors.grey.shade400,
-            ),
-            prefixIcon: Icon(
-              Icons.send,
-              color: Colors.grey.shade400,
-              size: 14,
-            ),
-            filled: false,
-            contentPadding: EdgeInsets.all(4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                width: 1,
-                style: BorderStyle.none,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                width: 1,
-                color: Colors.grey.shade400,
-              ),
             ),
           ),
         ),
+      ),
     );
   }
 }

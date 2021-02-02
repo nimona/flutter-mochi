@@ -19,4 +19,5 @@ abstract class DataStore {
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(String conversationId);
   Future<void> createMessage(String conversationHash, String body);
   Future<StreamController<ConversationMessageAdded>> subscribeToMessages();
+  Future<void> updateNickname(String conversationHash, String nickname);
 }
