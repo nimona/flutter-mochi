@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/event/conversation_message_added.dart';
 import 'package:mochi/event/conversation_nickname_updated.dart';
+import 'package:mochi/event/conversation_topic_updated.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/blocs/messages/messages_event.dart';
 import 'package:mochi/blocs/messages/messages_state.dart';
@@ -23,6 +24,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       yield* _mapAddMessageToState(event);
     } else if (event is NicknameChanged) {
       yield* _mapNicknameChangesToState(event);
+    } else if (event is TopicChanged) {
+      yield* _mapTopicChangesToState(event);
     }
   }
 
@@ -50,6 +53,14 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
             NicknameChanged(
               event.metadataM.ownerS,
               event.dataM.nicknameS,
+            ),
+          );
+        }
+        if (event is ConversationTopicUpdated) {
+          add(
+            TopicChanged(
+              event.metadataM.ownerS,
+              event.dataM.topicS,
             ),
           );
         }
@@ -121,6 +132,21 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         currentState.conversation,
         messages,
         nicknames,
+      );
+    }
+  }
+  
+  Stream<MessagesState> _mapTopicChangesToState(
+    TopicChanged event,
+  ) async* {
+    if (state is MessagesLoaded) {
+      MessagesLoaded currentState = state;
+      yield MessagesLoaded(
+        currentState.conversation.copyWith(
+          topic: event.topic,
+        ),
+        currentState.messages,
+        currentState.nicknames,
       );
     }
   }

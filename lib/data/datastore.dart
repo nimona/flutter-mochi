@@ -11,13 +11,14 @@ abstract class DataStore {
 
   Future<void> joinConversation(String conversationRootHash);
   Future<void> refreshConversation(String conversationRootHash);
-  Stream<ConversationCreated> getConversations(int limit, int offset);
-  Stream<ConversationCreated> subscribeToConversations();
+  Stream<NimonaTyped> getConversations(int limit, int offset);
+  Stream<NimonaTyped> subscribeToConversations();
   Future<void> createConversation(String name, String topic);
+  Future<void> updateTopic(String conversationHash, String topic);
 
   Future<StreamController<NimonaTyped>> getMessagesForConversation(String conversationId, int limit, int offset);
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(String conversationId);
   Future<void> createMessage(String conversationHash, String body);
-  Future<StreamController<ConversationMessageAdded>> subscribeToMessages();
+  Future<StreamController<NimonaTyped>> subscribeToMessages();
   Future<void> updateNickname(String conversationHash, String nickname);
 }

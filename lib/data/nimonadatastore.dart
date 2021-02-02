@@ -5,6 +5,7 @@ import 'package:mochi/event/conversation_created.dart' as conversation_created;
 import 'package:mochi/event/conversation_message_added.dart'
     as conversation_message_added;
 import 'package:mochi/event/conversation_nickname_updated.dart';
+import 'package:mochi/event/conversation_topic_updated.dart';
 import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/event/nimona_stream_subscription.dart' as nss;
@@ -12,6 +13,7 @@ import 'package:mochi/event/nimona_typed.dart';
 import 'package:mochi/event/types.dart';
 import 'package:mochi/event/utils.dart';
 import 'package:nimona/models/get_request.dart';
+import 'package:nimona/models/subscribe_request.dart';
 import 'package:nimona/nimona.dart';
 import 'package:uuid/uuid.dart';
 
@@ -72,14 +74,19 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
-  Stream<conversation_created.ConversationCreated> getConversations(
+  Stream<NimonaTyped> getConversations(
     int limit,
     int offset,
   ) async* {
+    // TODO split requests for conversations and updates for limits to work
+    // TODO maybe rename or split to getConversationUpdates
     GetRequest req = GetRequest(
       limit: limit,
       offset: offset,
-      lookup: 'type:stream:poc.nimona.io/conversation',
+      lookups: [
+        'type:' + ConversationCreatedType,
+        'type:' + ConversationTopicUpdatedType,
+      ],
       orderBy: 'MetadataDatetime',
       orderDir: 'ASC',
     );
@@ -87,9 +94,7 @@ class NimonaDataStore implements DataStore {
     for (final objectBody in objectBodies) {
       try {
         final NimonaTyped object = unmarshal(objectBody);
-        if (object is conversation_created.ConversationCreated) {
-          yield object;
-        }
+        yield object;
       } catch (e) {
         print('ERROR unmarshaling typed message object, err=' + e.toString());
         throw e;
@@ -100,8 +105,14 @@ class NimonaDataStore implements DataStore {
   @override
   Stream<conversation_created.ConversationCreated>
       subscribeToConversations() async* {
-    final String rootType = 'stream:poc.nimona.io/conversation';
-    final String subKey = await Nimona.subscribe('type:' + rootType);
+    final String rootType = 'stream:' + ConversationCreatedType;
+    final String subKey = await Nimona.subscribe(
+      SubscribeRequest(
+        lookups: [
+          'type:' + rootType,
+        ],
+      ),
+    );
     Stream<String> sub = Nimona.pop(subKey);
     await for (final objectBody in sub) {
       try {
@@ -145,7 +156,9 @@ class NimonaDataStore implements DataStore {
     GetRequest req = GetRequest(
       limit: limit,
       offset: offset,
-      lookup: 'stream:' + conversationId,
+      lookups: [
+        'stream:' + conversationId,
+      ],
       orderBy: 'MetadataDatetime',
       orderDir: 'ASC',
     );
@@ -166,7 +179,13 @@ class NimonaDataStore implements DataStore {
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(
     String conversationId,
   ) async {
-    final subKey = await Nimona.subscribe('stream:' + conversationId);
+    final subKey = await Nimona.subscribe(
+      SubscribeRequest(
+        lookups: [
+          'stream:' + conversationId,
+        ],
+      ),
+    );
     var ctrl = StreamController<NimonaTyped>(
       onCancel: () async {
         await Nimona.cancel(subKey);
@@ -185,12 +204,16 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
-  Future<StreamController<conversation_message_added.ConversationMessageAdded>>
-      subscribeToMessages() async {
-    final subKey =
-        await Nimona.subscribe('type:' + ConversationMessageAddedType);
-    var ctrl =
-        StreamController<conversation_message_added.ConversationMessageAdded>(
+  Future<StreamController<NimonaTyped>> subscribeToMessages() async {
+    final subKey = await Nimona.subscribe(
+      SubscribeRequest(
+        lookups: [
+          'type:' + ConversationMessageAddedType,
+          'type:' + ConversationTopicUpdatedType,
+        ],
+      ),
+    );
+    var ctrl = StreamController<NimonaTyped>(
       onCancel: () async {
         await Nimona.cancel(subKey);
       },
@@ -199,9 +222,7 @@ class NimonaDataStore implements DataStore {
     sub.listen((objectBody) {
       try {
         final NimonaTyped object = unmarshal(objectBody);
-        if (object is conversation_message_added.ConversationMessageAdded) {
-          ctrl.add(object);
-        }
+        ctrl.add(object);
       } catch (e) {
         print('ERROR unmarshaling typed message object, err=' + e.toString());
       }
@@ -244,7 +265,27 @@ class NimonaDataStore implements DataStore {
       );
       await Nimona.put(event.toJson());
     } catch (e) {
-      print('ERROR putting conversationCreated, err=' + e.toString());
+      print('ERROR putting updateNickname, err=' + e.toString());
+      throw e;
+    }
+  }
+
+  @override
+  Future<void> updateTopic(String conversationHash, String topic) async {
+    try {
+      final event = ConversationTopicUpdated(
+        metadataM: MetadataM(
+          datetimeS: DateTime.now().toUtc().toIso8601String(),
+          ownerS: '@peer',
+          streamS: conversationHash,
+        ),
+        dataM: ConversationTopicUpdatedDataM(
+          topicS: topic,
+        ),
+      );
+      await Nimona.put(event.toJson());
+    } catch (e) {
+      print('ERROR putting updateTopic, err=' + e.toString());
       throw e;
     }
   }

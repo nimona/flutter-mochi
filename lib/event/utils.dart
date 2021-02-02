@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mochi/event/conversation_created.dart';
 import 'package:mochi/event/conversation_message_added.dart';
 import 'package:mochi/event/conversation_nickname_updated.dart';
+import 'package:mochi/event/conversation_topic_updated.dart';
 import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/event/nimona_stream_subscription.dart';
 import 'package:mochi/event/nimona_basic_object.dart';
@@ -18,6 +19,8 @@ NimonaTyped unmarshal(String body) {
       return ConversationNicknameUpdated.fromJson(body);
     case ConversationMessageAddedType:
       return ConversationMessageAdded.fromJson(body);
+    case ConversationTopicUpdatedType:
+      return ConversationTopicUpdated.fromJson(body);
     case StreamSubscriptionType:
       return StreamSubscription.fromJson(body);
     case ConnectionInfoType:

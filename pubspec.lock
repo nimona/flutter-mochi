@@ -225,7 +225,7 @@ packages:
       path: "../flutter-nimona"
       relative: true
     source: path
-    version: "0.0.8"
+    version: "0.0.10"
   path:
     dependency: transitive
     description:

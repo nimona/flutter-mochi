@@ -6,12 +6,11 @@ import 'package:flutter/material.dart';
 @immutable
 class Conversation extends Equatable {
   final String hash;
-  final String name;
+  // final String name;
   final String topic;
   final String displayPicture;
   Conversation({
     this.hash,
-    this.name,
     this.topic,
     this.displayPicture,
   });
@@ -24,7 +23,6 @@ class Conversation extends Equatable {
   }) {
     return Conversation(
       hash: hash ?? this.hash,
-      name: name ?? this.name,
       topic: topic ?? this.topic,
       displayPicture: displayPicture ?? this.displayPicture,
     );
@@ -33,7 +31,6 @@ class Conversation extends Equatable {
   Map<String, dynamic> toMap() {
     return {
       'hash': hash,
-      'name': name,
       'topic': topic,
       'displayPicture': displayPicture,
     };
@@ -44,7 +41,6 @@ class Conversation extends Equatable {
   
     return Conversation(
       hash: map['hash'],
-      name: map['name'],
       topic: map['topic'],
       displayPicture: map['displayPicture'],
     );
@@ -58,5 +54,5 @@ class Conversation extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object> get props => [hash, name, topic, displayPicture];
+  List<Object> get props => [hash, topic, displayPicture];
 }

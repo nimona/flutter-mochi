@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/event/nimona_typed.dart';
+import 'package:mochi/event/types.dart';
 
 class ConversationCreated implements NimonaTyped {
   DataM dataM;
@@ -14,7 +15,7 @@ class ConversationCreated implements NimonaTyped {
   });
 
   String type() {
-    return 'stream:poc.nimona.io/conversation';
+    return ConversationCreatedType;
   }
 
   ConversationCreated copyWith({
@@ -33,7 +34,7 @@ class ConversationCreated implements NimonaTyped {
     return {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
-      'type:s': 'stream:poc.nimona.io/conversation',
+      'type:s': ConversationCreatedType,
       '_hash:s': hashS,
     };
   }

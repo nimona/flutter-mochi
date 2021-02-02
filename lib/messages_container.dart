@@ -51,7 +51,7 @@ class _MessagesContainer extends State<MessagesContainer> {
                   child: ListTile(
                     contentPadding: EdgeInsets.all(16.0),
                     title: Text(
-                      state.conversation?.name,
+                      state.conversation?.topic,
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     subtitle: SelectableText(
@@ -159,6 +159,14 @@ class _MessagesContainer extends State<MessagesContainer> {
             return;
           }
           Repository.get().updateNickname(conversationHash, nickname);
+          return;
+        }
+        if (text.startsWith('/topic ')) {
+          final topic = text.replaceFirst('/topic ', '').trim();
+          if (topic.length == 0) {
+            return;
+          }
+          Repository.get().updateTopic(conversationHash, topic);
           return;
         }
         Repository.get().createMessage(conversationHash, text);

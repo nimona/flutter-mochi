@@ -44,13 +44,13 @@ class MockDataStore implements DataStore {
   ) async {}
 
   @override
-  Stream<ConversationCreated> getConversations(
+  Stream<NimonaTyped> getConversations(
     int limit,
     int offset,
   ) {}
 
   @override
-  Stream<ConversationCreated> subscribeToConversations() async* {
+  Stream<NimonaTyped> subscribeToConversations() async* {
     for (var eventBody in mockEvents) {
       try {
         await Future.delayed(
@@ -58,7 +58,7 @@ class MockDataStore implements DataStore {
             milliseconds: Random().nextInt(5000) + 1000,
           ),
         );
-        final ConversationCreated event =
+        final NimonaTyped event =
             ConversationCreated.fromJson(eventBody);
         yield event;
       } catch (e) {
@@ -82,10 +82,13 @@ class MockDataStore implements DataStore {
   ) {}
 
   @override
-  Future<StreamController<ConversationMessageAdded>> subscribeToMessages() async {}
+  Future<StreamController<NimonaTyped>> subscribeToMessages() async {}
 
   @override
   Future<void> updateNickname(String conversationHash, String nickname) {}
+
+  @override
+  Future<void> updateTopic(String conversationHash, String topic) {}
 
   @override
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(

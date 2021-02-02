@@ -86,7 +86,6 @@ class Fake {
     }
     return Conversation(
       hash: hashString(faker.guid.guid()),
-      name: faker.lorem.sentence(),
       topic: faker.lorem.sentence(),
     );
   }

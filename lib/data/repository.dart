@@ -33,11 +33,11 @@ class Repository {
     return _dataStore.joinConversation(conversationRootHash);
   }
 
-  StreamController<ConversationCreated> getConversations(
+  StreamController<NimonaTyped> getConversations(
     int limit,
     int offset,
   ) {
-    StreamController<ConversationCreated> sc = new StreamController();
+    StreamController<NimonaTyped> sc = new StreamController();
     sc.addStream(_dataStore.getConversations(
       limit,
       offset,
@@ -45,8 +45,8 @@ class Repository {
     return sc;
   }
 
-  StreamController<ConversationCreated> subscribeToConversations() {
-    StreamController<ConversationCreated> sc = new StreamController();
+  StreamController<NimonaTyped> subscribeToConversations() {
+    StreamController<NimonaTyped> sc = new StreamController();
     sc.addStream(_dataStore.subscribeToConversations());
     return sc;
   }
@@ -61,7 +61,7 @@ class Repository {
     return await _dataStore.subscribeToMessagesForConversation(conversationId);
   }
 
-  Future<StreamController<ConversationMessageAdded>> subscribeToMessages(  ) async {
+  Future<StreamController<NimonaTyped>> subscribeToMessages(  ) async {
     return await _dataStore.subscribeToMessages();
   }
 
@@ -83,6 +83,10 @@ class Repository {
 
   Future<void> updateNickname(String conversationHash, String nickname) {
     return _dataStore.updateNickname(conversationHash, nickname);
+  }
+
+  Future<void> updateTopic(String conversationHash, String topic) {
+    return _dataStore.updateTopic(conversationHash, topic);
   }
 
   Future<ConnectionInfo> getConnectionInfo() {

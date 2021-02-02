@@ -325,7 +325,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                 ),
                               ),
                               TextSpan(
-                                text: conversation.name ?? conversation.hash,
+                                text: conversation.topic ?? conversation.hash,
                                 style: TextStyle(
                                   color: () {
                                     if (state.selected == null) {

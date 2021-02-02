@@ -4,7 +4,9 @@ import 'package:mochi/data/notifier.dart';
 import 'package:mochi/data/repository.dart';
 import 'package:mochi/event/conversation_created.dart';
 import 'package:mochi/event/conversation_message_added.dart';
+import 'package:mochi/event/conversation_topic_updated.dart';
 import 'package:mochi/event/nimona_connection_info.dart';
+import 'package:mochi/event/nimona_typed.dart';
 import 'package:mochi/model/conversation.dart';
 import 'package:mochi/blocs/conversations/conversations_event.dart';
 import 'package:mochi/blocs/conversations/conversations_state.dart';
@@ -12,9 +14,9 @@ import 'package:mochi/blocs/conversations/conversations_state.dart';
 class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   ConversationsBloc() : super(ConversationsLoading());
 
-  StreamSubscription<ConversationCreated> _conversationsSubscription;
-  StreamSubscription<ConversationCreated> _conversationsGet;
-  StreamController<ConversationMessageAdded> _messagesSubscription;
+  StreamSubscription<NimonaTyped> _conversationsSubscription;
+  StreamSubscription<NimonaTyped> _conversationsGet;
+  StreamController<NimonaTyped> _messagesSubscription;
 
   @override
   Stream<ConversationsState> mapEventToState(
@@ -22,15 +24,23 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
   ) async* {
     if (event is LoadConversations) {
       yield* _mapLoadConversationsToState(event);
+      return;
     }
     if (event is AddConversation) {
       yield* _mapAddConversationToState(event);
+      return;
     }
     if (event is SelectConversation) {
       yield* _mapSelectConversationToState(event);
+      return;
     }
     if (event is AddMessage) {
       yield* _mapAddMessageToState(event);
+      return;
+    }
+    if (event is UpdateTopic) {
+      yield* _mapUpdateTopicToState(event);
+      return;
     }
   }
 
@@ -42,32 +52,37 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       await _conversationsGet?.cancel();
       await _messagesSubscription?.close();
       final connectionInfo = await Repository.get().getConnectionInfo();
-      var handleConversationCreated = (ConversationCreated event) {
-        final Conversation conversation = Conversation(
-          hash: event.hashS,
-          name: event.dataM.nonceS,
-        );
-        this.add(AddConversation(conversation));
+      var handleConversationEvents = (NimonaTyped event) {
+        if (event is ConversationCreated) {
+          final Conversation conversation = Conversation(
+            hash: event.hashS,
+            topic: event.dataM.nonceS,
+          );
+          this.add(AddConversation(conversation));
+          return;
+        }
+        if (event is ConversationMessageAdded) {
+          this.add(AddMessage(event));
+          return;
+        }
+        if (event is ConversationTopicUpdated) {
+          this.add(UpdateTopic(
+            event.metadataM.streamS,
+            event.dataM.topicS,
+          ));
+          return;
+        }
       };
       _conversationsSubscription = Repository.get()
           .subscribeToConversations()
           .stream
-          .listen(handleConversationCreated);
+          .listen(handleConversationEvents);
       _conversationsGet =
-          Repository.get().getConversations(100, 0).stream.listen((event) {
-        try {
-          Repository.get().refreshConversation(event.hashS);
-        } catch (e) {}
-        try {
-          handleConversationCreated(event);
-        } catch (e) {}
-      });
+          Repository.get().getConversations(100, 0).stream.listen(
+                handleConversationEvents,
+              );
       _messagesSubscription = await Repository.get().subscribeToMessages();
-      _messagesSubscription.stream.listen((event) {
-        this.add(AddMessage(
-          event,
-        ));
-      });
+      _messagesSubscription.stream.listen(handleConversationEvents);
       yield ConversationsLoaded(
         publicKey: connectionInfo.dataM.publicKeyS,
         lastRead: {},
@@ -169,7 +184,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       if (currentState.selected?.hash != event.message.metadataM.streamS) {
         unreadCount.update(
           event.message.metadataM.streamS,
-          (value) => value+1,
+          (value) => value + 1,
           ifAbsent: () => 1,
         );
       }
@@ -189,6 +204,35 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       } catch (e) {
         print('ERR=' + e.toString());
       }
+    }
+  }
+
+  Stream<ConversationsState> _mapUpdateTopicToState(
+    UpdateTopic event,
+  ) async* {
+    if (state is ConversationsLoaded) {
+      ConversationsLoaded currentState = state;
+      var conversations = currentState.conversations.toList();
+      var updated = false;
+      for (var i = 0; i < conversations.length; i++) {
+        if (conversations[i].hash == event.conversationHash) {
+          updated = true;
+          conversations[i] = conversations[i].copyWith(
+            topic: event.topic,
+          );
+          break;
+        }
+      }
+      if (!updated) {
+        return;
+      }
+      yield ConversationsLoaded(
+        selected: currentState.selected,
+        conversations: conversations,
+        publicKey: currentState.publicKey,
+        lastRead: currentState.lastRead,
+        unreadCount: currentState.unreadCount,
+      );
     }
   }
 }

@@ -54,6 +54,29 @@ class NicknameChanged extends MessagesEvent {
       'NicknameChanged { senderHash: $senderHash, nickname: $nickname }';
 }
 
+class TopicChanged extends MessagesEvent {
+  final String senderHash;
+  final String topic;
+
+  TopicChanged(
+    this.senderHash,
+    this.topic,
+  ) : super([
+          senderHash,
+          topic,
+        ]);
+
+  @override
+  List<Object> get props => [
+        senderHash,
+        topic,
+      ];
+
+  @override
+  String toString() =>
+      'TopicChanged { senderHash: $senderHash, topic: $topic }';
+}
+
 class UpdateMessage extends MessagesEvent {
   final Message updatedMessage;
 
