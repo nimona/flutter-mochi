@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:mochi/event/conversation_message_added.dart';
 
 import 'package:mochi/model/conversation.dart';
 
@@ -24,6 +25,18 @@ class AddConversation extends ConversationsEvent {
 
   @override
   String toString() => 'AddConversation { conversation: $conversation }';
+}
+
+class AddMessage extends ConversationsEvent {
+  final ConversationMessageAdded message;
+
+  AddMessage(this.message) : super([message]);
+
+  @override
+  List<Object> get props => [message];
+
+  @override
+  String toString() => 'AddMessage { message: $message }';
 }
 
 class SelectConversation extends ConversationsEvent {

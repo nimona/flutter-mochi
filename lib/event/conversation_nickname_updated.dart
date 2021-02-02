@@ -2,21 +2,20 @@ import 'dart:convert';
 
 import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/event/nimona_typed.dart';
+import 'package:mochi/event/types.dart';
 
 class ConversationNicknameUpdated implements NimonaTyped {
   DataM dataM;
   MetadataM metadataM;
-  String typeS;
   String hashS;
   ConversationNicknameUpdated({
     this.dataM,
     this.metadataM,
-    this.typeS,
     this.hashS,
   });
   
   String type() {
-    return this.typeS;
+    return ConversationNicknameUpdatedType;
   }
 
   ConversationNicknameUpdated copyWith({
@@ -28,7 +27,6 @@ class ConversationNicknameUpdated implements NimonaTyped {
     return ConversationNicknameUpdated(
       dataM: dataM ?? this.dataM,
       metadataM: metadataM ?? this.metadataM,
-      typeS: typeS ?? this.typeS,
       hashS: hashS ?? this.hashS,
     );
   }
@@ -37,7 +35,7 @@ class ConversationNicknameUpdated implements NimonaTyped {
     return {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
-      'type:s': typeS,
+      'type:s': ConversationNicknameUpdatedType,
       '_hash:s': hashS,
     };
   }
@@ -48,7 +46,6 @@ class ConversationNicknameUpdated implements NimonaTyped {
     return ConversationNicknameUpdated(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      typeS: map['type:s'],
       hashS: map['_hash:s'],
     );
   }
@@ -59,7 +56,7 @@ class ConversationNicknameUpdated implements NimonaTyped {
 
   @override
   String toString() {
-    return 'ConversationNicknameUpdated(dataM: $dataM, metadataM: $metadataM, typeS: $typeS, hashS: $hashS)';
+    return 'ConversationNicknameUpdated(dataM: $dataM, metadataM: $metadataM, hashS: $hashS)';
   }
 
   @override
@@ -69,7 +66,6 @@ class ConversationNicknameUpdated implements NimonaTyped {
     return o is ConversationNicknameUpdated &&
       o.dataM == dataM &&
       o.metadataM == metadataM &&
-      o.typeS == typeS &&
       o.hashS == hashS;
   }
 
@@ -77,7 +73,6 @@ class ConversationNicknameUpdated implements NimonaTyped {
   int get hashCode {
     return dataM.hashCode ^
       metadataM.hashCode ^
-      typeS.hashCode ^
       hashS.hashCode;
   }
 }

@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/event/nimona_typed.dart';
+import 'package:mochi/event/types.dart';
 
 class StreamSubscription implements NimonaTyped {
   DataM dataM;
@@ -16,7 +15,7 @@ class StreamSubscription implements NimonaTyped {
   });
 
   String type() {
-    return 'nimona.io/stream.Subscription';
+    return StreamSubscriptionType;
   }
 
   StreamSubscription copyWith({
@@ -36,7 +35,7 @@ class StreamSubscription implements NimonaTyped {
     return {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
-      'type:s': type(),
+      'type:s': StreamSubscriptionType,
       '_hash:s': hashS,
     };
   }

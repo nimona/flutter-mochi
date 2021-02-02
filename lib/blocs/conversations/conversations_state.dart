@@ -15,8 +15,23 @@ class ConversationsLoading extends ConversationsState {
 class ConversationsLoaded extends ConversationsState {
   final List<Conversation> conversations;
   final Conversation selected;
+  final String publicKey;
+  final Map<String, DateTime> lastRead;
+  final Map<String, int> unreadCount;
 
-  ConversationsLoaded({this.selected, this.conversations = const []}) : super([selected, conversations]);
+  ConversationsLoaded({
+    this.selected,
+    this.conversations = const [],
+    this.publicKey,
+    this.lastRead,
+    this.unreadCount,
+  }) : super([
+          selected,
+          conversations,
+          publicKey,
+          lastRead,
+          unreadCount,
+        ]);
 
   @override
   String toString() => 'ConversationsLoaded { conversations: $conversations }';

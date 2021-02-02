@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:mochi/data/datastore.dart';
 import 'package:mochi/data/nimonadatastore.dart';
 import 'package:mochi/event/conversation_created.dart';
+import 'package:mochi/event/conversation_message_added.dart';
+import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/event/nimona_typed.dart';
 
 class Repository {
@@ -59,6 +61,10 @@ class Repository {
     return await _dataStore.subscribeToMessagesForConversation(conversationId);
   }
 
+  Future<StreamController<ConversationMessageAdded>> subscribeToMessages(  ) async {
+    return await _dataStore.subscribeToMessages();
+  }
+
   Future<StreamController<NimonaTyped>> getMessagesForConversation(
     String conversationId,
     int limit,
@@ -73,5 +79,9 @@ class Repository {
 
   Future<void> createMessage(String conversationHash, String body) {
     return _dataStore.createMessage(conversationHash, body);
+  }
+
+  Future<ConnectionInfo> getConnectionInfo() {
+    return _dataStore.getConnectionInfo();
   }
 }

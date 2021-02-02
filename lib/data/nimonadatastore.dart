@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:mochi/data/datastore.dart';
-import 'package:mochi/event/conversation_created.dart'
-    as conversation_created;
+import 'package:mochi/event/conversation_created.dart' as conversation_created;
 import 'package:mochi/event/conversation_message_added.dart'
     as conversation_message_added;
+import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/event/nimona_stream_subscription.dart' as nss;
 import 'package:mochi/event/nimona_typed.dart';
+import 'package:mochi/event/types.dart';
 import 'package:mochi/event/utils.dart';
 import 'package:nimona/models/get_request.dart';
 import 'package:nimona/nimona.dart';
@@ -24,6 +25,17 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
+  Future<ConnectionInfo> getConnectionInfo() async {
+    try {
+      final res = await Nimona.getConnectionInfo();
+      return unmarshal(res);
+    } catch (e) {
+      print('getConnectionInfo() ERROR err=' + e.toString());
+      throw e;
+    }
+  }
+
+  @override
   Future<void> refreshConversation(
     String conversationRootHash,
   ) async {
@@ -31,6 +43,7 @@ class NimonaDataStore implements DataStore {
       await Nimona.requestStream(conversationRootHash);
     } catch (e) {
       print('ERROR refreshing stream, err=' + e.toString());
+      throw e;
     }
   }
 
@@ -53,6 +66,7 @@ class NimonaDataStore implements DataStore {
       await Nimona.put(sub.toJson());
     } catch (e) {
       print('ERROR requesting stream, err=' + e.toString());
+      throw e;
     }
   }
 
@@ -77,6 +91,7 @@ class NimonaDataStore implements DataStore {
         }
       } catch (e) {
         print('ERROR unmarshaling typed message object, err=' + e.toString());
+        throw e;
       }
     }
   }
@@ -96,6 +111,7 @@ class NimonaDataStore implements DataStore {
       } catch (e) {
         print('ERROR unmarshaling conversation created object, err=' +
             e.toString());
+        throw e;
       }
     }
   }
@@ -115,6 +131,7 @@ class NimonaDataStore implements DataStore {
       await Nimona.put(c.toJson());
     } catch (e) {
       print('ERROR putting conversationCreated, err=' + e.toString());
+      throw e;
     }
   }
 
@@ -167,6 +184,31 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
+  Future<StreamController<conversation_message_added.ConversationMessageAdded>>
+      subscribeToMessages() async {
+    final subKey =
+        await Nimona.subscribe('type:' + ConversationMessageAddedType);
+    var ctrl =
+        StreamController<conversation_message_added.ConversationMessageAdded>(
+      onCancel: () async {
+        await Nimona.cancel(subKey);
+      },
+    );
+    Stream<String> sub = Nimona.pop(subKey);
+    sub.listen((objectBody) {
+      try {
+        final NimonaTyped object = unmarshal(objectBody);
+        if (object is conversation_message_added.ConversationMessageAdded) {
+          ctrl.add(object);
+        }
+      } catch (e) {
+        print('ERROR unmarshaling typed message object, err=' + e.toString());
+      }
+    });
+    return ctrl;
+  }
+
+  @override
   Future<void> createMessage(String conversationHash, String body) async {
     try {
       final c = conversation_message_added.ConversationMessageAdded(
@@ -182,6 +224,7 @@ class NimonaDataStore implements DataStore {
       await Nimona.put(c.toJson());
     } catch (e) {
       print('ERROR putting conversationCreated, err=' + e.toString());
+      throw e;
     }
   }
 }

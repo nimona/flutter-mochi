@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mochi/blocs/conversations/conversations_bloc.dart';
 import 'package:mochi/blocs/conversations/conversations_event.dart';
 import 'package:mochi/blocs/conversations/conversations_state.dart';
 import 'package:mochi/blocs/messages/messages_bloc.dart';
 import 'package:mochi/blocs/messages/messages_event.dart';
 import 'package:mochi/data/repository.dart';
+import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/flutter_conversations_keys.dart';
 import 'package:mochi/widgets/loading_indicator.dart';
 
@@ -21,12 +24,16 @@ class _ConversationListContainer extends State<ConversationListContainer> {
 
   MessagesBloc _messagesBloc;
   ConversationsBloc _conversationsBloc;
+  ConnectionInfo _connectionInfo;
 
   @override
   void initState() {
     super.initState();
     _messagesBloc = BlocProvider.of(context);
     _conversationsBloc = BlocProvider.of(context);
+    Repository.get().getConnectionInfo().then((value) {
+      _connectionInfo = value;
+    });
   }
 
   @override
@@ -40,7 +47,10 @@ class _ConversationListContainer extends State<ConversationListContainer> {
       }
     }
 
+    final key = new GlobalKey<ScaffoldState>();
+
     return Scaffold(
+      key: key,
       backgroundColor: Colors.grey.shade100,
       body: BlocBuilder<ConversationsBloc, ConversationsState>(
         builder: (context, state) {
@@ -116,6 +126,44 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 16,
+                      left: 16,
+                      right: 16,
+                      bottom: 8,
+                    ),
+                    child: Tooltip(
+                      waitDuration: Duration(
+                        milliseconds: 500,
+                      ),
+                      message: 'Your public key, click to copy',
+                      verticalOffset: 10,
+                      child: GestureDetector(
+                        child: Text(
+                          state.publicKey ?? 'loading peer info...',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: GoogleFonts.courierPrime().fontFamily,
+                          ),
+                        ),
+                        onTap: () {
+                          Clipboard.setData(
+                            ClipboardData(
+                              text: state.publicKey,
+                            ),
+                          );
+                          key.currentState.showSnackBar(new SnackBar(
+                            content: Text('Copied public key to clipboard'),
+                          ));
+                        },
                       ),
                     ),
                   ),
@@ -230,6 +278,43 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     itemBuilder: (BuildContext context, int index) {
                       final conversation = state.conversations[index];
                       return ListTile(
+                        trailing: () {
+                          final count =
+                              state.unreadCount[conversation.hash] ?? 0;
+                          if (count == 0) {
+                            return SizedBox(
+                              height: 14,
+                              width: 14,
+                            );
+                          }
+                          return SizedBox(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 8,
+                              ),
+                              child: Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  child: Text(
+                                    count.toString(),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.pink,
+                                    ),
+                                  ),
+                                ),
+                                decoration: new BoxDecoration(
+                                  color: Colors.pink[50],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            ),
+                          );
+                        }(),
                         title: RichText(
                           text: TextSpan(
                             children: [
@@ -262,8 +347,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                         onTap: () {
                           _conversationsBloc
                               .add(SelectConversation(conversation));
-                          _messagesBloc
-                              .add(LoadMessagesForConversation(conversation));
+                          _messagesBloc.add(
+                            LoadMessagesForConversation(
+                              conversation,
+                            ),
+                          );
                         },
                         contentPadding: EdgeInsets.only(
                           left: 32,

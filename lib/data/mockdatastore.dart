@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:mochi/data/datastore.dart';
 import 'package:mochi/event/conversation_created.dart';
+import 'package:mochi/event/conversation_message_added.dart';
+import 'package:mochi/event/nimona_connection_info.dart';
 import 'package:mochi/event/nimona_typed.dart';
 import 'package:mochi/event/utils.dart';
 
@@ -27,6 +29,9 @@ final List<String> mockConversationEvents = [
 class MockDataStore implements DataStore {
   @override
   Future<void> init() async {}
+
+  @override
+  Future<ConnectionInfo> getConnectionInfo() async {}
 
   @override
   Future<void> joinConversation(
@@ -75,6 +80,9 @@ class MockDataStore implements DataStore {
     int limit,
     int offset,
   ) {}
+
+  @override
+  Future<StreamController<ConversationMessageAdded>> subscribeToMessages() async {}
 
   @override
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(

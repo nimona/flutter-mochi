@@ -5,7 +5,6 @@ import 'package:crypto/crypto.dart';
 import "package:base58check/base58.dart";
 import 'package:mochi/model/contact.dart';
 import 'package:mochi/model/conversation.dart';
-import 'package:mochi/model/local_peer.dart';
 import 'package:mochi/model/message.dart';
 import 'package:mochi/model/participant.dart';
 import 'dart:math';
@@ -41,19 +40,6 @@ class Fake {
       localAlias: faker.internet.userName(),
       nameFirst: faker.person.firstName(),
       nameLast: faker.person.lastName(),
-    );
-  }
-
-  LocalPeer getLocalPeer() {
-    return LocalPeer(
-      key: hashString("2c3a8580-845c-4b92-9690-6fed980679fb"),
-      profile: Profile(
-        key: hashString("b179a62b-af67-493f-985d-b8590b087055"),
-        localAlias: "me",
-        nameFirst: "John",
-        nameLast: "Doe",
-        displayPicture: "https://picsum.photos/250",
-      ),
     );
   }
 
