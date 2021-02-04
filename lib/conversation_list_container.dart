@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mochi/blocs/conversations/conversations_bloc.dart';
 import 'package:mochi/blocs/conversations/conversations_event.dart';
 import 'package:mochi/blocs/conversations/conversations_state.dart';
@@ -66,9 +65,9 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                   SafeArea(
                     child: Padding(
                       padding: EdgeInsets.only(
-                        left: 16,
-                        right: 16,
-                        top: 10,
+                        left: 20,
+                        right: 20,
+                        top: 20,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,48 +130,9 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      top: 16,
-                      left: 16,
-                      right: 16,
-                      bottom: 8,
-                    ),
-                    child: Tooltip(
-                      waitDuration: Duration(
-                        milliseconds: 500,
-                      ),
-                      message: 'Your public key, click to copy',
-                      verticalOffset: 10,
-                      child: GestureDetector(
-                        child: Text(
-                          state.publicKey ?? 'loading peer info...',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.grey.shade500,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: GoogleFonts.courierPrime().fontFamily,
-                          ),
-                        ),
-                        onTap: () {
-                          Clipboard.setData(
-                            ClipboardData(
-                              text: state.publicKey,
-                            ),
-                          );
-                          key.currentState.showSnackBar(new SnackBar(
-                            content: Text('Copied public key to clipboard'),
-                          ));
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 16,
-                      left: 16,
-                      right: 16,
-                      bottom: 8,
+                      top: 20,
+                      left: 20,
+                      right: 20,
                     ),
                     child: TextField(
                       controller: _textController,
@@ -225,11 +185,84 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       ),
                     ),
                   ),
-                  new Container(
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 20,
+                      bottom: 8,
+                      left: 20,
+                      right: 8,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Peer Key',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 8,
+                      left: 32,
+                      right: 20,
+                      bottom: 8,
+                    ),
+                    child: Tooltip(
+                      waitDuration: Duration(
+                        milliseconds: 500,
+                      ),
+                      message: 'Your public key, click to copy',
+                      verticalOffset: 10,
+                      child: GestureDetector(
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '@ ',
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                              TextSpan(
+                                text: state.publicKey
+                                    .replaceFirst('ed25519.', ''),
+                                style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
+                        onTap: () {
+                          Clipboard.setData(
+                            ClipboardData(
+                              text: state.publicKey,
+                            ),
+                          );
+                          key.currentState.showSnackBar(
+                            new SnackBar(
+                              content: Text('Copied public key to clipboard'),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
                     margin: EdgeInsets.only(
                       top: 16,
                       bottom: 8,
-                      left: 16,
+                      left: 20,
                       right: 8,
                     ),
                     child: Row(
@@ -243,31 +276,6 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        // InkWell(
-                        //   hoverColor: Colors.pink[50],
-                        //   customBorder: RoundedRectangleBorder(
-                        //     borderRadius: BorderRadius.circular(8),
-                        //   ),
-                        //   child: Center(
-                        //     child: Container(
-                        //       padding: EdgeInsets.only(
-                        //         top: 4,
-                        //         bottom: 4,
-                        //         left: 8,
-                        //         right: 8,
-                        //       ),
-                        //       child: Icon(
-                        //         Icons.add,
-                        //         size: 16,
-                        //         color: Colors.pink,
-                        //       ),
-                        //     ),
-                        //   ),
-                        //   onTap: () {
-                        //     Repository.get()
-                        //         .createConversation('name', 'topic');
-                        //   },
-                        // ),
                       ],
                     ),
                   ),
@@ -277,72 +285,82 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     itemCount: state.conversations.length,
                     itemBuilder: (BuildContext context, int index) {
                       final conversation = state.conversations[index];
-                      return ListTile(
-                        trailing: () {
-                          final count =
-                              state.unreadCount[conversation.hash] ?? 0;
-                          if (count == 0) {
-                            return SizedBox(
-                              height: 14,
-                              width: 14,
-                            );
-                          }
-                          return SizedBox(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                right: 8,
-                              ),
-                              child: Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 6,
-                                  ),
-                                  child: Text(
-                                    count.toString(),
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.pink,
+                      return ListTile( 
+                        title: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '# ',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                      ),
                                     ),
-                                  ),
+                                    TextSpan(
+                                      text: conversation.topic ??
+                                          conversation.hash,
+                                      style: TextStyle(
+                                        color: () {
+                                          final count = state.unreadCount[
+                                                  conversation.hash] ??
+                                              0;
+                                          if (state.selected == null) {
+                                            if (count == 0) {
+                                              return Colors.grey.shade700;
+                                            }
+                                            return Colors.black;
+                                          }
+                                          if (state.selected.hash ==
+                                              conversation.hash) {
+                                            return Colors.pink;
+                                          }
+                                          return Colors.grey.shade700;
+                                        }(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                decoration: new BoxDecoration(
-                                  color: Colors.pink[50],
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
+                                maxLines: 1,
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
                               ),
                             ),
-                          );
-                        }(),
-                        title: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '# ',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
+                            () {
+                              final count =
+                                  state.unreadCount[conversation.hash] ?? 0;
+                              if (count == 0) {
+                                return Container();
+                              }
+                              return SizedBox(
+                                child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 10,
+                                      right: 10,
+                                      top: 5,
+                                      bottom: 5,
+                                    ),
+                                    child: Text(
+                                      count.toString(),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.pink,
+                                      ),
+                                    ),
+                                  ),
+                                  decoration: new BoxDecoration(
+                                    color: Colors.pink[50],
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: conversation.topic ?? conversation.hash,
-                                style: TextStyle(
-                                  color: () {
-                                    if (state.selected == null) {
-                                      return Colors.grey.shade700;
-                                    }
-                                    if (state.selected.hash ==
-                                        conversation.hash) {
-                                      return Colors.pink;
-                                    }
-                                    return Colors.grey.shade700;
-                                  }(),
-                                ),
-                              ),
-                            ],
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                              );
+                            }()
+                          ],
                         ),
                         onTap: () {
                           _conversationsBloc
@@ -357,6 +375,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           left: 32,
                           bottom: 0,
                           top: 0,
+                          right: 20,
                         ),
                         selectedTileColor: Colors.grey.shade100,
                         focusColor: Colors.grey.shade100,
@@ -365,9 +384,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           if (state.selected == null) {
                             return false;
                           }
-                          // FIX: better to check th .hash
-                          return state.selected.hashCode ==
-                              conversation.hashCode;
+                          return state.selected.hash ==
+                              conversation.hash;
                         }(),
                         dense: true,
                       );

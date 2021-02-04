@@ -1,13 +1,10 @@
+import 'package:intl/intl.dart';
 import 'package:mochi/blocs/messages/messages_bloc.dart';
 import 'package:mochi/blocs/messages/messages_state.dart';
 import 'package:mochi/data/repository.dart';
-import 'package:mochi/event/conversation_nickname_updated.dart';
-import 'package:mochi/event/nimona_connection_info.dart';
-import 'package:mochi/event/nimona_medatada.dart';
 import 'package:mochi/flutter_messages_keys.dart';
 import 'package:mochi/widgets/convesation_landing.dart';
 import 'package:mochi/widgets/loading_indicator.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mochi/model/message.dart';
@@ -41,90 +38,93 @@ class _MessagesContainer extends State<MessagesContainer> {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Container(
-      child: Column(
-        children: <Widget>[
-          BlocBuilder<MessagesBloc, MessagesState>(
-            builder: (context, state) {
-              if (state is MessagesLoaded) {
-                return Container(
-                  // color: Theme.of(context).cardColor,
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16.0),
-                    title: Text(
-                      state.conversation?.topic,
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    subtitle: SelectableText(
-                      state.conversation?.hash ?? '',
-                      toolbarOptions: ToolbarOptions(
-                        copy: true,
-                        selectAll: true,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: <Widget>[
+            BlocBuilder<MessagesBloc, MessagesState>(
+              builder: (context, state) {
+                if (state is MessagesLoaded) {
+                  return Container(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(0),
+                      title: Text(
+                        state.conversation?.topic,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      subtitle: SelectableText(
+                        state.conversation?.hash ?? '',
+                        toolbarOptions: ToolbarOptions(
+                          copy: true,
+                          selectAll: true,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }
-              return Container();
-            },
-          ),
-          BlocBuilder<MessagesBloc, MessagesState>(
-            builder: (context, state) {
-              if (state is MessagesInitial) {
-                return ConversationLanding(
-                  'Select a conversation',
-                  '',
-                );
-              }
-              if (state is MessagesNotLoaded) {
-                return ConversationLanding(
-                  'There was an error loading the selected conversation',
-                  '',
-                );
-              }
-              if (state is MessagesLoading) {
-                return LoadingIndicator(
-                  key: FlutterMessagesKeys.progressIndicator,
-                );
-              }
-              if (state is MessagesLoaded) {
-                return Flexible(
-                  child: Scrollbar(
-                    child: ListView.builder(
-                      reverse: true,
-                      itemCount: state.messages.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final pos = state.messages.length - 1 - index;
-                        final message = state.messages[pos];
-                        return SingleMessage(
-                          textTheme: textTheme,
-                          colorScheme: colorScheme,
-                          message: message,
-                        );
-                      },
-                    ),
-                  ),
-                );
-              }
-              return Text('ha, unknown state');
-            },
-          ),
-          BlocBuilder<MessagesBloc, MessagesState>(
-            buildWhen: (MessagesState previous, MessagesState current) {
-              if (previous is MessagesLoaded) {
-                if (current is MessagesLoaded) {
-                  return previous.conversation != current.conversation;
+                  );
                 }
-              }
-              return true;
-            },
-            builder: (context, state) {
-              if (state is MessagesLoaded) {
-                return _buildTextComposer(state.conversation.hash);
-              }
-              return Container();
-            },
-          ),
-        ],
+                return Container();
+              },
+            ),
+            BlocBuilder<MessagesBloc, MessagesState>(
+              builder: (context, state) {
+                if (state is MessagesInitial) {
+                  return ConversationLanding(
+                    'Select a conversation',
+                    '/topic <new conversation topic>\n' +
+                        '/nick <new conversation nick>',
+                  );
+                }
+                if (state is MessagesNotLoaded) {
+                  return ConversationLanding(
+                    'There was an error loading the selected conversation',
+                    '',
+                  );
+                }
+                if (state is MessagesLoading) {
+                  return LoadingIndicator(
+                    key: FlutterMessagesKeys.progressIndicator,
+                  );
+                }
+                if (state is MessagesLoaded) {
+                  return Flexible(
+                    child: Scrollbar(
+                      child: ListView.builder(
+                        reverse: true,
+                        itemCount: state.messages.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final pos = state.messages.length - 1 - index;
+                          final message = state.messages[pos];
+                          return SingleMessage(
+                            textTheme: textTheme,
+                            colorScheme: colorScheme,
+                            message: message,
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
+                return Text('ha, unknown state');
+              },
+            ),
+            BlocBuilder<MessagesBloc, MessagesState>(
+              buildWhen: (MessagesState previous, MessagesState current) {
+                if (previous is MessagesLoaded) {
+                  if (current is MessagesLoaded) {
+                    return previous.conversation != current.conversation;
+                  }
+                }
+                return true;
+              },
+              builder: (context, state) {
+                if (state is MessagesLoaded) {
+                  return _buildTextComposer(state.conversation.hash);
+                }
+                return Container();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -174,7 +174,9 @@ class _MessagesContainer extends State<MessagesContainer> {
     }
 
     return Container(
-      margin: const EdgeInsets.all(10),
+      padding: EdgeInsets.only(
+        top: 20,
+      ),
       child: TextField(
         controller: _textController,
         onSubmitted: _handleSubmitted,
@@ -239,59 +241,66 @@ class SingleMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.all(0),
       title: () {
-        if (message.senderNickname.isEmpty) {
-          return Row(
-            children: [
-              Text(
-                '[',
-                style: textTheme.caption,
-                maxLines: 1,
-              ),
-              ParticipantPublicKey(
-                message: message,
-                textTheme: textTheme,
-                colorScheme: colorScheme,
-              ),
-              Text(
-                '] · ',
-                style: textTheme.caption,
-                maxLines: 1,
-              ),
-              Text(
-                message.sent ?? '',
-                style: textTheme.caption,
-                maxLines: 1,
-              ),
-            ],
-          );
-        }
         return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              message.senderNickname ?? '',
-              style: textTheme.bodyText1,
-              maxLines: 1,
+            Container(
+              child: () {
+                if (message.senderNickname.isEmpty) {
+                  return RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                        text: '[',
+                        style: textTheme.caption,
+                      ),
+                      TextSpan(
+                        text: message.senderHash
+                            .substring(message.senderHash.length - 8),
+                        style: textTheme.caption,
+                      ),
+                      TextSpan(
+                        text: ']',
+                        style: textTheme.caption,
+                      ),
+                    ]),
+                    maxLines: 1,
+                  );
+                }
+                return RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: message.senderNickname ?? '',
+                      style: textTheme.bodyText1,
+                    ),
+                    TextSpan(
+                      text: ' · [',
+                      style: textTheme.caption,
+                    ),
+                    TextSpan(
+                      text: message.senderHash
+                          .substring(message.senderHash.length - 8),
+                      style: textTheme.caption,
+                    ),
+                    TextSpan(
+                      text: ']',
+                      style: textTheme.caption,
+                    ),
+                  ]),
+                  maxLines: 1,
+                );
+              }(),
             ),
-            Text(
-              ' · [',
-              style: textTheme.caption,
-              maxLines: 1,
-            ),
-            ParticipantPublicKey(
-              message: message,
-              textTheme: textTheme,
-              colorScheme: colorScheme,
-            ),
-            Text(
-              '] · ',
-              style: textTheme.caption,
-              maxLines: 1,
-            ),
-            Text(
-              message.sent ?? '',
-              style: textTheme.caption,
-              maxLines: 1,
+            Container(
+              child: Text(
+                () {
+                  var dt = DateTime.tryParse(message.sent);
+                  return DateFormat('dd/MM/yyyy kk:mm').format(dt);
+                }(),
+                style: textTheme.caption,
+                maxLines: 1,
+              ),
             ),
           ],
         );
