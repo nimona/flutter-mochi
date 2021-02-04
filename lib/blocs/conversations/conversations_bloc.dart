@@ -226,6 +226,9 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       if (!updated) {
         return;
       }
+      conversations.sort((a, b) {
+        return (a.topic ?? a.hash).compareTo(b.topic ?? b.hash);
+      });
       yield ConversationsLoaded(
         selected: currentState.selected,
         conversations: conversations,
