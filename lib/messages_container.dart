@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
+import 'package:mochi/app_localizations.dart';
 import 'package:mochi/blocs/messages/messages_bloc.dart';
 import 'package:mochi/blocs/messages/messages_state.dart';
 import 'package:mochi/data/repository.dart';
+import 'package:mochi/date_formatter.dart';
 import 'package:mochi/flutter_messages_keys.dart';
 import 'package:mochi/widgets/convesation_landing.dart';
 import 'package:mochi/widgets/loading_indicator.dart';
@@ -39,7 +41,12 @@ class _MessagesContainer extends State<MessagesContainer> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Container(
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.only(
+          top: 20,
+          left: 20,
+          bottom: 20,
+          right: 10,
+        ),
         child: Column(
           children: <Widget>[
             BlocBuilder<MessagesBloc, MessagesState>(
@@ -88,16 +95,50 @@ class _MessagesContainer extends State<MessagesContainer> {
                 if (state is MessagesLoaded) {
                   return Flexible(
                     child: Scrollbar(
+                      isAlwaysShown: true,
                       child: ListView.builder(
                         reverse: true,
                         itemCount: state.messages.length,
                         itemBuilder: (BuildContext context, int index) {
                           final pos = state.messages.length - 1 - index;
                           final message = state.messages[pos];
-                          return SingleMessage(
-                            textTheme: textTheme,
-                            colorScheme: colorScheme,
-                            message: message,
+                          var sameSender = false;
+                          var sameDay = false;
+                          var sameHour = false;
+                          var sameMinute = false;
+                          if (pos > 0 && pos <= state.messages.length) {
+                            final previousMessage = state.messages[pos - 1];
+                            if (previousMessage != null) {
+                              sameSender = message.senderHash ==
+                                  previousMessage.senderHash;
+                              var dt =
+                                  DateTime.tryParse(message.sent).toLocal();
+                              var pdt = DateTime.tryParse(previousMessage.sent)
+                                  .toLocal();
+                              sameDay =
+                                  roundDown(dt, delta: Duration(days: 1)) ==
+                                      roundDown(pdt, delta: Duration(days: 1));
+                              sameHour =
+                                  roundDown(dt, delta: Duration(hours: 1)) ==
+                                      roundDown(pdt, delta: Duration(hours: 1));
+                              sameMinute = roundDown(dt,
+                                      delta: Duration(minutes: 1)) ==
+                                  roundDown(pdt, delta: Duration(minutes: 1));
+                            }
+                          }
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                            ),
+                            child: SingleMessage(
+                              sameSender: sameSender,
+                              sameDay: sameDay,
+                              sameHour: sameHour,
+                              sameMinute: sameMinute,
+                              textTheme: textTheme,
+                              colorScheme: colorScheme,
+                              message: message,
+                            ),
                           );
                         },
                       ),
@@ -125,24 +166,6 @@ class _MessagesContainer extends State<MessagesContainer> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildMessagesList(AsyncSnapshot<List<Message>> snapshot) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    return Scrollbar(
-      child: ListView(
-        reverse: true,
-        children: snapshot.data.reversed.map((item) {
-          return SingleMessage(
-            textTheme: textTheme,
-            colorScheme: colorScheme,
-            message: item,
-          );
-        }).toList(),
       ),
     );
   }
@@ -175,7 +198,7 @@ class _MessagesContainer extends State<MessagesContainer> {
 
     return Container(
       padding: EdgeInsets.only(
-        top: 20,
+        top: 30,
       ),
       child: TextField(
         controller: _textController,
@@ -232,88 +255,156 @@ class SingleMessage extends StatelessWidget {
     @required this.textTheme,
     @required this.colorScheme,
     @required this.message,
+    this.sameSender,
+    this.sameDay,
+    this.sameHour,
+    this.sameMinute,
   }) : super(key: key);
 
   final TextTheme textTheme;
   final ColorScheme colorScheme;
   final Message message;
 
+  final bool sameSender;
+  final bool sameDay;
+  final bool sameHour;
+  final bool sameMinute;
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.all(0),
-      title: () {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              child: () {
-                if (message.senderNickname.isEmpty) {
-                  return RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                        text: '[',
-                        style: textTheme.caption,
+    var showDateTime = () {
+      var dt = DateTime.tryParse(message.sent).toLocal();
+      if (sameMinute) {
+        return Container();
+      }
+      if (sameDay) {
+        return Text(
+          DateFormat('HH:mm').format(dt),
+          textAlign: TextAlign.right,
+          style: TextStyle(
+            color: textTheme.caption.color,
+            fontSize: textTheme.caption.fontSize,
+          ),
+          maxLines: 1,
+        );
+      }
+      return Text(
+        DateFormatter(
+          AppLocalizations.of(context),
+        ).getVerboseDateTimeRepresentation(dt),
+        textAlign: TextAlign.right,
+        style: TextStyle(
+          color: textTheme.caption.color,
+          fontSize: textTheme.caption.fontSize,
+        ),
+        maxLines: 1,
+      );
+    };
+    return Column(
+      children: [
+        () {
+          if (sameSender) {
+            return Container();
+          }
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 15,
+              bottom: 10,
+              right: 30,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: () {
+                    if (message.senderNickname.isEmpty) {
+                      return RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '[',
+                              style: textTheme.caption,
+                            ),
+                            TextSpan(
+                              text: message.senderHash
+                                  .substring(message.senderHash.length - 8),
+                              style: textTheme.caption,
+                            ),
+                            TextSpan(
+                              text: ']',
+                              style: textTheme.caption,
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                      );
+                    }
+                    return RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: message.senderNickname ?? '',
+                            style: textTheme.bodyText1.copyWith(
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' · [',
+                            style: textTheme.caption,
+                          ),
+                          TextSpan(
+                            text: message.senderHash
+                                .substring(message.senderHash.length - 8),
+                            style: textTheme.caption,
+                          ),
+                          TextSpan(
+                            text: ']',
+                            style: textTheme.caption,
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: message.senderHash
-                            .substring(message.senderHash.length - 8),
-                        style: textTheme.caption,
-                      ),
-                      TextSpan(
-                        text: ']',
-                        style: textTheme.caption,
-                      ),
-                    ]),
-                    maxLines: 1,
+                      maxLines: 1,
+                    );
+                  }(),
+                ),
+                Container(
+                  child: showDateTime(),
+                ),
+              ],
+            ),
+          );
+        }(),
+        Padding(
+          padding: EdgeInsets.only(
+            top: 5,
+            right: 25,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  message.body,
+                  textAlign: TextAlign.left,
+                  style: textTheme.bodyText2.copyWith(
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+              ),
+              () {
+                if (sameSender) {
+                  return Container(
+                    child: showDateTime(),
                   );
                 }
-                return RichText(
-                  text: TextSpan(children: [
-                    TextSpan(
-                      text: message.senderNickname ?? '',
-                      style: textTheme.bodyText1,
-                    ),
-                    TextSpan(
-                      text: ' · [',
-                      style: textTheme.caption,
-                    ),
-                    TextSpan(
-                      text: message.senderHash
-                          .substring(message.senderHash.length - 8),
-                      style: textTheme.caption,
-                    ),
-                    TextSpan(
-                      text: ']',
-                      style: textTheme.caption,
-                    ),
-                  ]),
-                  maxLines: 1,
-                );
+                return Container();
               }(),
-            ),
-            Container(
-              child: Text(
-                () {
-                  var dt = DateTime.tryParse(message.sent);
-                  return DateFormat('dd/MM/yyyy kk:mm').format(dt);
-                }(),
-                style: textTheme.caption,
-                maxLines: 1,
-              ),
-            ),
-          ],
-        );
-      }(),
-      subtitle: Padding(
-        padding: EdgeInsets.only(
-          top: 5,
+            ],
+          ),
         ),
-        child: Text(
-          message.body,
-          style: textTheme.bodyText2,
-        ),
-      ),
+      ],
     );
   }
 }
@@ -342,4 +433,10 @@ class ParticipantPublicKey extends StatelessWidget {
       maxLines: 1,
     );
   }
+}
+
+DateTime roundDown(DateTime dt,
+    {Duration delta = const Duration(seconds: 15)}) {
+  return DateTime.fromMillisecondsSinceEpoch(dt.millisecondsSinceEpoch -
+      dt.millisecondsSinceEpoch % delta.inMilliseconds);
 }

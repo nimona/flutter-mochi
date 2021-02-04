@@ -61,12 +61,13 @@ class _ConversationListContainer extends State<ConversationListContainer> {
           if (state is ConversationsLoaded) {
             return SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  SafeArea(
-                    child: Padding(
+                Padding(
                       padding: EdgeInsets.only(
                         left: 20,
-                        right: 20,
+                        right: 30,
                         top: 20,
                       ),
                       child: Row(
@@ -127,7 +128,6 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                         ],
                       ),
                     ),
-                  ),
                   Padding(
                     padding: EdgeInsets.only(
                       top: 20,
@@ -186,11 +186,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       top: 20,
-                      bottom: 8,
+                      bottom: 10,
                       left: 20,
-                      right: 8,
+                      right: 10,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,12 +206,12 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       ],
                     ),
                   ),
-                  Padding(
+                  Container(
                     padding: EdgeInsets.only(
-                      top: 8,
-                      left: 32,
+                      top: 10,
+                      left: 20,
                       right: 20,
-                      bottom: 8,
+                      bottom: 10,
                     ),
                     child: Tooltip(
                       waitDuration: Duration(
@@ -221,6 +221,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                       verticalOffset: 10,
                       child: GestureDetector(
                         child: RichText(
+                          textAlign: TextAlign.left,
                           text: TextSpan(
                             children: [
                               TextSpan(
@@ -260,10 +261,10 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                      top: 16,
-                      bottom: 8,
+                      top: 20,
+                      bottom: 10,
                       left: 20,
-                      right: 8,
+                      right: 20,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -285,7 +286,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     itemCount: state.conversations.length,
                     itemBuilder: (BuildContext context, int index) {
                       final conversation = state.conversations[index];
-                      return ListTile( 
+                      return ListTile(
                         title: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -339,7 +340,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                 child: Container(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                      left: 10,
+                                      // left: 10,
                                       right: 10,
                                       top: 5,
                                       bottom: 5,
@@ -372,7 +373,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           );
                         },
                         contentPadding: EdgeInsets.only(
-                          left: 32,
+                          left: 30,
                           bottom: 0,
                           top: 0,
                           right: 20,
@@ -384,8 +385,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           if (state.selected == null) {
                             return false;
                           }
-                          return state.selected.hash ==
-                              conversation.hash;
+                          return state.selected.hash == conversation.hash;
                         }(),
                         dense: true,
                       );
