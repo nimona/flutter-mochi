@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mochi/blocs/conversations/conversations_bloc.dart';
 import 'package:mochi/blocs/conversations/conversations_event.dart';
 import 'package:mochi/blocs/conversations/conversations_state.dart';
@@ -236,7 +237,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                         .replaceFirst('ed25519.', ''),
                                     style: TextStyle(
                                       color: Colors.grey.shade700,
-                                      fontFamily: GoogleFonts.courierPrime().fontFamily,
+                                      fontFamily:
+                                          GoogleFonts.courierPrime().fontFamily,
                                       fontSize: 13,
                                     ),
                                   ),
@@ -248,31 +250,29 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             ),
                           ),
                         ),
-                        Ink(
-                          child: IconButton(
-                            enableFeedback: false,
-                            focusColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.pink,
-                            onPressed: () {
-                              Clipboard.setData(
-                                ClipboardData(
-                                  text: state.publicKey,
-                                ),
-                              );
-                              key.currentState.showSnackBar(
-                                new SnackBar(
-                                  content:
-                                      Text('Copied public key to clipboard'),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.copy,
-                              color: Colors.grey.shade600,
-                            ),
-                            iconSize: 14.0,
+                        InkWell(
+                          customBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
+                          child: Center(
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                top: 4,
+                                bottom: 4,
+                                left: 8,
+                                right: 8,
+                              ),
+                              child: Icon(
+                                Icons.copy,
+                                size: 16,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ),
+                          onTap: () {
+                            Repository.get()
+                                .createConversation('name', 'topic');
+                          },
                         ),
                       ],
                     ),
@@ -295,6 +295,32 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                        // InkWell(
+                        //   focusColor: Colors.pink[50],
+                        //   hoverColor: Colors.pink[50],
+                        //   customBorder: RoundedRectangleBorder(
+                        //     borderRadius: BorderRadius.circular(8),
+                        //   ),
+                        //   child: Center(
+                        //     child: Container(
+                        //       padding: EdgeInsets.only(
+                        //         top: 4,
+                        //         bottom: 4,
+                        //         left: 8,
+                        //         right: 8,
+                        //       ),
+                        //       child: Icon(
+                        //         Icons.add,
+                        //         size: 16,
+                        //         color: Colors.pink,
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   onTap: () {
+                        //     Repository.get()
+                        //         .createConversation('name', 'topic');
+                        //   },
+                        // ),
                       ],
                     ),
                   ),
