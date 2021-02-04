@@ -236,6 +236,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                         .replaceFirst('ed25519.', ''),
                                     style: TextStyle(
                                       color: Colors.grey.shade700,
+                                      fontFamily: GoogleFonts.courierPrime().fontFamily,
                                       fontSize: 13,
                                     ),
                                   ),
