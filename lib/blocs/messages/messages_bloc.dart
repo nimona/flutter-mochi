@@ -95,8 +95,12 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       final message = event.message.copyWith(
         senderNickname: currentState.nicknames[event.message.senderHash],
       );
-      final List<Message> updatedMessages = List.from(currentState.messages)
+      List<Message> updatedMessages = List.from(currentState.messages)
         ..add(message);
+      updatedMessages.sort((a, b) {
+        return a.sent.compareTo(b.sent);
+      });
+
       yield MessagesLoaded(
         currentState.conversation,
         updatedMessages,
@@ -135,7 +139,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       );
     }
   }
-  
+
   Stream<MessagesState> _mapTopicChangesToState(
     TopicChanged event,
   ) async* {
