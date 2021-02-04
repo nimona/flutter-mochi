@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:mochi/app_localizations.dart';
 import 'package:mochi/blocs/messages/messages_bloc.dart';
@@ -57,13 +58,27 @@ class _MessagesContainer extends State<MessagesContainer> {
                       contentPadding: EdgeInsets.all(0),
                       title: Text(
                         state.conversation?.topic,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade700,
+                        ),
                       ),
-                      subtitle: SelectableText(
-                        state.conversation?.hash ?? '',
-                        toolbarOptions: ToolbarOptions(
-                          copy: true,
-                          selectAll: true,
+                      subtitle: Padding(
+                        padding: EdgeInsets.only(
+                          top: 30,
+                          bottom: 20,
+                        ),
+                        child: SelectableText(
+                          state.conversation?.hash ?? '',
+                          toolbarOptions: ToolbarOptions(
+                            copy: true,
+                            selectAll: true,
+                          ),
+                          style: TextStyle(
+                            fontFamily: GoogleFonts.courierPrime().fontFamily,
+                            color: Colors.grey.shade400,
+                          ),
                         ),
                       ),
                     ),
