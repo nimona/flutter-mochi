@@ -62,5 +62,18 @@
                 <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.0/Mochi0.4.0-0.2.2.delta" sparkle:version="0.4.0" sparkle:shortVersionString="0.4.0" sparkle:deltaFrom="0.2.2" length="16315893" type="application/octet-stream" sparkle:edSignature="aeun/4UUVwvxqXH9n1zX86mupbIgPtowy6LvVC09mRCoaRAO8gr7pABBj8idtGBEt3sFR7C173gKPV3TU/OsBA=="/>
             </sparkle:deltas>
         </item>
+        <item>
+            <title>0.4.1</title>
+            <pubDate>Thu, 04 Feb 2021 00:49:17 +0000</pubDate>
+            <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.1/mochi-v0.4.1.zip" sparkle:version="0.4.1" sparkle:shortVersionString="0.4.1" length="26657465" type="application/octet-stream" sparkle:edSignature="dVxBqp7kYnRCwUfnr9v0g9HJ3/R6Nz1Ykg5/KHRAVuGx90EmulHrRfr6L1V2PiKs5Wk0ijkBznIewau6WozbBA=="/>
+            <sparkle:deltas>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.1/Mochi0.4.1-0.4.0.delta" sparkle:version="0.4.1" sparkle:shortVersionString="0.4.1" sparkle:deltaFrom="0.4.0" length="1338122" type="application/octet-stream" sparkle:edSignature="WHfDt4HQz0IioZtkt582EWQ97RHeHr02sIFXUfrfszpFnd4QkAG98h/Qn4Crv7lfm5Ms4+YlxpV61Bnq2vMzAA=="/>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.1/Mochi0.4.1-0.3.1.delta" sparkle:version="0.4.1" sparkle:shortVersionString="0.4.1" sparkle:deltaFrom="0.3.1" length="2545965" type="application/octet-stream" sparkle:edSignature="qxcv5aqCvvbBAzHeYQAUtLEXHYvQm4WrfCrqilcA4LrYU1bVJAnoqCkNGpzDZ4vSkiNESoS90nZ9HFGPBpz2Bw=="/>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.1/Mochi0.4.1-0.3.0.delta" sparkle:version="0.4.1" sparkle:shortVersionString="0.4.1" sparkle:deltaFrom="0.3.0" length="5988070" type="application/octet-stream" sparkle:edSignature="Isj3cgjmkGo7bwodVVXz1z2P4AzzOGRx/rylFOmZKGPdiNu9vKFHbTtGRTdFhGKeTqQb6NDvmhuk4nUQwDJCBw=="/>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.1/Mochi0.4.1-0.2.3.delta" sparkle:version="0.4.1" sparkle:shortVersionString="0.4.1" sparkle:deltaFrom="0.2.3" length="16662638" type="application/octet-stream" sparkle:edSignature="s6jwWpp0tEc+SWlzVr7KyJqwq9uAky6MSZ4e7BD4TRL5Ali6uINtgpzCGdq5IoXkbCdpKiy6gZJud0Elgji8AQ=="/>
+                <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.4.1/Mochi0.4.1-0.2.2.delta" sparkle:version="0.4.1" sparkle:shortVersionString="0.4.1" sparkle:deltaFrom="0.2.2" length="16666085" type="application/octet-stream" sparkle:edSignature="+UWVa7c1WLg6gtM8jeVCZFYlpZK60teDtWRaUPwlhVsg2YgUqTZLc9SFgMnVV+fAz6SjSVWe2KgCSlYyta7lDQ=="/>
+            </sparkle:deltas>
+        </item>
     </channel>
 </rss>

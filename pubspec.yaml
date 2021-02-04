@@ -2,7 +2,7 @@ name: mochi
 description: Mochi messenger
 publish_to: none
 
-version: 0.4.0
+version: 0.4.1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
