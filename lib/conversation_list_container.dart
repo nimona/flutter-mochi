@@ -64,70 +64,70 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                Padding(
-                      padding: EdgeInsets.only(
-                        left: 20,
-                        right: 30,
-                        top: 20,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Mochi',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade500,
-                            ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      right: 30,
+                      top: 20,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Mochi',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey.shade500,
                           ),
-                          Container(
-                            child: TextButton.icon(
-                              icon: Icon(
-                                Icons.add,
-                                color: Colors.pink,
-                                size: 14,
-                              ),
-                              label: Container(
-                                child: Text(
-                                  'New',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.pink,
-                                  ),
-                                ),
-                                padding: EdgeInsets.only(
-                                  bottom: 2,
-                                  right: 2,
-                                ),
-                              ),
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.only(
-                                  left: 15,
-                                  right: 15,
-                                  top: 8,
-                                  bottom: 8,
-                                ),
-                                backgroundColor: Colors.pink[50],
-                                textStyle: TextStyle(
+                        ),
+                        Container(
+                          child: TextButton.icon(
+                            icon: Icon(
+                              Icons.add,
+                              color: Colors.pink,
+                              size: 14,
+                            ),
+                            label: Container(
+                              child: Text(
+                                'New',
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   color: Colors.pink,
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
                               ),
-                              onPressed: () {
-                                Repository.get()
-                                    .createConversation('name', 'topic');
-                              },
+                              padding: EdgeInsets.only(
+                                bottom: 2,
+                                right: 2,
+                              ),
                             ),
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.only(
+                                left: 15,
+                                right: 15,
+                                top: 8,
+                                bottom: 8,
+                              ),
+                              backgroundColor: Colors.pink[50],
+                              textStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.pink,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            onPressed: () {
+                              Repository.get()
+                                  .createConversation('name', 'topic');
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
                   Padding(
                     padding: EdgeInsets.only(
                       top: 20,
@@ -208,55 +208,72 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                      top: 10,
                       left: 20,
                       right: 20,
-                      bottom: 10,
                     ),
-                    child: Tooltip(
-                      waitDuration: Duration(
-                        milliseconds: 500,
-                      ),
-                      message: 'Your public key, click to copy',
-                      verticalOffset: 10,
-                      child: GestureDetector(
-                        child: RichText(
-                          textAlign: TextAlign.left,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '@ ',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Tooltip(
+                            waitDuration: Duration(
+                              milliseconds: 500,
+                            ),
+                            message: 'Your public key',
+                            verticalOffset: 10,
+                            child: RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: '@ ',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: state.publicKey
+                                        .replaceFirst('ed25519.', ''),
+                                    style: TextStyle(
+                                      color: Colors.grey.shade700,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              TextSpan(
-                                text: state.publicKey
-                                    .replaceFirst('ed25519.', ''),
-                                style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
+                              maxLines: 1,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
                         ),
-                        onTap: () {
-                          Clipboard.setData(
-                            ClipboardData(
-                              text: state.publicKey,
+                        Ink(
+                          child: IconButton(
+                            enableFeedback: false,
+                            focusColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.pink,
+                            onPressed: () {
+                              Clipboard.setData(
+                                ClipboardData(
+                                  text: state.publicKey,
+                                ),
+                              );
+                              key.currentState.showSnackBar(
+                                new SnackBar(
+                                  content:
+                                      Text('Copied public key to clipboard'),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.copy,
+                              color: Colors.grey.shade600,
                             ),
-                          );
-                          key.currentState.showSnackBar(
-                            new SnackBar(
-                              content: Text('Copied public key to clipboard'),
-                            ),
-                          );
-                        },
-                      ),
+                            iconSize: 14.0,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
@@ -340,7 +357,6 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                 child: Container(
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                      // left: 10,
                                       right: 10,
                                       top: 5,
                                       bottom: 5,
