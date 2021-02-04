@@ -105,11 +105,10 @@ class NimonaDataStore implements DataStore {
   @override
   Stream<conversation_created.ConversationCreated>
       subscribeToConversations() async* {
-    final String rootType = 'stream:' + ConversationCreatedType;
     final String subKey = await Nimona.subscribe(
       SubscribeRequest(
         lookups: [
-          'type:' + rootType,
+          'type:' + ConversationCreatedType,
         ],
       ),
     );
