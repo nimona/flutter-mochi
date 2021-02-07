@@ -110,6 +110,7 @@ release-macos-update-appcast:
 
 .PHONY: github-release
 github-release:
+	@git commit -am 'chore: bump to v$(VERSION)'
 	@git tag -a v$(VERSION) -m ''
 	@git push origin
 	@git push origin v$(VERSION)

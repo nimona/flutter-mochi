@@ -24,4 +24,4 @@ Currently macos only.
   * `make release-ios`
   * `make release-macos`
 * Commit, tag, push
-* Create release, upload artifacts
+  * `make github-release`
