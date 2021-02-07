@@ -108,6 +108,13 @@ release-macos-update-appcast:
 	VERSION=$(VERSION) \
 		./update_appcast.sh
 
+.PHONY: github-release
+github-release:
+	@git tag -a v$(VERSION) -m ''
+	@git push origin
+	@git push origin v$(VERSION)
+	@hub release create v$(VERSION) -m 'v$(VERSION)' -a ./artifacts/$(NAME)-v$(VERSION).zip
+
 .PHONY: notirization-verify
 notirization-verify:
 	@xcrun altool \
