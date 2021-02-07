@@ -27,6 +27,7 @@
 .packages
 .pub-cache/
 .pub/
+.flutter-plugins-dependencies
 /build/
 
 # Android related
@@ -75,3 +76,4 @@
 artifacts/*.zip
 artifacts/*.app
 ITEM.txt
+*.delta
