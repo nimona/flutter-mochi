@@ -14,7 +14,7 @@ class MasterDetailLayout extends StatefulWidget {
 
 class _MasterDetailLayoutState extends State<MasterDetailLayout> {
   // TODO bump breakpoint to 600 and fix mobile layout
-  static const int kTabletBreakpoint = 0; 
+  static const int kTabletBreakpoint = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,14 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
       children: <Widget>[
         Flexible(
           flex: 3,
-          child: Material(
-            elevation: 4.0,
-            child: ConversationListContainer(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 250,
+            ),
+            child: Material(
+              elevation: 4.0,
+              child: ConversationListContainer(),
+            ),
           ),
         ),
         Flexible(

@@ -1,23 +1,27 @@
 # mochi
 
-A new Flutter application.
+Proof of concept messaging application based on nimona.
 
-## Getting Started
+Currently macos only.
 
-This project is a starting point for a Flutter application.
+## Building and releasing
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-## 
-
-```sh
-./macos/Pods/Sparkle/bin/generate_appcast ./artifacts \
-    --download-url-prefix https://github.com/nimona/flutter-mochi/releases/download/#{s.version}
-```
+* Required tools
+  * Git
+  * [Flutter](https://flutter.dev/)
+  * [Hub](https://github.com/github/hub)
+  * [Xcode](https://developer.apple.com/xcode/)
+* Required env vars
+  * `SPARKLE_ED_PRIVATE_KEY`
+* Bump version
+  * `make bump-patch`
+  * `make bump-minor`
+  * `make bump-major`
+* Build
+  * `make build-ios`
+  * `make build-macos`
+* Release
+  * `make release-ios`
+  * `make release-macos`
+* Commit, tag, push
+* Create release, upload artifacts

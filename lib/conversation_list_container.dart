@@ -68,7 +68,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                   Padding(
                     padding: EdgeInsets.only(
                       left: 20,
-                      right: 30,
+                      right: 20,
                       top: 20,
                     ),
                     child: Row(
@@ -270,15 +270,23 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             ),
                           ),
                           onTap: () {
-                            Repository.get()
-                                .createConversation('name', 'topic');
+                            Clipboard.setData(
+                              ClipboardData(
+                                text: state.publicKey,
+                              ),
+                            );
+                            key.currentState.showSnackBar(
+                              new SnackBar(
+                                content: Text('Copied public key to clipboard'),
+                              ),
+                            );
                           },
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       top: 20,
                       bottom: 10,
                       left: 20,
@@ -331,6 +339,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                     itemBuilder: (BuildContext context, int index) {
                       final conversation = state.conversations[index];
                       return ListTile(
+                        visualDensity: VisualDensity(
+                          horizontal: 0,
+                          vertical: -4,
+                        ),
+                        minVerticalPadding: 0,
                         title: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -382,19 +395,17 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                               }
                               return SizedBox(
                                 child: Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 10,
-                                      top: 5,
-                                      bottom: 5,
-                                    ),
-                                    child: Text(
-                                      count.toString(),
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.pink,
-                                      ),
+                                  padding: EdgeInsets.only(
+                                    right: 10,
+                                    top: 5,
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    count.toString(),
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.pink,
                                     ),
                                   ),
                                   decoration: new BoxDecoration(

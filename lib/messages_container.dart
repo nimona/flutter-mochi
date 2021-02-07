@@ -143,7 +143,7 @@ class _MessagesContainer extends State<MessagesContainer> {
                           }
                           return Padding(
                             padding: EdgeInsets.only(
-                              top: 10,
+                              top: 5,
                             ),
                             child: SingleMessage(
                               sameSender: sameSender,
@@ -324,7 +324,7 @@ class SingleMessage extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(
               top: 15,
-              bottom: 10,
+              bottom: 5,
               right: 30,
             ),
             child: Row(
