@@ -426,9 +426,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LNCQ7FYZE7;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FLUTTER_BUILD_NAME = 0.4.2;
+				FLUTTER_BUILD_NUMBER = 0.4.2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter/ephemeral",
@@ -444,7 +446,6 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 0.4.2;
 				OTHER_CODE_SIGN_FLAGS = "--timestamp --deep --options runtime";
 				PRODUCT_BUNDLE_IDENTIFIER = io.nimona.mochi;
 				PRODUCT_NAME = Mochi;
@@ -572,9 +573,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LNCQ7FYZE7;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FLUTTER_BUILD_NAME = 0.4.2;
+				FLUTTER_BUILD_NUMBER = 0.4.2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter/ephemeral",
@@ -590,7 +593,6 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 0.4.2;
 				OTHER_CODE_SIGN_FLAGS = "--timestamp --deep --options runtime";
 				PRODUCT_BUNDLE_IDENTIFIER = io.nimona.mochi;
 				PRODUCT_NAME = Mochi;
@@ -610,9 +612,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LNCQ7FYZE7;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FLUTTER_BUILD_NAME = 0.4.2;
+				FLUTTER_BUILD_NUMBER = 0.4.2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter/ephemeral",
@@ -628,7 +632,6 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 0.4.2;
 				OTHER_CODE_SIGN_FLAGS = "--timestamp --deep --options runtime";
 				PRODUCT_BUNDLE_IDENTIFIER = io.nimona.mochi;
 				PRODUCT_NAME = Mochi;

@@ -12,7 +12,7 @@ edSignatureAndLength=$(./macos/Pods/Sparkle/bin/sign_update -s ${SPARKLE_ED_PRIV
 
 echo "
         <item>
-          <title>Version $version</title>
+          <title>$version</title>
           <pubDate>$date</pubDate>
           <sparkle:minimumSystemVersion>$minimumSystemVersion</sparkle:minimumSystemVersion>
           <sparkle:releaseNotesLink>https://github.com/nimona/flutter-mochi/releases/tag/v$version</sparkle:releaseNotesLink>

@@ -43,19 +43,15 @@ class _MasterDetailLayoutState extends State<MasterDetailLayout> {
     return Row(
       children: <Widget>[
         Flexible(
-          flex: 3,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 250,
-            ),
-            child: Material(
-              elevation: 4.0,
-              child: ConversationListContainer(),
-            ),
+          flex: 2,
+          child: Material(
+            elevation: 4.0,
+            child: ConversationListContainer(),
           ),
         ),
         Flexible(
           flex: 7,
+          fit: FlexFit.tight,
           child: Scaffold(
             body: messagesContainer,
           ),
