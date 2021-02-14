@@ -6,7 +6,7 @@
             <title>0.5.0</title>
             <pubDate>Sun, 14 Feb 2021 21:13:18 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/mochi-v0.5.0.zip" sparkle:version="7" sparkle:shortVersionString="0.5.0" length="26533124" type="application/octet-stream" sparkle:edSignature="6hIyfEI92WaZCaqXPkijMxDAh7NkdyBmoM015qP7SCSglPwpbjaG403w0YmgTGw+gzR/b3Hp48ML2/Dw/tPvBA=="/>
+            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.5.0/mochi-v0.5.0.zip" sparkle:version="7" sparkle:shortVersionString="0.5.0" length="26533124" type="application/octet-stream" sparkle:edSignature="6hIyfEI92WaZCaqXPkijMxDAh7NkdyBmoM015qP7SCSglPwpbjaG403w0YmgTGw+gzR/b3Hp48ML2/Dw/tPvBA=="/>
         </item>
     </channel>
 </rss>
