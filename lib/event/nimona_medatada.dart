@@ -33,7 +33,7 @@ class MetadataM {
     return {
       'owner:s': ownerS,
       // 'parents:as': parentsAs,
-      'stream:s': streamS,
+      'stream:r': streamS,
       'datetime:s': datetimeS,
     };
   }
@@ -44,7 +44,7 @@ class MetadataM {
     return MetadataM(
       ownerS: map['owner:s'],
       // parentsAs: List<String>.from(map['parents:as']),
-      streamS: map['stream:s'],
+      streamS: map['stream:r'],
       datetimeS: map['datetime:s'],
     );
   }

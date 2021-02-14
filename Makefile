@@ -28,6 +28,9 @@ bump-minor: bump-minor-podspec
 	cd ios && \
 		fastlane run increment_build_number && \
 		agvtool new-marketing-version $(VERSION)
+	cd macos && \
+		fastlane run increment_build_number && \
+		agvtool new-marketing-version $(VERSION)
 
 .PHONY: bump-minor-podspec
 bump-minor-podspec:
@@ -37,6 +40,9 @@ bump-minor-podspec:
 bump-major: bump-major-podspec
 	$(eval VERSION := $(shell yq e '.version' pubspec.yaml))
 	cd ios && \
+		fastlane run increment_build_number && \
+		agvtool new-marketing-version $(VERSION)
+	cd macos && \
 		fastlane run increment_build_number && \
 		agvtool new-marketing-version $(VERSION)
 
