@@ -22,15 +22,15 @@ class Repository {
   }
 
   Future<void> refreshConversation(
-    String conversationRootHash,
+    String conversationRootCID,
   ) async {
-    return _dataStore.refreshConversation(conversationRootHash);
+    return _dataStore.refreshConversation(conversationRootCID);
   }
 
   Future<void> joinConversation(
-    String conversationRootHash,
+    String conversationRootCID,
   ) async {
-    return _dataStore.joinConversation(conversationRootHash);
+    return _dataStore.joinConversation(conversationRootCID);
   }
 
   StreamController<NimonaTyped> getConversations(
@@ -77,16 +77,16 @@ class Repository {
     );
   }
 
-  Future<void> createMessage(String conversationHash, String body) {
-    return _dataStore.createMessage(conversationHash, body);
+  Future<void> createMessage(String conversationCID, String body) {
+    return _dataStore.createMessage(conversationCID, body);
   }
 
-  Future<void> updateNickname(String conversationHash, String nickname) {
-    return _dataStore.updateNickname(conversationHash, nickname);
+  Future<void> updateNickname(String conversationCID, String nickname) {
+    return _dataStore.updateNickname(conversationCID, nickname);
   }
 
-  Future<void> updateTopic(String conversationHash, String topic) {
-    return _dataStore.updateTopic(conversationHash, topic);
+  Future<void> updateTopic(String conversationCID, String topic) {
+    return _dataStore.updateTopic(conversationCID, topic);
   }
 
   Future<ConnectionInfo> getConnectionInfo() {

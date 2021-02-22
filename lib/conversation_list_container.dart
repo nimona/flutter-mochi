@@ -360,11 +360,11 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                     ),
                                     TextSpan(
                                       text: conversation.topic ??
-                                          conversation.hash,
+                                          conversation.cid,
                                       style: TextStyle(
                                         color: () {
                                           final count = state.unreadCount[
-                                                  conversation.hash] ??
+                                                  conversation.cid] ??
                                               0;
                                           if (state.selected == null) {
                                             if (count == 0) {
@@ -372,8 +372,8 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                                             }
                                             return Colors.black;
                                           }
-                                          if (state.selected.hash ==
-                                              conversation.hash) {
+                                          if (state.selected.cid ==
+                                              conversation.cid) {
                                             return Colors.pink;
                                           }
                                           return Colors.grey.shade700;
@@ -389,7 +389,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                             ),
                             () {
                               final count =
-                                  state.unreadCount[conversation.hash] ?? 0;
+                                  state.unreadCount[conversation.cid] ?? 0;
                               if (count == 0) {
                                 return Container();
                               }
@@ -439,7 +439,7 @@ class _ConversationListContainer extends State<ConversationListContainer> {
                           if (state.selected == null) {
                             return false;
                           }
-                          return state.selected.hash == conversation.hash;
+                          return state.selected.cid == conversation.cid;
                         }(),
                         dense: true,
                       );

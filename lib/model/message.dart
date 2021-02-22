@@ -3,34 +3,34 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class Message extends Equatable {
-  final String hash;
+  final String cid;
   final String body;
   final String sent;
-  final String senderHash;
+  final String senderCID;
   final String senderNickname;
   final bool isEdited;
   Message({
-    this.hash,
+    this.cid,
     this.body,
     this.sent,
-    this.senderHash,
+    this.senderCID,
     this.senderNickname,
     this.isEdited,
   });
 
   Message copyWith({
-    String hash,
+    String cid,
     String body,
     DateTime sent,
-    String senderHash,
+    String senderCID,
     String senderNickname,
     bool isEdited,
   }) {
     return Message(
-      hash: hash ?? this.hash,
+      cid: cid ?? this.cid,
       body: body ?? this.body,
       sent: sent ?? this.sent,
-      senderHash: senderHash ?? this.senderHash,
+      senderCID: senderCID ?? this.senderCID,
       senderNickname: senderNickname ?? this.senderNickname,
       isEdited: isEdited ?? this.isEdited,
     );
@@ -38,10 +38,10 @@ class Message extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'hash': hash,
+      'cid': cid,
       'body': body,
       'sent': sent,
-      'senderHash': senderHash,
+      'senderCID': senderCID,
       'senderNickname': senderNickname,
       'isEdited': isEdited,
     };
@@ -51,10 +51,10 @@ class Message extends Equatable {
     if (map == null) return null;
   
     return Message(
-      hash: map['hash'],
+      cid: map['cid'],
       body: map['body'],
       sent: map['sent'],
-      senderHash: map['senderHash'],
+      senderCID: map['senderCID'],
       senderNickname: map['senderNickname'],
       isEdited: map['isEdited'],
     );
@@ -70,10 +70,10 @@ class Message extends Equatable {
   @override
   List<Object> get props {
     return [
-      hash,
+      cid,
       body,
       sent,
-      senderHash,
+      senderCID,
       senderNickname,
       isEdited,
     ];

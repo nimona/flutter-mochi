@@ -9,16 +9,16 @@ abstract class DataStore {
   Future<void> init();
   Future<ConnectionInfo> getConnectionInfo();
 
-  Future<void> joinConversation(String conversationRootHash);
-  Future<void> refreshConversation(String conversationRootHash);
+  Future<void> joinConversation(String conversationRootCID);
+  Future<void> refreshConversation(String conversationRootCID);
   Stream<NimonaTyped> getConversations(int limit, int offset);
   Stream<NimonaTyped> subscribeToConversations();
   Future<void> createConversation(String name, String topic);
-  Future<void> updateTopic(String conversationHash, String topic);
+  Future<void> updateTopic(String conversationCID, String topic);
 
   Future<StreamController<NimonaTyped>> getMessagesForConversation(String conversationId, int limit, int offset);
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(String conversationId);
-  Future<void> createMessage(String conversationHash, String body);
+  Future<void> createMessage(String conversationCID, String body);
   Future<StreamController<NimonaTyped>> subscribeToMessages();
-  Future<void> updateNickname(String conversationHash, String nickname);
+  Future<void> updateNickname(String conversationCID, String nickname);
 }

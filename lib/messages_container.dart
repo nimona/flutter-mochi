@@ -70,7 +70,7 @@ class _MessagesContainer extends State<MessagesContainer> {
                           bottom: 20,
                         ),
                         child: SelectableText(
-                          state.conversation?.hash ?? '',
+                          state.conversation?.cid ?? '',
                           toolbarOptions: ToolbarOptions(
                             copy: true,
                             selectAll: true,
@@ -124,8 +124,8 @@ class _MessagesContainer extends State<MessagesContainer> {
                           if (pos > 0 && pos <= state.messages.length) {
                             final previousMessage = state.messages[pos - 1];
                             if (previousMessage != null) {
-                              sameSender = message.senderHash ==
-                                  previousMessage.senderHash;
+                              sameSender = message.senderCID ==
+                                  previousMessage.senderCID;
                               var dt =
                                   DateTime.tryParse(message.sent).toLocal();
                               var pdt = DateTime.tryParse(previousMessage.sent)
@@ -174,7 +174,7 @@ class _MessagesContainer extends State<MessagesContainer> {
               },
               builder: (context, state) {
                 if (state is MessagesLoaded) {
-                  return _buildTextComposer(state.conversation.hash);
+                  return _buildTextComposer(state.conversation.cid);
                 }
                 return Container();
               },
@@ -185,7 +185,7 @@ class _MessagesContainer extends State<MessagesContainer> {
     );
   }
 
-  Widget _buildTextComposer(String conversationHash) {
+  Widget _buildTextComposer(String conversationCID) {
     final TextEditingController _textController = new TextEditingController();
 
     void _handleSubmitted(String text) {
@@ -196,7 +196,7 @@ class _MessagesContainer extends State<MessagesContainer> {
           if (nickname.length == 0) {
             return;
           }
-          Repository.get().updateNickname(conversationHash, nickname);
+          Repository.get().updateNickname(conversationCID, nickname);
           return;
         }
         if (text.startsWith('/topic ')) {
@@ -204,10 +204,10 @@ class _MessagesContainer extends State<MessagesContainer> {
           if (topic.length == 0) {
             return;
           }
-          Repository.get().updateTopic(conversationHash, topic);
+          Repository.get().updateTopic(conversationCID, topic);
           return;
         }
-        Repository.get().createMessage(conversationHash, text);
+        Repository.get().createMessage(conversationCID, text);
       }
     }
 
@@ -342,8 +342,8 @@ class SingleMessage extends StatelessWidget {
                               style: textTheme.caption,
                             ),
                             TextSpan(
-                              text: message.senderHash
-                                  .substring(message.senderHash.length - 8),
+                              text: message.senderCID
+                                  .substring(message.senderCID.length - 8),
                               style: textTheme.caption,
                             ),
                             TextSpan(
@@ -370,8 +370,8 @@ class SingleMessage extends StatelessWidget {
                             style: textTheme.caption,
                           ),
                           TextSpan(
-                            text: message.senderHash
-                                .substring(message.senderHash.length - 8),
+                            text: message.senderCID
+                                .substring(message.senderCID.length - 8),
                             style: textTheme.caption,
                           ),
                           TextSpan(
@@ -439,7 +439,7 @@ class ParticipantPublicKey extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final publicKey =
-        message.senderHash.substring(message.senderHash.length - 8);
+        message.senderCID.substring(message.senderCID.length - 8);
     return Text(
       publicKey,
       style: textTheme.caption.copyWith(

@@ -7,11 +7,11 @@ import 'package:mochi/event/types.dart';
 class StreamSubscription implements NimonaTyped {
   DataM dataM;
   MetadataM metadataM;
-  String hashS;
+  String cidS;
   StreamSubscription({
     this.dataM,
     this.metadataM,
-    this.hashS,
+    this.cidS,
   });
 
   String type() {
@@ -22,12 +22,12 @@ class StreamSubscription implements NimonaTyped {
     DataM dataM,
     MetadataM metadataM,
     String typeS,
-    String hashS,
+    String cidS,
   }) {
     return StreamSubscription(
       dataM: dataM ?? this.dataM,
       metadataM: metadataM ?? this.metadataM,
-      hashS: hashS ?? this.hashS,
+      cidS: cidS ?? this.cidS,
     );
   }
 
@@ -36,7 +36,7 @@ class StreamSubscription implements NimonaTyped {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
       'type:s': StreamSubscriptionType,
-      '_hash:s': hashS,
+      '_cid:s': cidS,
     };
   }
 
@@ -46,7 +46,7 @@ class StreamSubscription implements NimonaTyped {
     return StreamSubscription(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      hashS: map['_hash:s'],
+      cidS: map['_cid:s'],
     );
   }
 
@@ -56,7 +56,7 @@ class StreamSubscription implements NimonaTyped {
 
   @override
   String toString() {
-    return 'StreamSubscription(dataM: $dataM, metadataM: $metadataM, hashS: $hashS)';
+    return 'StreamSubscription(dataM: $dataM, metadataM: $metadataM, cidS: $cidS)';
   }
 
   @override
@@ -66,14 +66,14 @@ class StreamSubscription implements NimonaTyped {
     return o is StreamSubscription &&
       o.dataM == dataM &&
       o.metadataM == metadataM &&
-      o.hashS == hashS;
+      o.cidS == cidS;
   }
 
   @override
   int get hashCode {
     return dataM.hashCode ^
       metadataM.hashCode ^
-      hashS.hashCode;
+      cidS.hashCode;
   }
 }
 

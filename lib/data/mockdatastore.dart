@@ -9,13 +9,13 @@ import 'package:mochi/event/nimona_typed.dart';
 import 'package:mochi/event/utils.dart';
 
 final List<String> mockEvents = [
-  '{"data:m":{"nonce:s":"hello-world!!1"},"metadata:m":{},"type:s":"stream:poc.nimona.io/conversation","_hash:s":"oh1.2rA8iDpuVpTS3WDeG7LLQWGUtzrgw9xHgGAVHPafnCTo"}',
+  '{"data:m":{"nonce:s":"hello-world!!1"},"metadata:m":{},"type:s":"stream:poc.nimona.io/conversation","_cid:s":"oh1.2rA8iDpuVpTS3WDeG7LLQWGUtzrgw9xHgGAVHPafnCTo"}',
 ];
 
 final List<String> mockConversationEvents = [
-  // '{"data:m":{"expiry:s":"","rootHashes:ar":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"]},"metadata:m":{"owner:s":"ed25519.DrKSCKD8HXXiDkGjhYYz54ihtGco4EHHUfzQ5Fp5r6Qv","parents:as":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"nimona.io/stream.Subscription"}',
+  // '{"data:m":{"expiry:s":"","rootCIDes:ar":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"]},"metadata:m":{"owner:s":"ed25519.DrKSCKD8HXXiDkGjhYYz54ihtGco4EHHUfzQ5Fp5r6Qv","parents:as":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"nimona.io/stream.Subscription"}',
   '{"data:m":{"body:s":"a. hello world","datetime:s":"2021-01-20T22:36:56Z"},"metadata:m":{"_signature:m":{"alg:s":"OH_ES256","signer:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","x:d":"LD3O1BVnf3qv3ZwbajlpTcOQMwXbYx2oLoN/Gb+7jVane3NvylJcCOM1Yo6WiAJ7NuLViUUDVhK8VKD/p/uhCg=="},"owner:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","parents:as":["oh1.Hc87Lz67wW9qL391hjAPaSQmxDQdb5Ug8ki6hg1XJ5VQ"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"poc.nimona.io/conversation.MessageAdded"}',
-  // '{"data:m":{"expiry:s":"","rootHashes:ar":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"]},"metadata:m":{"_signature:m":{"alg:s":"OH_ES256","signer:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","x:d":"mkb/iRn5B+H/vulye8kC3J/lr5TwOPPDnkCwr0DzpjNa8/ppvbLtZmdQwcakC65UOd+x//hyD31+Fw/KNxZjCw=="},"owner:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","parents:as":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"nimona.io/stream.Subscription"}',
+  // '{"data:m":{"expiry:s":"","rootCIDes:ar":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"]},"metadata:m":{"_signature:m":{"alg:s":"OH_ES256","signer:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","x:d":"mkb/iRn5B+H/vulye8kC3J/lr5TwOPPDnkCwr0DzpjNa8/ppvbLtZmdQwcakC65UOd+x//hyD31+Fw/KNxZjCw=="},"owner:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","parents:as":["oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"nimona.io/stream.Subscription"}',
   '{"data:m":{"body:s":"b. hi","datetime:s":"2021-01-20T22:37:20Z"},"metadata:m":{"owner:s":"ed25519.DrKSCKD8HXXiDkGjhYYz54ihtGco4EHHUfzQ5Fp5r6Qv","parents:as":["oh1.53aSh3q7CxzWWJFeyeqD3EDGUQjokKSHyGjQHgvHNZi","oh1.AgdATFJqtoYuW7uJ4rTgH1FBFVTHvro1zVTxhXgnyfd6"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"poc.nimona.io/conversation.MessageAdded"}',
   '{"data:m":{"body:s":"c. woo","datetime:s":"2021-01-20T22:37:25Z"},"metadata:m":{"_signature:m":{"alg:s":"OH_ES256","signer:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","x:d":"KAIFX4bFc2wBBwMIDnjZbOuRjhW/PSkNcmyEV3s3BLbTiBBsnBgRCXfnVyRpUokhzNN1ArzHhqEq1fcZK++DBg=="},"owner:s":"ed25519.F9zL12SmEJXbWHoYgwG7UUhGLJAwtpzBc8cT72fbA9eF","parents:as":["oh1.Uwg6Jogmt2ZynhTLNCvV7aeHPPxNgsT2ZNgex8nWHAx","oh1.Uwg6Jogmt2ZynhTLNCvV7aeHPPxNgsT2ZNgex8nWHAx"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"poc.nimona.io/conversation.MessageAdded"}',
   '{"data:m":{"body:s":"d. I\'m chaning names","datetime:s":"2021-01-20T22:37:31Z"},"metadata:m":{"owner:s":"ed25519.DrKSCKD8HXXiDkGjhYYz54ihtGco4EHHUfzQ5Fp5r6Qv","parents:as":["oh1.4NSiiEEfk1pnvjfsMSEV82dt2VT76fywX4PpAtQSBWqe"],"stream:r":"oh1.3aYaYKrEaDe9oJGbrDxfDcnJpnSsSe3VZ5U2WqrDRhzh"},"type:s":"poc.nimona.io/conversation.MessageAdded"}',
@@ -35,12 +35,12 @@ class MockDataStore implements DataStore {
 
   @override
   Future<void> joinConversation(
-    String conversationRootHash,
+    String conversationRootCID,
   ) async {}
 
   @override
   Future<void> refreshConversation(
-    String conversationRootHash,
+    String conversationRootCID,
   ) async {}
 
   @override
@@ -85,10 +85,10 @@ class MockDataStore implements DataStore {
   Future<StreamController<NimonaTyped>> subscribeToMessages() async {}
 
   @override
-  Future<void> updateNickname(String conversationHash, String nickname) {}
+  Future<void> updateNickname(String conversationCID, String nickname) {}
 
   @override
-  Future<void> updateTopic(String conversationHash, String topic) {}
+  Future<void> updateTopic(String conversationCID, String topic) {}
 
   @override
   Future<StreamController<NimonaTyped>> subscribeToMessagesForConversation(
@@ -111,7 +111,7 @@ class MockDataStore implements DataStore {
   }
 
   @override
-  Future<void> createMessage(String conversationHash, String body) async {
+  Future<void> createMessage(String conversationCID, String body) async {
     return;
   }
 }

@@ -40,8 +40,8 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
             AddMessage(
               Message(
                 body: event.dataM.bodyS,
-                hash: event.hashS ?? event.hashCode.toString(),
-                senderHash: event.metadataM.ownerS,
+                cid: event.cidS ?? event.hashCode.toString(),
+                senderCID: event.metadataM.ownerS,
                 sent: event.metadataM.datetimeS,
                 senderNickname: "",
               ),
@@ -76,11 +76,11 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       _getCtrl?.close();
       // start listening for new events
       _subCtrl = await Repository.get()
-          .subscribeToMessagesForConversation(event.conversation.hash);
+          .subscribeToMessagesForConversation(event.conversation.cid);
       _subCtrl.stream.listen(newHandler);
       // get old events
       _getCtrl = await Repository.get()
-          .getMessagesForConversation(event.conversation.hash, 100, 0);
+          .getMessagesForConversation(event.conversation.cid, 100, 0);
       _getCtrl.stream.listen(oldHandler);
     } catch (err) {
       yield MessagesNotLoaded();
@@ -93,7 +93,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     if (state is MessagesLoaded) {
       MessagesLoaded currentState = state;
       final message = event.message.copyWith(
-        senderNickname: currentState.nicknames[event.message.senderHash],
+        senderNickname: currentState.nicknames[event.message.senderCID],
       );
       List<Message> updatedMessages = List.from(currentState.messages)
         ..add(message);
@@ -116,12 +116,12 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
       MessagesLoaded currentState = state;
       // update nickname map
       Map<String, String> nicknames = currentState.nicknames;
-      nicknames[event.senderHash] = event.nickname;
+      nicknames[event.senderCID] = event.nickname;
       // go through existing messages and update nicknames
       List<Message> messages = List.from(currentState.messages);
       for (var i = 0; i < messages.length; i++) {
         final Message message = messages[i];
-        if (message.senderHash != event.senderHash) {
+        if (message.senderCID != event.senderCID) {
           continue;
         }
         if (message.senderNickname == event.nickname) {

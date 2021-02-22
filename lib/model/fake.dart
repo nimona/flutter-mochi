@@ -27,7 +27,7 @@ class Fake {
   Base58Codec codec = const Base58Codec(_bitcoinAlphabet);
   Random rng = new Random();
 
-  String hashString(String key) {
+  String cidString(String key) {
     var bytes = utf8.encode(key);
     var digest = sha1.convert(bytes);
     return codec.encode(digest.bytes).toString();
@@ -35,7 +35,7 @@ class Fake {
 
   Profile getProfile() {
     return Profile(
-      key: hashString(faker.guid.guid()),
+      key: cidString(faker.guid.guid()),
       displayPicture: "https://picsum.photos/250",
       localAlias: faker.internet.userName(),
       nameFirst: faker.person.firstName(),
@@ -55,8 +55,8 @@ class Fake {
   Message getMessage() {
     return Message(
       body: faker.lorem.sentence(),
-      senderHash: getProfile().key,
-      hash: hashString(faker.lorem.sentence()),
+      senderCID: getProfile().key,
+      cid: cidString(faker.lorem.sentence()),
       sent: DateTime.now().subtract(Duration(seconds: rng.nextInt(100))).toIso8601String(),
     );
   }
@@ -85,7 +85,7 @@ class Fake {
       messages.add(getMessage());
     }
     return Conversation(
-      hash: hashString(faker.guid.guid()),
+      cid: cidString(faker.guid.guid()),
       topic: faker.lorem.sentence(),
     );
   }

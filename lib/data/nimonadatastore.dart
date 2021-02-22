@@ -40,10 +40,10 @@ class NimonaDataStore implements DataStore {
 
   @override
   Future<void> refreshConversation(
-    String conversationRootHash,
+    String conversationRootCID,
   ) async {
     try {
-      await Nimona.requestStream(conversationRootHash);
+      await Nimona.requestStream(conversationRootCID);
     } catch (e) {
       print('ERROR refreshing stream, err=' + e.toString());
       throw e;
@@ -52,10 +52,10 @@ class NimonaDataStore implements DataStore {
 
   @override
   Future<void> joinConversation(
-    String conversationRootHash,
+    String conversationRootCID,
   ) async {
     try {
-      await Nimona.requestStream(conversationRootHash);
+      await Nimona.requestStream(conversationRootCID);
       final sub = nss.StreamSubscription(
         dataM: nss.DataM(
           expiryS: DateTime.now().add(Duration(days: 30)).toIso8601String(),
@@ -63,7 +63,7 @@ class NimonaDataStore implements DataStore {
         metadataM: MetadataM(
           datetimeS: DateTime.now().toIso8601String(),
           ownerS: '@peer',
-          streamS: conversationRootHash,
+          streamS: conversationRootCID,
         ),
       );
       await Nimona.put(sub.toJson());
@@ -230,11 +230,11 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
-  Future<void> createMessage(String conversationHash, String body) async {
+  Future<void> createMessage(String conversationCID, String body) async {
     try {
       final c = conversation_message_added.ConversationMessageAdded(
         metadataM: MetadataM(
-          streamS: conversationHash,
+          streamS: conversationCID,
           ownerS: '@peer',
           datetimeS: DateTime.now().toUtc().toIso8601String(),
         ),
@@ -250,13 +250,13 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
-  Future<void> updateNickname(String conversationHash, String nickname) async {
+  Future<void> updateNickname(String conversationCID, String nickname) async {
     try {
       final event = ConversationNicknameUpdated(
         metadataM: MetadataM(
           datetimeS: DateTime.now().toUtc().toIso8601String(),
           ownerS: '@peer',
-          streamS: conversationHash,
+          streamS: conversationCID,
         ),
         dataM: DataM(
           nicknameS: nickname,
@@ -270,13 +270,13 @@ class NimonaDataStore implements DataStore {
   }
 
   @override
-  Future<void> updateTopic(String conversationHash, String topic) async {
+  Future<void> updateTopic(String conversationCID, String topic) async {
     try {
       final event = ConversationTopicUpdated(
         metadataM: MetadataM(
           datetimeS: DateTime.now().toUtc().toIso8601String(),
           ownerS: '@peer',
-          streamS: conversationHash,
+          streamS: conversationCID,
         ),
         dataM: ConversationTopicUpdatedDataM(
           topicS: topic,

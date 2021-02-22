@@ -55,7 +55,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       var handleConversationEvents = (NimonaTyped event) {
         if (event is ConversationCreated) {
           final Conversation conversation = Conversation(
-            hash: event.hashS,
+            cid: event.cidS,
             topic: event.dataM.nonceS,
           );
           this.add(AddConversation(conversation));
@@ -100,16 +100,16 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
     final List<Conversation> updatedConversations =
         List.from(currentState.conversations)..add(event.conversation);
     // if we don't have a last read for this conversation, add one as now
-    if (currentState.lastRead[event.conversation.hash] == null) {
+    if (currentState.lastRead[event.conversation.cid] == null) {
       var lastRead = currentState.lastRead;
       lastRead.update(
-        event.conversation.hash,
+        event.conversation.cid,
         (value) => DateTime.now(),
         ifAbsent: () => DateTime.now(),
       );
       var unreadCount = currentState.unreadCount;
       unreadCount.update(
-        event.conversation.hash,
+        event.conversation.cid,
         (value) => 0,
         ifAbsent: () => 0,
       );
@@ -138,13 +138,13 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       ConversationsLoaded currentState = state;
       var lastRead = currentState.lastRead;
       lastRead.update(
-        event.conversation.hash,
+        event.conversation.cid,
         (value) => DateTime.now(),
         ifAbsent: () => DateTime.now(),
       );
       var unreadCount = currentState.unreadCount;
       unreadCount.update(
-        event.conversation.hash,
+        event.conversation.cid,
         (value) => 0,
         ifAbsent: () => 0,
       );
@@ -172,8 +172,8 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       if (messageLastRead == null) {
         return;
       }
-      final conversationHash = event.message.metadataM.streamS;
-      final conversationLastRead = currentState.lastRead[conversationHash];
+      final conversationCID = event.message.metadataM.streamS;
+      final conversationLastRead = currentState.lastRead[conversationCID];
       if (conversationLastRead == null) {
         return;
       }
@@ -181,7 +181,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
         return;
       }
       var unreadCount = currentState.unreadCount;
-      if (currentState.selected?.hash != event.message.metadataM.streamS) {
+      if (currentState.selected?.cid != event.message.metadataM.streamS) {
         unreadCount.update(
           event.message.metadataM.streamS,
           (value) => value + 1,
@@ -215,7 +215,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
       var conversations = currentState.conversations.toList();
       var updated = false;
       for (var i = 0; i < conversations.length; i++) {
-        if (conversations[i].hash == event.conversationHash) {
+        if (conversations[i].cid == event.conversationCID) {
           updated = true;
           conversations[i] = conversations[i].copyWith(
             topic: event.topic,
@@ -227,7 +227,7 @@ class ConversationsBloc extends Bloc<ConversationsEvent, ConversationsState> {
         return;
       }
       conversations.sort((a, b) {
-        return (a.topic ?? a.hash).compareTo(b.topic ?? b.hash);
+        return (a.topic ?? a.cid).compareTo(b.topic ?? b.cid);
       });
       yield ConversationsLoaded(
         selected: currentState.selected,

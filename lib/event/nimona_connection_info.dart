@@ -10,31 +10,31 @@ String connectionInfoToJson(ConnectionInfo data) => json.encode(data.toJson());
 
 class ConnectionInfo implements NimonaTyped {
   ConnectionInfo({
-    this.hashS,
+    this.cidS,
     this.dataM,
   });
 
-  final String hashS;
+  final String cidS;
   final ConnectionInfoDataM dataM;
 
   ConnectionInfo copyWith({
-    String hashS,
+    String cidS,
     ConnectionInfoDataM dataM,
   }) =>
       ConnectionInfo(
-        hashS: hashS ?? this.hashS,
+        cidS: cidS ?? this.cidS,
         dataM: dataM ?? this.dataM,
       );
 
   factory ConnectionInfo.fromJson(Map<String, dynamic> json) => ConnectionInfo(
-        hashS: json['_hash:s'] == null ? null : json['_hash:s'],
+        cidS: json['_cid:s'] == null ? null : json['_cid:s'],
         dataM: json['data:m'] == null
             ? null
             : ConnectionInfoDataM.fromJson(json['data:m']),
       );
 
   Map<String, dynamic> toJson() => {
-        '_hash:s': hashS == null ? null : hashS,
+        '_cid:s': cidS == null ? null : cidS,
         'data:m': dataM == null ? null : dataM.toJson(),
         'type:s': ConnectionInfoType,
       };

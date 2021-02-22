@@ -6,11 +6,11 @@ import 'package:mochi/event/nimona_typed.dart';
 class BasicObject implements NimonaTyped {
   MetadataM metadataM;
   String typeS;
-  String hashS;
+  String cidS;
   BasicObject({
     this.metadataM,
     this.typeS,
-    this.hashS,
+    this.cidS,
   });
 
   String type() {
@@ -20,12 +20,12 @@ class BasicObject implements NimonaTyped {
   BasicObject copyWith({
     MetadataM metadataM,
     String typeS,
-    String hashS,
+    String cidS,
   }) {
     return BasicObject(
       metadataM: metadataM ?? this.metadataM,
       typeS: typeS ?? this.typeS,
-      hashS: hashS ?? this.hashS,
+      cidS: cidS ?? this.cidS,
     );
   }
 
@@ -33,7 +33,7 @@ class BasicObject implements NimonaTyped {
     return {
       'metadata:m': metadataM?.toMap(),
       'type:s': typeS,
-      '_hash:s': hashS,
+      '_cid:s': cidS,
     };
   }
 
@@ -43,7 +43,7 @@ class BasicObject implements NimonaTyped {
     return BasicObject(
       metadataM: MetadataM.fromMap(map['metadata:m']),
       typeS: map['type:s'],
-      hashS: map['_hash:s'],
+      cidS: map['_cid:s'],
     );
   }
 
@@ -52,7 +52,7 @@ class BasicObject implements NimonaTyped {
   factory BasicObject.fromJson(String source) => BasicObject.fromMap(json.decode(source));
 
   @override
-  String toString() => 'BasicObject(metadataM: $metadataM, typeS: $typeS, hashS: $hashS)';
+  String toString() => 'BasicObject(metadataM: $metadataM, typeS: $typeS, cidS: $cidS)';
 
   @override
   bool operator ==(Object o) {
@@ -61,9 +61,9 @@ class BasicObject implements NimonaTyped {
     return o is BasicObject &&
       o.metadataM == metadataM &&
       o.typeS == typeS &&
-      o.hashS == hashS;
+      o.cidS == cidS;
   }
 
   @override
-  int get hashCode => metadataM.hashCode ^ typeS.hashCode ^ hashS.hashCode;
+  int get hashCode => metadataM.hashCode ^ typeS.hashCode ^ cidS.hashCode;
 }

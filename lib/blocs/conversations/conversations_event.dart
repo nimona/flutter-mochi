@@ -77,26 +77,26 @@ class DeleteConversation extends ConversationsEvent {
 }
 
 class UpdateTopic extends ConversationsEvent {
-  final String conversationHash;
+  final String conversationCID;
   final String topic;
 
   UpdateTopic(
-    this.conversationHash,
+    this.conversationCID,
     this.topic,
   ) : super([
-          conversationHash,
+          conversationCID,
           topic,
         ]);
 
   @override
   List<Object> get props => [
-        conversationHash,
+        conversationCID,
         topic,
       ];
 
   @override
   String toString() =>
-      'UpdateTopic { conversationHash: $conversationHash, topic: $topic }';
+      'UpdateTopic { conversationCID: $conversationCID, topic: $topic }';
 }
 
 class ClearCompleted extends ConversationsEvent {

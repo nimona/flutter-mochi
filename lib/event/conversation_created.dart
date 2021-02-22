@@ -7,11 +7,11 @@ import 'package:mochi/event/types.dart';
 class ConversationCreated implements NimonaTyped {
   DataM dataM;
   MetadataM metadataM;
-  String hashS;
+  String cidS;
   ConversationCreated({
     this.dataM,
     this.metadataM,
-    this.hashS,
+    this.cidS,
   });
 
   String type() {
@@ -21,12 +21,12 @@ class ConversationCreated implements NimonaTyped {
   ConversationCreated copyWith({
     DataM dataM,
     MetadataM metadataM,
-    String hashS,
+    String cidS,
   }) {
     return ConversationCreated(
       dataM: dataM ?? this.dataM,
       metadataM: metadataM ?? this.metadataM,
-      hashS: hashS ?? this.hashS,
+      cidS: cidS ?? this.cidS,
     );
   }
 
@@ -35,7 +35,7 @@ class ConversationCreated implements NimonaTyped {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
       'type:s': ConversationCreatedType,
-      '_hash:s': hashS,
+      '_cid:s': cidS,
     };
   }
 
@@ -46,7 +46,7 @@ class ConversationCreated implements NimonaTyped {
       dataM: DataM.fromMap(map['data:m']),
       // FIX: this breaks if JSON has `"metadata:m":{}`.
       // metadataM: MetadataM.fromMap(map['metadata:m']),
-      hashS: map['_hash:s'],
+      cidS: map['_cid:s'],
     );
   }
 
@@ -57,7 +57,7 @@ class ConversationCreated implements NimonaTyped {
 
   @override
   String toString() {
-    return 'ConversationCreated(dataM: $dataM, metadataM: $metadataM, hashS: $hashS)';
+    return 'ConversationCreated(dataM: $dataM, metadataM: $metadataM, cidS: $cidS)';
   }
 
   @override
@@ -67,12 +67,12 @@ class ConversationCreated implements NimonaTyped {
     return o is ConversationCreated &&
         o.dataM == dataM &&
         o.metadataM == metadataM &&
-        o.hashS == hashS;
+        o.cidS == cidS;
   }
 
   @override
   int get hashCode {
-    return dataM.hashCode ^ metadataM.hashCode ^ hashS.hashCode;
+    return dataM.hashCode ^ metadataM.hashCode ^ cidS.hashCode;
   }
 }
 

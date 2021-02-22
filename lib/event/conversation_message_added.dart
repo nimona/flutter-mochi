@@ -7,11 +7,11 @@ import 'package:mochi/event/types.dart';
 class ConversationMessageAdded implements NimonaTyped {
   DataM dataM;
   MetadataM metadataM;
-  String hashS;
+  String cidS;
   ConversationMessageAdded({
     this.dataM,
     this.metadataM,
-    this.hashS,
+    this.cidS,
   });
 
   String type() {
@@ -22,12 +22,12 @@ class ConversationMessageAdded implements NimonaTyped {
     DataM dataM,
     MetadataM metadataM,
     String typeS,
-    String hashS,
+    String cidS,
   }) {
     return ConversationMessageAdded(
       dataM: dataM ?? this.dataM,
       metadataM: metadataM ?? this.metadataM,
-      hashS: hashS ?? this.hashS,
+      cidS: cidS ?? this.cidS,
     );
   }
 
@@ -36,7 +36,7 @@ class ConversationMessageAdded implements NimonaTyped {
       'data:m': dataM?.toMap(),
       'metadata:m': metadataM?.toMap(),
       'type:s': ConversationMessageAddedType,
-      '_hash:s': hashS,
+      '_cid:s': cidS,
     };
   }
 
@@ -46,7 +46,7 @@ class ConversationMessageAdded implements NimonaTyped {
     return ConversationMessageAdded(
       dataM: DataM.fromMap(map['data:m']),
       metadataM: MetadataM.fromMap(map['metadata:m']),
-      hashS: map['_hash:s'],
+      cidS: map['_cid:s'],
     );
   }
 
@@ -57,7 +57,7 @@ class ConversationMessageAdded implements NimonaTyped {
 
   @override
   String toString() {
-    return 'ConversationMessageAdded(dataM: $dataM, metadataM: $metadataM, hashS: $hashS)';
+    return 'ConversationMessageAdded(dataM: $dataM, metadataM: $metadataM, cidS: $cidS)';
   }
 
   @override
@@ -67,12 +67,12 @@ class ConversationMessageAdded implements NimonaTyped {
     return o is ConversationMessageAdded &&
         o.dataM == dataM &&
         o.metadataM == metadataM &&
-        o.hashS == hashS;
+        o.cidS == cidS;
   }
 
   @override
   int get hashCode {
-    return dataM.hashCode ^ metadataM.hashCode ^ hashS.hashCode;
+    return dataM.hashCode ^ metadataM.hashCode ^ cidS.hashCode;
   }
 }
 
