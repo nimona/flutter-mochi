@@ -3,10 +3,9 @@
     <channel>
         <title>mochi</title>
         <item>
-            <title>0.6.0</title>
-            <pubDate>Mon, 01 Mar 2021 18:00:15 +0000</pubDate>
+            <title>0.6.1</title>
+            <pubDate>Tue, 02 Mar 2021 00:00:19 +0000</pubDate>
             <sparkle:minimumSystemVersion>10.11</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.6.0/mochi-v0.6.0.zip" sparkle:version="8" sparkle:shortVersionString="0.6.0" length="26717559" type="application/octet-stream" sparkle:edSignature="6y15OJmRZFrOQ68gEm11DPonDz7U4KOUxV8pcqU0pObT36FYhXTSvTojtKYZmLJUKuADSl6DfyxJibNnKcK7BA=="/>
-        </item>
+            <enclosure url="https://github.com/nimona/flutter-mochi/releases/download/v0.6.1/mochi-v0.6.1.zip" sparkle:version="9" sparkle:shortVersionString="0.6.1" length="26398651" type="application/octet-stream" sparkle:edSignature="RxkXbbfFDQRUwCPmEY64fVzAQE7c5P8uSTTJkRfP2e9a9ZRVEk1EFCl5UUm3lBQ2/TrQPKVHg3mQI+yXkfMLAw=="/>
     </channel>
 </rss>
